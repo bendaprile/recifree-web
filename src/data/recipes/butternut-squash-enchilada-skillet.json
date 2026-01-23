@@ -1,0 +1,159 @@
+{
+    "id": "butternut-squash-enchilada-skillet",
+    "title": "Butternut Squash and Black Bean Enchilada Skillet",
+    "description": "A flavorful vegetarian dinner combining homemade red enchilada sauce with tender butternut squash, black beans, and melted cheese. This one-pan meal is packed with fiber and protein, making it perfect for a healthy weeknight dinner.",
+    "image": "/images/recipes/butternut-squash-enchilada-skillet.png",
+    "prepTime": "20 mins",
+    "cookTime": "35 mins",
+    "totalTime": "55 mins",
+    "servings": 4,
+    "difficulty": "Medium",
+    "tags": [
+        "Vegetarian",
+        "Dinner",
+        "Mexican",
+        "Gluten-Free",
+        "One-Pan"
+    ],
+    "ingredients": [
+        {
+            "title": "Enchilada Sauce",
+            "items": [
+                {
+                    "amount": "3",
+                    "unit": "tbsp",
+                    "item": "vegetable oil or olive oil"
+                },
+                {
+                    "amount": "3",
+                    "unit": "tbsp",
+                    "item": "flour (all-purpose or gluten-free)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "chili powder"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "ground cumin"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "garlic powder"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "dried oregano"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "salt (plus more to taste)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "pinch",
+                    "item": "cinnamon (optional)"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "tomato paste"
+                },
+                {
+                    "amount": "2",
+                    "unit": "cups",
+                    "item": "vegetable broth"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "apple cider vinegar"
+                }
+            ]
+        },
+        {
+            "title": "Skillet",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "olive oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "large",
+                    "item": "yellow onion, diced"
+                },
+                {
+                    "amount": "3",
+                    "unit": "cloves",
+                    "item": "garlic, minced"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "large",
+                    "item": "jalapeño, diced (seeds removed for less spice)"
+                },
+                {
+                    "amount": "3",
+                    "unit": "cups",
+                    "item": "butternut squash, peeled and diced into 1/2-inch cubes"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "ground cumin"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "chili powder"
+                },
+                {
+                    "amount": "1",
+                    "unit": "can",
+                    "item": "black beans (15 oz), drained and rinsed"
+                },
+                {
+                    "amount": "8",
+                    "unit": "",
+                    "item": "corn tortillas, cut into thick strips"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "shredded Colby Jack or Mexican blend cheese"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Cilantro, yogurt/sour cream for serving"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "**Make the Enchilada Sauce:** In a medium pot over medium heat, warm 3 tbsp oil. Whisk in flour, 1 tbsp chili powder, 1 tsp cumin, garlic powder, oregano, salt, and cinnamon. Cook until fragrant (1 min).",
+        "Whisk in tomato paste, then slowly pour in broth while whisking constantly to remove lumps. Increase heat to medium-high and simmer until thickened (5-7 mins). Remove from heat, stir in vinegar and season with pepper.",
+        "**Prepare the Skillet:** In a large oven-proof skillet, heat 1 tbsp olive oil over medium heat. Sauté onion, garlic, and jalapeño until soft (3-5 mins).",
+        "Add butternut squash, 1 tsp cumin, and 1 tsp chili powder. Season with salt/pepper. Cook, stirring occasionally, until squash is tender (about 10 mins). Cover the pan to speed up cooking.",
+        "Stir in black beans, tortilla strips, and your homemade enchilada sauce. Reduce heat to medium-low.",
+        "Stir in 1/2 cup cheese and simmer for a few minutes. Meanwhile, turn on your oven broiler.",
+        "Top with remaining 1/2 cup cheese. Broil for 3-5 minutes until cheese is bubbly and golden. Serve with cilantro and yogurt."
+    ],
+    "source": {
+        "name": "Ambitious Kitchen & Cookie and Kate",
+        "url": "https://www.ambitiouskitchen.com/butternut-squash-and-black-bean-enchilada-skillet/"
+    },
+    "nutrition": {
+        "calories": 405,
+        "protein": "16g",
+        "carbs": "42g",
+        "fat": "12g"
+    }
+}

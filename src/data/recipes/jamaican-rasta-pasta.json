@@ -1,0 +1,107 @@
+{
+    "id": "jamaican-rasta-pasta",
+    "title": "Jamaican Rasta Pasta",
+    "description": "A trio of colorful bell peppers – red, yellow and green – adds a sweet twist to this creamy, vibrant pasta that’s popular in Jamaica and beyond. The rich sauce comes from half-and-half and mozzarella, with a kick from Habanero or Scotch bonnet pepper.",
+    "image": "/images/recipes/jamaican-rasta-pasta.png",
+    "prepTime": "20 mins",
+    "cookTime": "15 mins",
+    "totalTime": "35 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Jamaican",
+        "Dinner",
+        "Pasta",
+        "Vegetarian",
+        "Spicy"
+    ],
+    "ingredients": [
+        {
+            "amount": "2",
+            "unit": "cups",
+            "item": "dried penne (about 8 ounces)"
+        },
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "vegetable oil or olive oil"
+        },
+        {
+            "amount": "1",
+            "unit": "small",
+            "item": "onion, sliced"
+        },
+        {
+            "amount": "2",
+            "unit": "cloves",
+            "item": "garlic, minced"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "red bell pepper, sliced"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "yellow bell pepper, sliced"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "green bell pepper, sliced"
+        },
+        {
+            "amount": "2",
+            "unit": "stalks",
+            "item": "scallions, sliced"
+        },
+        {
+            "amount": "1",
+            "unit": "",
+            "item": "habanero or Scotch bonnet pepper, diced (optional)"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "ground allspice"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "fresh thyme"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "half-and-half"
+        },
+        {
+            "amount": "1/2",
+            "unit": "cup",
+            "item": "shredded whole-milk mozzarella"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Kosher salt"
+        }
+    ],
+    "instructions": [
+        "Bring 4 cups of water to a boil in a medium pot with 1 teaspoon of salt. Cook pasta for 8 minutes. Reserve 1/2 cup pasta water, drain, and toss with 1/2 tsp oil.",
+        "Heat 2 tbsp oil in a large pan over medium heat. Sauté onion with a pinch of salt until translucent (2 mins). Add garlic, cook for 30s.",
+        "Add all bell peppers and cook until slightly tender (2 mins). Stir in pasta, scallions, and habanero (if using). Cook 1 minute.",
+        "Reduce heat to medium-low. Stir in allspice and thyme; cook 2 mins until fragrant.",
+        "Add half-and-half and bring to a slow simmer. Stir in mozzarella until a creamy sauce forms (2 mins). Season with salt to taste."
+    ],
+    "source": {
+        "name": "Food Network Kitchen",
+        "url": "https://www.foodnetwork.com/recipes/food-network-kitchen/jamaican-rasta-pasta-19512011"
+    },
+    "nutrition": {
+        "calories": 286,
+        "protein": "9g",
+        "carbs": "35g",
+        "fat": "12g"
+    }
+}
