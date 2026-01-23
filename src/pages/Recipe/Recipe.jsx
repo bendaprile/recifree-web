@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import recipes from '../../data/recipes.json';
+import recipes from '../../data/recipes';
 import './Recipe.css';
 
 function Recipe() {

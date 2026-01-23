@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
-import recipes from '../../data/recipes.json';
+import recipes from '../../data/recipes';
 import './Home.css';
 
 function Home() {

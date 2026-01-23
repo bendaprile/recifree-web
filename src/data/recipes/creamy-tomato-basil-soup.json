@@ -1,0 +1,84 @@
+{
+    "id": "creamy-tomato-basil-soup",
+    "title": "Creamy Tomato Basil Soup",
+    "description": "A comforting, velvety tomato soup with fresh basil. Perfect with a grilled cheese sandwich on a chilly day.",
+    "image": "/images/recipes/tomato-basil-soup.jpg",
+    "prepTime": "10 mins",
+    "cookTime": "30 mins",
+    "totalTime": "40 mins",
+    "servings": 6,
+    "difficulty": "Easy",
+    "tags": [
+        "Soup",
+        "Vegetarian",
+        "Comfort Food",
+        "Italian"
+    ],
+    "ingredients": [
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "olive oil"
+        },
+        {
+            "amount": "1",
+            "unit": "medium",
+            "item": "onion, diced"
+        },
+        {
+            "amount": "4",
+            "unit": "cloves",
+            "item": "garlic, minced"
+        },
+        {
+            "amount": "2",
+            "unit": "cans (28 oz each)",
+            "item": "whole peeled tomatoes"
+        },
+        {
+            "amount": "2",
+            "unit": "cups",
+            "item": "vegetable broth"
+        },
+        {
+            "amount": "1/2",
+            "unit": "cup",
+            "item": "heavy cream"
+        },
+        {
+            "amount": "1/2",
+            "unit": "cup",
+            "item": "fresh basil leaves, plus more for garnish"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "sugar"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Salt and pepper to taste"
+        }
+    ],
+    "instructions": [
+        "Heat olive oil in a large pot over medium heat. Add onion and cook until softened, about 5 minutes.",
+        "Add garlic and cook for 1 minute until fragrant.",
+        "Pour in the canned tomatoes with their juices and vegetable broth. Bring to a simmer.",
+        "Add sugar, salt, and pepper. Let simmer for 20 minutes to let flavors meld.",
+        "Remove from heat and add fresh basil leaves.",
+        "Use an immersion blender to puree the soup until smooth. Alternatively, blend in batches in a regular blender.",
+        "Stir in heavy cream and return to low heat to warm through. Do not boil.",
+        "Taste and adjust seasonings. Serve hot, garnished with fresh basil leaves and a drizzle of olive oil."
+    ],
+    "source": {
+        "name": "Love and Lemons",
+        "url": "https://www.loveandlemons.com/tomato-basil-soup/"
+    },
+    "nutrition": {
+        "calories": 185,
+        "protein": "4g",
+        "carbs": "18g",
+        "fat": "12g"
+    }
+}
