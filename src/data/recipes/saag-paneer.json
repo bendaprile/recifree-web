@@ -1,0 +1,149 @@
+{
+    "id": "saag-paneer",
+    "title": "Saag Paneer",
+    "description": "A classic North Indian dish made with leafy greens (saag) and paneer. This creamy, mildly spiced curry is a delicious way to enjoy your greens!",
+    "image": "/images/recipes/saag-paneer.png",
+    "prepTime": "15 mins",
+    "cookTime": "20 mins",
+    "totalTime": "35 mins",
+    "servings": 4,
+    "difficulty": "Medium",
+    "tags": [
+        "Indian",
+        "Vegetarian",
+        "Instant Pot",
+        "Gluten-Free"
+    ],
+    "ingredients": [
+        {
+            "title": "The Masala Base",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Ghee"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Vegetable oil"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "Hing (Asafetida)"
+                },
+                {
+                    "amount": "1 inch",
+                    "unit": "",
+                    "item": "Ginger, roughly chopped"
+                },
+                {
+                    "amount": "3-4",
+                    "unit": "",
+                    "item": "Garlic cloves, chopped"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "Green chili, chopped"
+                },
+                {
+                    "amount": "12",
+                    "unit": "",
+                    "item": "Raw cashews"
+                },
+                {
+                    "amount": "1",
+                    "unit": "medium",
+                    "item": "Onion, roughly chopped"
+                },
+                {
+                    "amount": "1",
+                    "unit": "medium",
+                    "item": "Tomato, roughly chopped"
+                }
+            ]
+        },
+        {
+            "title": "The Greens & Spices",
+            "items": [
+                {
+                    "amount": "250g",
+                    "unit": "",
+                    "item": "Spinach, chopped"
+                },
+                {
+                    "amount": "250g",
+                    "unit": "",
+                    "item": "Mustard greens, chopped"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Coriander powder"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "Turmeric powder"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "Kashmiri red chili powder"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Salt"
+                },
+                {
+                    "amount": "3/4",
+                    "unit": "cup",
+                    "item": "Water (divided)"
+                }
+            ]
+        },
+        {
+            "title": "To Finish",
+            "items": [
+                {
+                    "amount": "250g",
+                    "unit": "",
+                    "item": "Paneer, cubed"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "Garam masala"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Heavy cream (optional)"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Set Instant Pot to Saute mode. Heat ghee and oil. Add hing, ginger, garlic, chili, and cashews. Cook for 1 minute.",
+        "Add chopped onion and cook for 2 minutes until soft. Add chopped tomato and cook for 1 more minute.",
+        "Add the chopped spinach and mustard greens. Cook until wilted (3-4 minutes).",
+        "Add coriander powder, turmeric, red chili powder, and salt. Stir well.",
+        "Add 1/2 cup water. Close lid and pressure cook on High for 10 minutes. Natural pressure release.",
+        "Open lid. Use an immersion blender to puree the saag to your desired consistency (coarse or smooth).",
+        "Set Instant Pot back to Saute mode. Add paneer cubes and simmer for 2-3 minutes.",
+        "Stir in garam masala and heavy cream (if using). Serve hot with naan or rice."
+    ],
+    "source": {
+        "name": "Cook With Manali",
+        "url": "https://www.cookwithmanali.com/saag-paneer/"
+    },
+    "nutrition": {
+        "calories": 325,
+        "protein": "14g",
+        "carbs": "12g",
+        "fat": "26g"
+    }
+}

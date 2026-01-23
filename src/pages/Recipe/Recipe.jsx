@@ -118,27 +118,61 @@ function Recipe() {
                                 </h2>
                                 <p className="section-hint">Tap items to check them off</p>
 
-                                <ul className="ingredients-list">
-                                    {recipe.ingredients.map((ingredient, index) => (
-                                        <li
-                                            key={index}
-                                            className={`ingredient-item ${checkedIngredients.includes(index) ? 'checked' : ''}`}
-                                            onClick={() => toggleIngredient(index)}
-                                        >
-                                            <span className="ingredient-checkbox">
-                                                {checkedIngredients.includes(index) ? '✓' : ''}
-                                            </span>
-                                            <span className="ingredient-text">
-                                                {ingredient.amount && (
-                                                    <strong className="ingredient-amount">
-                                                        {ingredient.amount} {ingredient.unit}
-                                                    </strong>
-                                                )}
-                                                {' '}{ingredient.item}
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
+                                {recipe.ingredients[0]?.items ? (
+                                    // Sectioned Ingredients
+                                    recipe.ingredients.map((section, sIndex) => (
+                                        <div key={sIndex} className="ingredients-section">
+                                            {section.title && <h3 className="ingredient-section-title">{section.title}</h3>}
+                                            <ul className="ingredients-list">
+                                                {section.items.map((ingredient, iIndex) => {
+                                                    const uniqueId = `${sIndex}-${iIndex}`;
+                                                    return (
+                                                        <li
+                                                            key={uniqueId}
+                                                            className={`ingredient-item ${checkedIngredients.includes(uniqueId) ? 'checked' : ''}`}
+                                                            onClick={() => toggleIngredient(uniqueId)}
+                                                        >
+                                                            <span className="ingredient-checkbox">
+                                                                {checkedIngredients.includes(uniqueId) ? '✓' : ''}
+                                                            </span>
+                                                            <span className="ingredient-text">
+                                                                {ingredient.amount && (
+                                                                    <strong className="ingredient-amount">
+                                                                        {ingredient.amount} {ingredient.unit}
+                                                                    </strong>
+                                                                )}
+                                                                {' '}{ingredient.item}
+                                                            </span>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </div>
+                                    ))
+                                ) : (
+                                    // Flat List (Legacy Support)
+                                    <ul className="ingredients-list">
+                                        {recipe.ingredients.map((ingredient, index) => (
+                                            <li
+                                                key={index}
+                                                className={`ingredient-item ${checkedIngredients.includes(index) ? 'checked' : ''}`}
+                                                onClick={() => toggleIngredient(index)}
+                                            >
+                                                <span className="ingredient-checkbox">
+                                                    {checkedIngredients.includes(index) ? '✓' : ''}
+                                                </span>
+                                                <span className="ingredient-text">
+                                                    {ingredient.amount && (
+                                                        <strong className="ingredient-amount">
+                                                            {ingredient.amount} {ingredient.unit}
+                                                        </strong>
+                                                    )}
+                                                    {' '}{ingredient.item}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </section>
 
                             {/* Instructions */}

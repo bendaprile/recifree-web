@@ -64,7 +64,7 @@ function AboutPage() {
           </p>
 
           <div className="about-cta">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            <a href="https://github.com/bendaprile/recifree-web" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               View on GitHub
             </a>
           </div>

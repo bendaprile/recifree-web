@@ -1,0 +1,108 @@
+{
+    "id": "seriously-the-best-healthy-turkey-chili",
+    "title": "Seriously, The Best Healthy Turkey Chili",
+    "description": "Healthy turkey chili made with lean ground turkey, kidney beans and corn. Perfectly spiced, packed with protein and fiber.",
+    "image": "/images/recipes/seriously-the-best-healthy-turkey-chili.png",
+    "prepTime": "10 mins",
+    "cookTime": "45 mins",
+    "totalTime": "55 mins",
+    "servings": 6,
+    "difficulty": "Easy",
+    "tags": [
+        "American",
+        "Dinner",
+        "Healthy",
+        "Turkey",
+        "Chili"
+    ],
+    "ingredients": [
+        {
+            "amount": "2",
+            "unit": "tsp",
+            "item": "olive oil"
+        },
+        {
+            "amount": "1",
+            "unit": "medium",
+            "item": "yellow onion, chopped"
+        },
+        {
+            "amount": "3",
+            "unit": "cloves",
+            "item": "garlic, minced"
+        },
+        {
+            "amount": "1",
+            "unit": "medium",
+            "item": "red bell pepper, chopped"
+        },
+        {
+            "amount": "1",
+            "unit": "lb",
+            "item": "extra lean ground turkey (99%)"
+        },
+        {
+            "amount": "4",
+            "unit": "tbsp",
+            "item": "chili powder (mild)"
+        },
+        {
+            "amount": "2",
+            "unit": "tsp",
+            "item": "ground cumin"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "dried oregano"
+        },
+        {
+            "amount": "1/4",
+            "unit": "tsp",
+            "item": "cayenne pepper"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "salt"
+        },
+        {
+            "amount": "1",
+            "unit": "can (28 oz)",
+            "item": "diced or crushed tomatoes"
+        },
+        {
+            "amount": "1 1/4",
+            "unit": "cups",
+            "item": "chicken broth"
+        },
+        {
+            "amount": "2",
+            "unit": "cans (15 oz each)",
+            "item": "dark red kidney beans, rinsed and drained"
+        },
+        {
+            "amount": "1",
+            "unit": "can (15 oz)",
+            "item": "sweet corn, rinsed and drained"
+        }
+    ],
+    "instructions": [
+        "Heat oil in a large pot over medium-high heat. Add onion, garlic, and red pepper; sauté for 5–7 minutes.",
+        "Add ground turkey and break up the meat until no longer pink.",
+        "Stir in chili powder, cumin, oregano, cayenne pepper, and salt; cook for about 20 seconds.",
+        "Add tomatoes, chicken broth, kidney beans, and corn.",
+        "Bring to a boil, then reduce heat and simmer for 30–45 minutes until the chili thickens.",
+        "Taste and adjust seasonings as necessary. Serve warm."
+    ],
+    "source": {
+        "name": "Ambitious Kitchen",
+        "url": "https://www.ambitiouskitchen.com/seriously-the-best-healthy-turkey-chili/"
+    },
+    "nutrition": {
+        "calories": 336,
+        "protein": "31.8g",
+        "carbs": "46.7g",
+        "fat": "3.7g"
+    }
+}

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import './RecipeCard.css';
 
 function RecipeCard({ recipe }) {
-    const { id, title, image, prepTime, cookTime, servings, tags, difficulty } = recipe;
+    const { id, title, image, totalTime, servings, tags, difficulty } = recipe;
 
     // Placeholder image if none provided
     const defaultImage = 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=800&auto=format&fit=crop&q=60';
@@ -31,11 +31,7 @@ function RecipeCard({ recipe }) {
                 <div className="recipe-card-meta">
                     <div className="meta-item">
                         <span className="meta-icon">⏱️</span>
-                        <span>{prepTime}</span>
-                    </div>
-                    <div className="meta-item">
-                        <span className="meta-icon">🍳</span>
-                        <span>{cookTime}</span>
+                        <span>{totalTime}</span>
                     </div>
                     <div className="meta-item">
                         <span className="meta-icon">👥</span>

@@ -1,0 +1,128 @@
+{
+    "id": "healthy-teriyaki-turkey-rice-bowl",
+    "title": "Healthy Teriyaki Turkey Rice Bowl",
+    "description": "These Teriyaki Turkey Rice Bowls are made with healthy ground turkey and veggies in a sweet teriyaki sauce served over white or brown rice.",
+    "image": "/images/recipes/healthy-teriyaki-turkey-rice-bowl.png",
+    "prepTime": "15 mins",
+    "cookTime": "20 mins",
+    "totalTime": "35 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Healthy",
+        "Dinner",
+        "Turkey",
+        "Asian-inspired"
+    ],
+    "ingredients": [
+        {
+            "title": "Teriyaki Sauce",
+            "items": [
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "Low-Sodium Soy Sauce"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "Water"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "Red Wine Vinegar"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "Brown sugar"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "Granulated sugar"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tsp",
+                    "item": "Minced garlic"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Ground ginger"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Cornstarch"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "Warm water"
+                }
+            ]
+        },
+        {
+            "title": "Main Dish",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Vegetable oil"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "Diced onion"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "Minced garlic (for turkey)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "lb",
+                    "item": "Ground Turkey"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "Broccoli, finely chopped"
+                },
+                {
+                    "amount": "2",
+                    "unit": "large",
+                    "item": "Carrots, peeled and grated"
+                },
+                {
+                    "amount": "4",
+                    "unit": "cups",
+                    "item": "Cooked white or brown rice"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "In a small bowl, whisk together cornstarch and warm water until completely dissolved. Set aside.",
+        "In a small saucepan over medium heat, gently whisk soy sauce, water, red wine vinegar, sugars, minced garlic, and ground ginger until sugars are dissolved. Slowly whisk in the cornstarch mixture and simmer until thickened. Remove from heat.",
+        "Heat vegetable oil in a large skillet over medium-high heat. Add diced onions and cook until softened. Stir in minced garlic.",
+        "Add ground turkey to the skillet, breaking it apart with a spatula. Cook until turkey is about halfway through (4-5 minutes).",
+        "Add grated carrots and chopped broccoli. Continue to cook until the turkey is no longer pink and vegetables are soft (5-6 minutes).",
+        "Pour the prepared teriyaki sauce over the turkey and vegetables and stir. Simmer for about 5 minutes.",
+        "Divide cooked rice into bowls and top with the teriyaki turkey mixture. Garnish with sliced green onions and serve immediately."
+    ],
+    "source": {
+        "name": "Yellow Bliss Road",
+        "url": "https://www.yellowblissroad.com/teriyaki-turkey-rice-bowl/"
+    },
+    "nutrition": {
+        "calories": 380,
+        "protein": "28g",
+        "carbs": "55g",
+        "fat": "5g"
+    }
+}

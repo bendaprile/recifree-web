@@ -13,9 +13,11 @@ This document outlines the workflow for adding new recipes to Recifree using an 
 5.  **Create File**:
     *   Create a new file in `src/data/recipes/` named `[id].json` (the LLM will generate the ID).
     *   Paste the JSON content.
-6.  **Add Image**:
-    *   Download or generate an image for the recipe.
-    *   Save it to `public/images/recipes/` matching the filename in the JSON.
+6.  **Generate Image**:
+    *   Use the `generate_image` tool to create a high-quality, 4k food photography shot of the dish.
+    *   Prompt Guidelines: "A delicious, high-quality food photography shot of [Recipe Title]. [Visual Description of Ingredients/Colors]. Professional food styling, 4k resolution."
+    *   Save the image to `public/images/recipes/` ensuring the filename matches the JSON ID (e.g. `[id].png`).
+    *   Update the `image` field in the JSON to point to `/images/recipes/[id].png`.
 
 ---
 
@@ -56,11 +58,21 @@ Follow this structure EXACTLY.
     "Main Ingredient"
   ],
   "ingredients": [
+    // Option 1: Simple List
     {
-      "amount": "String (e.g. '1/2' or '2.5')",
-      "unit": "String (e.g. 'cup', 'tbsp', 'cloves', or empty string if none)",
-      "item": "String (name of ingredient + prep style, e.g. 'onions, diced')"
+      "amount": "String",
+      "unit": "String",
+      "item": "String"
     }
+    // Option 2: Sections (use this if the recipe has distinct components like 'Sauce', 'Dressing', etc.)
+    /*
+    {
+      "title": "Section Name (e.g. 'Sauce')",
+      "items": [
+        { "amount": "String", "unit": "String", "item": "String" }
+      ]
+    }
+    */
   ],
   "instructions": [
     "Step 1...",

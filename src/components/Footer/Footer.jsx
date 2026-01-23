@@ -41,7 +41,7 @@ function Footer() {
                             <ul>
                                 <li>
                                     <a
-                                        href="https://github.com"
+                                        href="https://github.com/bendaprile/recifree-web"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
