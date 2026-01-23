@@ -1,0 +1,75 @@
+/* =================================
+   App Layout
+   ================================= */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* =================================
+   About Page
+   ================================= */
+.about-page {
+  background-color: var(--color-background);
+}
+
+.about-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about-content h1 {
+  margin-bottom: var(--space-4);
+}
+
+.about-content .lead {
+  font-size: var(--text-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+}
+
+.about-content h2 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-xl);
+}
+
+.about-content p {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.about-cta {
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* =================================
+   Not Found Page
+   ================================= */
+.not-found-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+.not-found-emoji {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: var(--space-6);
+}
+
+.not-found-page h1 {
+  margin-bottom: var(--space-3);
+}
+
+.not-found-page p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}

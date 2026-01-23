@@ -1,0 +1,428 @@
+[
+    {
+        "id": "spaghetti-aglio-e-olio",
+        "title": "Classic Spaghetti Aglio e Olio",
+        "description": "A simple yet elegant Italian pasta dish with garlic, olive oil, and a hint of red pepper. Ready in just 20 minutes.",
+        "image": "/images/recipes/spaghetti-aglio-e-olio.jpg",
+        "prepTime": "5 mins",
+        "cookTime": "15 mins",
+        "totalTime": "20 mins",
+        "servings": 4,
+        "difficulty": "Easy",
+        "tags": [
+            "Italian",
+            "Pasta",
+            "Quick",
+            "Vegetarian"
+        ],
+        "ingredients": [
+            {
+                "amount": "1",
+                "unit": "lb",
+                "item": "spaghetti"
+            },
+            {
+                "amount": "1/2",
+                "unit": "cup",
+                "item": "extra virgin olive oil"
+            },
+            {
+                "amount": "8",
+                "unit": "cloves",
+                "item": "garlic, thinly sliced"
+            },
+            {
+                "amount": "1/2",
+                "unit": "tsp",
+                "item": "red pepper flakes"
+            },
+            {
+                "amount": "1/4",
+                "unit": "cup",
+                "item": "fresh parsley, chopped"
+            },
+            {
+                "amount": "1/2",
+                "unit": "cup",
+                "item": "reserved pasta water"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Salt to taste"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Freshly grated Parmesan (optional)"
+            }
+        ],
+        "instructions": [
+            "Bring a large pot of salted water to a boil. Cook spaghetti until al dente, about 1 minute less than package directions. Reserve 1 cup of pasta water before draining.",
+            "While pasta cooks, heat olive oil in a large skillet over medium-low heat. Add sliced garlic and cook slowly until golden and fragrant, about 3-4 minutes. Be careful not to burn it.",
+            "Add red pepper flakes to the oil and stir for 30 seconds.",
+            "Add the drained pasta directly to the skillet. Toss vigorously, adding reserved pasta water a little at a time until the sauce emulsifies and coats the pasta.",
+            "Remove from heat, add parsley, and toss again. Season with salt to taste.",
+            "Serve immediately with freshly grated Parmesan if desired."
+        ],
+        "source": {
+            "name": "Serious Eats",
+            "url": "https://www.seriouseats.com/spaghetti-aglio-olio-recipe"
+        },
+        "nutrition": {
+            "calories": 520,
+            "protein": "12g",
+            "carbs": "65g",
+            "fat": "24g"
+        }
+    },
+    {
+        "id": "honey-garlic-chicken",
+        "title": "Honey Garlic Chicken Stir Fry",
+        "description": "Tender chicken pieces coated in a sweet and savory honey garlic sauce with colorful vegetables. Perfect for busy weeknights.",
+        "image": "/images/recipes/honey-garlic-chicken.jpg",
+        "prepTime": "15 mins",
+        "cookTime": "15 mins",
+        "totalTime": "30 mins",
+        "servings": 4,
+        "difficulty": "Easy",
+        "tags": [
+            "Asian",
+            "Chicken",
+            "Quick",
+            "Stir Fry"
+        ],
+        "ingredients": [
+            {
+                "amount": "1.5",
+                "unit": "lbs",
+                "item": "boneless skinless chicken breast, cubed"
+            },
+            {
+                "amount": "2",
+                "unit": "tbsp",
+                "item": "vegetable oil"
+            },
+            {
+                "amount": "4",
+                "unit": "cloves",
+                "item": "garlic, minced"
+            },
+            {
+                "amount": "1",
+                "unit": "cup",
+                "item": "broccoli florets"
+            },
+            {
+                "amount": "1",
+                "unit": "",
+                "item": "red bell pepper, sliced"
+            },
+            {
+                "amount": "1/3",
+                "unit": "cup",
+                "item": "honey"
+            },
+            {
+                "amount": "1/4",
+                "unit": "cup",
+                "item": "soy sauce"
+            },
+            {
+                "amount": "1",
+                "unit": "tbsp",
+                "item": "rice vinegar"
+            },
+            {
+                "amount": "1",
+                "unit": "tbsp",
+                "item": "cornstarch mixed with 2 tbsp water"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Sesame seeds for garnish"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Cooked rice for serving"
+            }
+        ],
+        "instructions": [
+            "In a small bowl, whisk together honey, soy sauce, and rice vinegar. Set aside.",
+            "Heat 1 tablespoon of oil in a large skillet or wok over high heat. Add chicken pieces in a single layer and cook until golden brown on all sides, about 5-6 minutes. Remove and set aside.",
+            "Add remaining oil to the pan. Stir fry broccoli and bell pepper for 2-3 minutes until crisp-tender.",
+            "Return chicken to the pan. Add minced garlic and cook for 30 seconds until fragrant.",
+            "Pour the honey garlic sauce over the chicken and vegetables. Stir to coat evenly.",
+            "Add the cornstarch slurry and stir until sauce thickens, about 1-2 minutes.",
+            "Serve immediately over steamed rice, garnished with sesame seeds."
+        ],
+        "source": {
+            "name": "RecipeTin Eats",
+            "url": "https://www.recipetineats.com/honey-garlic-chicken/"
+        },
+        "nutrition": {
+            "calories": 380,
+            "protein": "35g",
+            "carbs": "28g",
+            "fat": "12g"
+        }
+    },
+    {
+        "id": "classic-chocolate-chip-cookies",
+        "title": "Classic Chocolate Chip Cookies",
+        "description": "Perfectly chewy chocolate chip cookies with crispy edges and gooey centers. The only cookie recipe you'll ever need.",
+        "image": "/images/recipes/chocolate-chip-cookies.jpg",
+        "prepTime": "15 mins",
+        "cookTime": "12 mins",
+        "totalTime": "27 mins",
+        "servings": 24,
+        "difficulty": "Easy",
+        "tags": [
+            "Dessert",
+            "Baking",
+            "Cookies",
+            "Chocolate"
+        ],
+        "ingredients": [
+            {
+                "amount": "2 1/4",
+                "unit": "cups",
+                "item": "all-purpose flour"
+            },
+            {
+                "amount": "1",
+                "unit": "tsp",
+                "item": "baking soda"
+            },
+            {
+                "amount": "1",
+                "unit": "tsp",
+                "item": "salt"
+            },
+            {
+                "amount": "1",
+                "unit": "cup",
+                "item": "unsalted butter, softened"
+            },
+            {
+                "amount": "3/4",
+                "unit": "cup",
+                "item": "granulated sugar"
+            },
+            {
+                "amount": "3/4",
+                "unit": "cup",
+                "item": "packed brown sugar"
+            },
+            {
+                "amount": "2",
+                "unit": "large",
+                "item": "eggs"
+            },
+            {
+                "amount": "2",
+                "unit": "tsp",
+                "item": "vanilla extract"
+            },
+            {
+                "amount": "2",
+                "unit": "cups",
+                "item": "semi-sweet chocolate chips"
+            }
+        ],
+        "instructions": [
+            "Preheat oven to 375°F (190°C). Line baking sheets with parchment paper.",
+            "In a medium bowl, whisk together flour, baking soda, and salt. Set aside.",
+            "In a large bowl, beat butter with both sugars using an electric mixer until light and fluffy, about 2-3 minutes.",
+            "Add eggs one at a time, beating well after each addition. Mix in vanilla extract.",
+            "Gradually add the flour mixture to the wet ingredients, mixing on low speed until just combined. Do not overmix.",
+            "Fold in chocolate chips with a spatula.",
+            "Drop rounded tablespoons of dough onto prepared baking sheets, spacing them about 2 inches apart.",
+            "Bake for 10-12 minutes, until edges are golden but centers still look slightly underdone.",
+            "Let cookies cool on the baking sheet for 5 minutes before transferring to a wire rack."
+        ],
+        "source": {
+            "name": "Sally's Baking Addiction",
+            "url": "https://sallysbakingaddiction.com/chocolate-chip-cookies/"
+        },
+        "nutrition": {
+            "calories": 180,
+            "protein": "2g",
+            "carbs": "24g",
+            "fat": "9g"
+        }
+    },
+    {
+        "id": "creamy-tomato-basil-soup",
+        "title": "Creamy Tomato Basil Soup",
+        "description": "A comforting, velvety tomato soup with fresh basil. Perfect with a grilled cheese sandwich on a chilly day.",
+        "image": "/images/recipes/tomato-basil-soup.jpg",
+        "prepTime": "10 mins",
+        "cookTime": "30 mins",
+        "totalTime": "40 mins",
+        "servings": 6,
+        "difficulty": "Easy",
+        "tags": [
+            "Soup",
+            "Vegetarian",
+            "Comfort Food",
+            "Italian"
+        ],
+        "ingredients": [
+            {
+                "amount": "2",
+                "unit": "tbsp",
+                "item": "olive oil"
+            },
+            {
+                "amount": "1",
+                "unit": "medium",
+                "item": "onion, diced"
+            },
+            {
+                "amount": "4",
+                "unit": "cloves",
+                "item": "garlic, minced"
+            },
+            {
+                "amount": "2",
+                "unit": "cans (28 oz each)",
+                "item": "whole peeled tomatoes"
+            },
+            {
+                "amount": "2",
+                "unit": "cups",
+                "item": "vegetable broth"
+            },
+            {
+                "amount": "1/2",
+                "unit": "cup",
+                "item": "heavy cream"
+            },
+            {
+                "amount": "1/2",
+                "unit": "cup",
+                "item": "fresh basil leaves, plus more for garnish"
+            },
+            {
+                "amount": "1",
+                "unit": "tsp",
+                "item": "sugar"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Salt and pepper to taste"
+            }
+        ],
+        "instructions": [
+            "Heat olive oil in a large pot over medium heat. Add onion and cook until softened, about 5 minutes.",
+            "Add garlic and cook for 1 minute until fragrant.",
+            "Pour in the canned tomatoes with their juices and vegetable broth. Bring to a simmer.",
+            "Add sugar, salt, and pepper. Let simmer for 20 minutes to let flavors meld.",
+            "Remove from heat and add fresh basil leaves.",
+            "Use an immersion blender to puree the soup until smooth. Alternatively, blend in batches in a regular blender.",
+            "Stir in heavy cream and return to low heat to warm through. Do not boil.",
+            "Taste and adjust seasonings. Serve hot, garnished with fresh basil leaves and a drizzle of olive oil."
+        ],
+        "source": {
+            "name": "Love and Lemons",
+            "url": "https://www.loveandlemons.com/tomato-basil-soup/"
+        },
+        "nutrition": {
+            "calories": 185,
+            "protein": "4g",
+            "carbs": "18g",
+            "fat": "12g"
+        }
+    },
+    {
+        "id": "sheet-pan-salmon-vegetables",
+        "title": "Sheet Pan Salmon with Roasted Vegetables",
+        "description": "A healthy, complete dinner made on one pan. Flaky salmon with perfectly roasted seasonal vegetables.",
+        "image": "/images/recipes/sheet-pan-salmon.jpg",
+        "prepTime": "15 mins",
+        "cookTime": "25 mins",
+        "totalTime": "40 mins",
+        "servings": 4,
+        "difficulty": "Easy",
+        "tags": [
+            "Seafood",
+            "Healthy",
+            "Sheet Pan",
+            "Gluten-Free"
+        ],
+        "ingredients": [
+            {
+                "amount": "4",
+                "unit": "fillets (6 oz each)",
+                "item": "salmon"
+            },
+            {
+                "amount": "1",
+                "unit": "lb",
+                "item": "asparagus, trimmed"
+            },
+            {
+                "amount": "2",
+                "unit": "cups",
+                "item": "cherry tomatoes"
+            },
+            {
+                "amount": "1",
+                "unit": "medium",
+                "item": "red onion, cut into wedges"
+            },
+            {
+                "amount": "4",
+                "unit": "tbsp",
+                "item": "olive oil, divided"
+            },
+            {
+                "amount": "4",
+                "unit": "cloves",
+                "item": "garlic, minced"
+            },
+            {
+                "amount": "1",
+                "unit": "tbsp",
+                "item": "fresh lemon juice"
+            },
+            {
+                "amount": "1",
+                "unit": "tsp",
+                "item": "dried Italian herbs"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Salt and pepper to taste"
+            },
+            {
+                "amount": "",
+                "unit": "",
+                "item": "Lemon wedges for serving"
+            }
+        ],
+        "instructions": [
+            "Preheat oven to 400°F (200°C). Line a large sheet pan with parchment paper.",
+            "Spread asparagus, cherry tomatoes, and red onion on the pan. Drizzle with 2 tablespoons olive oil, sprinkle with Italian herbs, salt, and pepper. Toss to coat.",
+            "Push vegetables to the sides of the pan and place salmon fillets in the center.",
+            "Mix remaining olive oil with minced garlic and lemon juice. Brush generously over salmon fillets. Season with salt and pepper.",
+            "Roast for 20-25 minutes until salmon flakes easily with a fork and vegetables are tender and slightly caramelized.",
+            "Serve immediately with fresh lemon wedges."
+        ],
+        "source": {
+            "name": "Pinch of Yum",
+            "url": "https://pinchofyum.com/sheet-pan-salmon-and-vegetables"
+        },
+        "nutrition": {
+            "calories": 420,
+            "protein": "38g",
+            "carbs": "12g",
+            "fat": "26g"
+        }
+    }
+]
