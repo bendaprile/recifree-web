@@ -22,7 +22,7 @@ function Navbar() {
             <span className="logo-text">Recifree</span>
           </Link>
 
-          <button 
+          <button
             className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
             onClick={toggleMenu}
             aria-label="Toggle navigation menu"
@@ -36,26 +36,18 @@ function Navbar() {
           <div className={`navbar-menu ${isMenuOpen ? 'open' : ''}`}>
             <ul className="navbar-links">
               <li>
-                <NavLink 
-                  to="/" 
+                <NavLink
+                  to="/"
                   className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
                   onClick={closeMenu}
                 >
                   Home
                 </NavLink>
               </li>
+
               <li>
-                <NavLink 
-                  to="/recipes" 
-                  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                  onClick={closeMenu}
-                >
-                  Browse Recipes
-                </NavLink>
-              </li>
-              <li>
-                <NavLink 
-                  to="/about" 
+                <NavLink
+                  to="/about"
                   className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
                   onClick={closeMenu}
                 >

@@ -54,11 +54,7 @@ function Home() {
                     </div>
                 </div>
 
-                <div className="hero-decoration">
-                    <div className="decoration-circle circle-1"></div>
-                    <div className="decoration-circle circle-2"></div>
-                    <div className="decoration-circle circle-3"></div>
-                </div>
+
             </section>
 
             {/* Recipe Grid Section */}
