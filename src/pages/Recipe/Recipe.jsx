@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import recipes from '../../data/recipes';
 import './Recipe.css';
@@ -8,6 +8,10 @@ function Recipe() {
     const [recipe, setRecipe] = useState(null);
     const [checkedIngredients, setCheckedIngredients] = useState([]);
     const [checkedSteps, setCheckedSteps] = useState([]);
+    const [hoveredStep, setHoveredStep] = useState(null);
+    const [hoveredStepY, setHoveredStepY] = useState(0);
+    const [adjustedPopupY, setAdjustedPopupY] = useState(0);
+    const popupRef = useRef(null);
 
     useEffect(() => {
         const foundRecipe = recipes.find(r => r.id === id);
@@ -38,6 +42,40 @@ function Recipe() {
     const scrollToRecipe = () => {
         document.getElementById('ingredients')?.scrollIntoView({ behavior: 'smooth' });
     };
+
+    // Helper to get flat list of ingredients for indexed lookup
+    const getFlatIngredients = () => {
+        if (!recipe) return [];
+        if (recipe.ingredients[0]?.items) {
+            // Sectioned ingredients - flatten them
+            return recipe.ingredients.flatMap(section => section.items);
+        }
+        return recipe.ingredients;
+    };
+
+    const flatIngredients = getFlatIngredients();
+
+    // Dynamically adjust popup position based on actual height
+    useLayoutEffect(() => {
+        if (popupRef.current && hoveredStep !== null) {
+            const popupHeight = popupRef.current.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const headerHeight = 80; // Space below header
+            const padding = 20;
+
+            // Calculate if popup would overflow bottom of viewport
+            const wouldOverflow = hoveredStepY + popupHeight + padding > viewportHeight;
+
+            if (wouldOverflow) {
+                // Adjust Y to keep popup fully visible
+                const adjusted = Math.max(headerHeight, viewportHeight - popupHeight - padding);
+                setAdjustedPopupY(adjusted);
+            } else {
+                // Position next to the step
+                setAdjustedPopupY(Math.max(headerHeight, hoveredStepY));
+            }
+        }
+    }, [hoveredStep, hoveredStepY]);
 
     if (!recipe) {
         return (
@@ -189,6 +227,12 @@ function Recipe() {
                                             key={index}
                                             className={`instruction-item ${checkedSteps.includes(index) ? 'checked' : ''}`}
                                             onClick={() => toggleStep(index)}
+                                            onMouseEnter={(e) => {
+                                                setHoveredStep(index);
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                setHoveredStepY(rect.top);
+                                            }}
+                                            onMouseLeave={() => setHoveredStep(null)}
                                         >
                                             <span className="step-number">{index + 1}</span>
                                             <p className="step-text">{step}</p>
@@ -270,6 +314,33 @@ function Recipe() {
                                     🖨️ Print Recipe
                                 </button>
                             </div>
+
+                            {/* Step Ingredients Popup */}
+                            {hoveredStep !== null && recipe.stepIngredients && recipe.stepIngredients[hoveredStep] && (
+                                <div
+                                    ref={popupRef}
+                                    className="sidebar-card step-ingredients-card"
+                                    style={{ top: `${adjustedPopupY}px` }}
+                                >
+                                    <h3>Step {hoveredStep + 1} Ingredients</h3>
+                                    <ul className="step-ingredients-list">
+                                        {recipe.stepIngredients[hoveredStep].map((ingredientIndex) => {
+                                            const ingredient = flatIngredients[ingredientIndex];
+                                            if (!ingredient) return null;
+                                            return (
+                                                <li key={ingredientIndex} className="step-ingredient-item">
+                                                    {ingredient.amount && (
+                                                        <span className="step-ingredient-amount">
+                                                            {ingredient.amount} {ingredient.unit}
+                                                        </span>
+                                                    )}
+                                                    <span className="step-ingredient-name">{ingredient.item}</span>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+                            )}
                         </aside>
                     </div>
                 </div>

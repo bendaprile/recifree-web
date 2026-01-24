@@ -1,0 +1,175 @@
+{
+    "id": "chicken-shawarma",
+    "title": "Chicken Shawarma with Creamy Garlic Sauce",
+    "description": "Tender, spiced chicken marinated in warm Middle Eastern spices, grilled to perfection, and served with a creamy garlic sauce. Perfect in pita bread with fresh vegetables.",
+    "image": "/images/recipes/chicken-shawarma.png",
+    "prepTime": "1 hour 15 mins",
+    "cookTime": "25 mins",
+    "totalTime": "1 hour 40 mins",
+    "servings": 6,
+    "difficulty": "Medium",
+    "tags": [
+        "Middle Eastern",
+        "Dinner",
+        "Chicken",
+        "Gluten-Free"
+    ],
+    "ingredients": [
+        {
+            "title": "For the Chicken Shawarma",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "lbs",
+                    "item": "Boneless, skinless chicken thighs"
+                },
+                {
+                    "amount": "3",
+                    "unit": "tbsp",
+                    "item": "Olive oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Lemon juice"
+                },
+                {
+                    "amount": "3",
+                    "unit": "cloves",
+                    "item": "Garlic, minced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Ground cumin"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Ground coriander"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Ground paprika"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Ground turmeric"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Ground cinnamon"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "Ground allspice"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Ground cardamom (optional)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "Chili powder (optional)"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Salt and pepper to taste"
+                }
+            ]
+        },
+        {
+            "title": "For the Creamy Garlic Sauce",
+            "items": [
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "Mayonnaise"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "Greek yogurt"
+                },
+                {
+                    "amount": "3",
+                    "unit": "tbsp",
+                    "item": "Lemon juice"
+                },
+                {
+                    "amount": "4",
+                    "unit": "cloves",
+                    "item": "Garlic, minced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Olive oil"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Salt to taste"
+                }
+            ]
+        },
+        {
+            "title": "For Serving",
+            "items": [
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Fresh parsley, chopped"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Sliced tomatoes"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Sliced cucumbers"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Sliced red onion"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Pita bread or flatbreads"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Make the marinade by combining olive oil, lemon juice, minced garlic, cumin, coriander, paprika, turmeric, cinnamon, allspice, cardamom, chili powder, salt, and pepper in a bowl.",
+        "Place chicken thighs in a large resealable bag or dish. Pour marinade over chicken and coat well. Refrigerate for at least 1 hour, up to 6 hours for deeper flavor.",
+        "Preheat grill, grill pan, or oven to 375°F (190°C).",
+        "For grill: Cook marinated chicken for 5-7 minutes per side until internal temperature reaches 165°F (74°C) with nice char. For oven: Bake on a lined sheet for 20-25 minutes, flipping halfway through.",
+        "Let chicken rest for a few minutes, then slice into strips.",
+        "Make the creamy garlic sauce by combining mayonnaise, Greek yogurt, lemon juice, minced garlic, olive oil, and salt in a bowl. Mix until smooth. Add water if needed to adjust consistency.",
+        "Warm pita bread or flatbreads.",
+        "Assemble shawarma by placing sliced chicken on bread, drizzling with creamy garlic sauce, and topping with fresh vegetables and parsley.",
+        "Serve with hummus or tahini on the side if desired."
+    ],
+    "source": {
+        "name": "Less Is Tastier",
+        "url": "https://lessistastier.com/chicken-shawarma-with-creamy-garlic-sauce/"
+    },
+    "nutrition": {
+        "calories": 420,
+        "protein": "35g",
+        "carbs": "28g",
+        "fat": "18g"
+    }
+}
