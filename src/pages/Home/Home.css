@@ -5,7 +5,6 @@
     position: relative;
     padding: var(--space-20) 0;
     background-color: #FFF5F0;
-    /* Using v2 image with denser pattern to prevent pixelated "zoom" look */
     background-image: url('/images/hero-bg.png');
     background-size: cover;
     background-position: center;
