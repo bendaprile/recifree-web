@@ -107,10 +107,19 @@
     "stepIngredients": [
         [
             0,
+            {
+                "id": 1,
+                "amount": "1/2",
+                "unit": "tsp"
+            },
             13
         ],
         [
-            1,
+            {
+                "id": 1,
+                "amount": "2",
+                "unit": "tbsp"
+            },
             2,
             3
         ],

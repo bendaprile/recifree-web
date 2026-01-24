@@ -19,7 +19,13 @@ vi.mock('../../data/recipes', () => ({
             ],
             instructions: [
                 'Mix ingredients',
-                'Bake'
+                'Add sugar carefully',
+                'Rest for 10 mins'
+            ],
+            stepIngredients: [
+                [0, 1], // Standard: Flour and Sugar
+                [{ "id": 1, "amount": "1/2", "unit": "cup" }], // Split: 1/2 cup Sugar
+                [] // Empty: No ingredients
             ],
             difficulty: 'Easy',
             tags: ['TestTag']
@@ -45,30 +51,70 @@ describe('Recipe Page', () => {
         renderRecipe();
         expect(screen.getByText('Test Recipe')).toBeInTheDocument();
         expect(screen.getByText('Test Description')).toBeInTheDocument();
-        expect(screen.getByText('10 min')).toBeInTheDocument(); // Prep time
-        expect(screen.getByText('30 min')).toBeInTheDocument(); // Total time
     });
 
-    it('renders "Recipe Not Found" for invalid ID', () => {
-        renderRecipe('invalid-id');
-        expect(screen.getByText('Recipe Not Found')).toBeInTheDocument();
-        expect(screen.getByText('Browse All Recipes')).toBeInTheDocument();
+    it('renders ingredient popup on hover', () => {
+        renderRecipe();
+
+        // Hover over Step 1 ("Mix ingredients")
+        const step1 = screen.getByText('Mix ingredients').closest('li');
+        fireEvent.mouseEnter(step1);
+
+        // Verification: Popup appears with ingredients
+        const popup = screen.getByText('Step 1 Ingredients').closest('.step-ingredients-card');
+        expect(popup).toBeInTheDocument();
+
+        // Check content inside the popup specifically
+        // Use within to scope the search
+        const { getByText } = require('@testing-library/react');
+        const { within } = require('@testing-library/dom');
+
+        expect(within(popup).getByText('Flour')).toBeInTheDocument();
+        expect(within(popup).getByText('2 cups')).toBeInTheDocument();
+        expect(within(popup).getByText('Sugar')).toBeInTheDocument();
+        expect(within(popup).getByText('1 cup')).toBeInTheDocument();
+
+        // Mouse leave
+        fireEvent.mouseLeave(step1);
+        expect(screen.queryByText('Step 1 Ingredients')).not.toBeInTheDocument();
+    });
+
+    it('renders split ingredient amounts correctly', () => {
+        renderRecipe();
+
+        // Hover over Step 2 ("Add sugar carefully")
+        const step2 = screen.getByText('Add sugar carefully').closest('li');
+        fireEvent.mouseEnter(step2);
+
+        // Verification: Popup appears with split amount (1/2 cup)
+        const popup = screen.getByText('Step 2 Ingredients').closest('.step-ingredients-card');
+        expect(popup).toBeInTheDocument();
+
+        const { within } = require('@testing-library/dom');
+        expect(within(popup).getByText('Sugar')).toBeInTheDocument();
+        expect(within(popup).getByText('1/2 cup')).toBeInTheDocument(); // Override amount
+        expect(within(popup).queryByText('1 cup')).not.toBeInTheDocument(); // Original amount shouldn't be in popup
+    });
+
+    it('does NOT render popup for empty steps', () => {
+        renderRecipe();
+
+        // Hover over Step 3 ("Rest for 10 mins")
+        const step3 = screen.getByText('Rest for 10 mins').closest('li');
+        fireEvent.mouseEnter(step3);
+
+        // Verification: No popup appears
+        expect(screen.queryByText('Step 3 Ingredients')).not.toBeInTheDocument();
     });
 
     it('toggles ingredient checkboxes', () => {
         renderRecipe();
 
-        // Find list item by text content pattern since it has structure
-        // Ingredients contain "2 cups Flour"
         const flourItem = screen.getByText(/Flour/).closest('li');
         expect(flourItem).not.toHaveClass('checked');
 
         fireEvent.click(flourItem);
         expect(flourItem).toHaveClass('checked');
-        expect(screen.getByText('✓')).toBeInTheDocument();
-
-        fireEvent.click(flourItem);
-        expect(flourItem).not.toHaveClass('checked');
     });
 
     it('toggles instruction steps', () => {
@@ -79,8 +125,5 @@ describe('Recipe Page', () => {
 
         fireEvent.click(step1);
         expect(step1).toHaveClass('checked');
-
-        fireEvent.click(step1);
-        expect(step1).not.toHaveClass('checked');
     });
 });

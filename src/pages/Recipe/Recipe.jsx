@@ -316,7 +316,7 @@ function Recipe() {
                             </div>
 
                             {/* Step Ingredients Popup */}
-                            {hoveredStep !== null && recipe.stepIngredients && recipe.stepIngredients[hoveredStep] && (
+                            {hoveredStep !== null && recipe.stepIngredients && recipe.stepIngredients[hoveredStep] && recipe.stepIngredients[hoveredStep].length > 0 && (
                                 <div
                                     ref={popupRef}
                                     className="sidebar-card step-ingredients-card"
@@ -324,14 +324,23 @@ function Recipe() {
                                 >
                                     <h3>Step {hoveredStep + 1} Ingredients</h3>
                                     <ul className="step-ingredients-list">
-                                        {recipe.stepIngredients[hoveredStep].map((ingredientIndex) => {
-                                            const ingredient = flatIngredients[ingredientIndex];
+                                        {recipe.stepIngredients[hoveredStep].map((entry, i) => {
+                                            // Handle both number (index) and object ({id, amount, unit}) formats
+                                            const isObject = typeof entry === 'object' && entry !== null;
+                                            const index = isObject ? entry.id : entry;
+
+                                            const ingredient = flatIngredients[index];
                                             if (!ingredient) return null;
+
+                                            // Use overrides if provided, otherwise fallback to original ingredient data
+                                            const displayAmount = isObject && entry.amount !== undefined ? entry.amount : ingredient.amount;
+                                            const displayUnit = isObject && entry.unit !== undefined ? entry.unit : ingredient.unit;
+
                                             return (
-                                                <li key={ingredientIndex} className="step-ingredient-item">
-                                                    {ingredient.amount && (
+                                                <li key={`${index}-${i}`} className="step-ingredient-item">
+                                                    {displayAmount && (
                                                         <span className="step-ingredient-amount">
-                                                            {ingredient.amount} {ingredient.unit}
+                                                            {displayAmount} {displayUnit}
                                                         </span>
                                                     )}
                                                     <span className="step-ingredient-name">{ingredient.item}</span>
