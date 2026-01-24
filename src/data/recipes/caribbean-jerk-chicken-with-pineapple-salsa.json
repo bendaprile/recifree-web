@@ -1,0 +1,172 @@
+{
+    "id": "caribbean-jerk-chicken-with-pineapple-salsa",
+    "title": "Caribbean Jerk Chicken with Pineapple Salsa",
+    "description": "A healthy and incredibly delicious 30-minute meal with bold sweet and spicy flavors. Juicy jerk marinated chicken topped with fresh pineapple salsa.",
+    "image": "/images/recipes/caribbean-jerk-chicken-with-pineapple-salsa.png",
+    "prepTime": "15 mins",
+    "cookTime": "15 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Chicken",
+        "Caribbean",
+        "Dinner",
+        "Healthy",
+        "Spicy"
+    ],
+    "ingredients": [
+        {
+            "title": "Chicken",
+            "items": [
+                {
+                    "amount": "4",
+                    "unit": "",
+                    "item": "boneless skinless chicken breasts"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Steamed white rice for serving (optional)"
+                }
+            ]
+        },
+        {
+            "title": "Marinade",
+            "items": [
+                {
+                    "amount": "1/3",
+                    "unit": "cup",
+                    "item": "olive oil"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "lime juice"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tsp",
+                    "item": "minced garlic"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "soy sauce"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "onion powder"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "nutmeg"
+                },
+                {
+                    "amount": "3",
+                    "unit": "tsp",
+                    "item": "allspice"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "crushed red pepper flakes"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "honey"
+                }
+            ]
+        },
+        {
+            "title": "Pineapple Salsa",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "diced pineapple"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "onion, diced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "handful",
+                    "item": "cilantro, roughly chopped"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "jalapeno, diced (optional)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "lime juice"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tsp",
+                    "item": "honey"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Salt to taste"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "In a medium bowl, whisk together the olive oil, lime juice, garlic, soy sauce, onion powder, nutmeg, allspice, red pepper flakes, and honey. Add the chicken and toss to coat. Cover and chill for 30 minutes.",
+        "While the chicken is marinating, combine the pineapple, diced onion, cilantro, jalapeno (if using), lime juice, honey, and salt in a bowl. Toss to combine and chill until ready to use.",
+        "Preheat a grill or skillet over medium heat. Transfer the chicken to the heat (discarding excess marinade) and cook for 6-8 minutes on each side until cooked through.",
+        "Serve the chicken hot, topped with the pineapple salsa and accompanied by steamed rice if desired."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+        ],
+        [
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+        ],
+        [
+            0
+        ],
+        [
+            0,
+            11,
+            1
+        ]
+    ],
+    "source": {
+        "name": "Creme De La Crumb",
+        "url": "https://www.lecremedelacrumb.com/caribbean-jerk-chicken-with-pineapple-salsa/"
+    },
+    "nutrition": {
+        "calories": 420,
+        "protein": "35g",
+        "carbs": "40g",
+        "fat": "18g"
+    }
+}

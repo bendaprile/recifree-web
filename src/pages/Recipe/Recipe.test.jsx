@@ -29,6 +29,43 @@ vi.mock('../../data/recipes', () => ({
             ],
             difficulty: 'Easy',
             tags: ['TestTag']
+        },
+        {
+            id: 'sectioned-recipe',
+            title: 'Sectioned Test Recipe',
+            description: 'Test Description',
+            prepTime: '10 min',
+            cookTime: '20 min',
+            totalTime: '30 min',
+            servings: 4,
+            ingredients: [
+                {
+                    title: 'Sauce',
+                    items: [
+                        { item: 'Soy Sauce', amount: '2', unit: 'tbsp' },
+                        { item: 'Ginger', amount: '1', unit: 'tsp' }
+                    ]
+                },
+                {
+                    title: 'Main',
+                    items: [
+                        { item: 'Chicken', amount: '1', unit: 'lb' },
+                        { item: 'Rice', amount: '1', unit: 'cup' }
+                    ]
+                }
+            ],
+            instructions: [
+                'Make sauce',
+                'Cook chicken',
+                'Serve'
+            ],
+            stepIngredients: [
+                [0, 1], // Sauce ingredients (Indices 0 and 1 from flattened list)
+                [2],    // Chicken (Index 2 from flattened list)
+                [3]     // Rice (Index 3 from flattened list)
+            ],
+            difficulty: 'Medium',
+            tags: ['Sectioned']
         }
     ]
 }));
@@ -46,6 +83,24 @@ describe('Recipe Page', () => {
             </MemoryRouter>
         );
     };
+
+    it('renders popup correctly for sectioned ingredients', () => {
+        renderRecipe('sectioned-recipe');
+
+        // Hover over Step 1 ("Make sauce")
+        const step1 = screen.getByText('Make sauce').closest('li');
+        fireEvent.mouseEnter(step1);
+
+        // Verification: Popup should show Soy Sauce and Ginger
+        const popup = screen.getByText('Step 1 Ingredients').closest('.step-ingredients-card');
+        expect(popup).toBeInTheDocument();
+
+        const { within } = require('@testing-library/dom');
+        expect(within(popup).getByText('Soy Sauce')).toBeInTheDocument();
+        expect(within(popup).getByText('2 tbsp')).toBeInTheDocument();
+        expect(within(popup).getByText('Ginger')).toBeInTheDocument();
+        expect(within(popup).getByText('1 tsp')).toBeInTheDocument();
+    });
 
     it('renders recipe details successfully', () => {
         renderRecipe();

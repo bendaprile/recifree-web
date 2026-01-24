@@ -1,0 +1,138 @@
+{
+    "id": "smoked-salmon",
+    "title": "Smoked Salmon",
+    "description": "Nothing brings forth all the natural flavors of salmon like a good slow smoker — the taste is a gift for those who took the time to plan and prepare properly. Ideally served with bagels, cream cheese, and capers.",
+    "image": "/images/recipes/smoked-salmon.png",
+    "prepTime": "30 mins",
+    "cookTime": "3 hours",
+    "totalTime": "15 hours",
+    "servings": 8,
+    "difficulty": "Medium",
+    "tags": [
+        "Seafood",
+        "Smoked",
+        "Salmon",
+        "Brunch",
+        "Dinner"
+    ],
+    "ingredients": [
+        {
+            "title": "Fish",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "salmon fillets, skin on and pin bones removed"
+                }
+            ]
+        },
+        {
+            "title": "The Salmon Cure",
+            "items": [
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "granulated sugar"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "light brown sugar"
+                },
+                {
+                    "amount": "1/3",
+                    "unit": "cup",
+                    "item": "kosher salt"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "crushed black peppercorns"
+                }
+            ]
+        },
+        {
+            "title": "The Dry Rub",
+            "items": [
+                {
+                    "amount": "1 1/2",
+                    "unit": "tbsp",
+                    "item": "light brown sugar"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "ground coriander"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "paprika"
+                },
+                {
+                    "amount": "1 1/2",
+                    "unit": "tsp",
+                    "item": "black pepper"
+                },
+                {
+                    "amount": "1 1/2",
+                    "unit": "tsp",
+                    "item": "cayenne pepper"
+                },
+                {
+                    "amount": "3/4",
+                    "unit": "tsp",
+                    "item": "kosher salt"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Whisk together the granulated sugar, light brown sugar, kosher salt, and crushed black peppercorns in a medium bowl.",
+        "Lay a sheet of foil on a large sheet pan, then layer plastic wrap on top. Sprinkle a third of the cure onto the plastic wrap. Lay the first fillet skin-side-down onto the cure. Sprinkle another third of the cure onto the flesh side. Place the second fillet skin-side-down on top of the first. Sprinkle the remaining cure over the top fillet.",
+        "Wrap the plastic and foil tightly around the fish to contain juices. Place another sheet pan on top and weigh it down with something heavy (like cans).",
+        "Refrigerate for 8 to 10 hours.",
+        "Remove from the fridge, unwrap, and thoroughly rinse the fish under cold water to remove excess cure. Pat both fillets dry with paper towels.",
+        "Whisk together the dry rub ingredients (brown sugar, coriander, paprika, peppers, and salt) in a small bowl. Pat the rub onto one or both fillets to form a thin layer, dusting off any excess.",
+        "Let the fillets dry at room temperature for 1 to 3 hours until a 'pellicle' (thin, matte-like film) forms on the surface.",
+        "Preheat your smoker to maintain a temperature of 150°F to 160°F. Use a mild wood like apple wood.",
+        "Place fillets side-by-side in the smoker, skin side down. Smoke for 1 to 3 hours until the internal temperature reaches 140°F.",
+        "Remove the fish and place it on a baking sheet. Tent with foil and let it rest for 20 to 30 minutes before serving."
+    ],
+    "stepIngredients": [
+        [
+            1,
+            2,
+            3,
+            4
+        ],
+        [
+            0
+        ],
+        [],
+        [],
+        [],
+        [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+        ],
+        [],
+        [],
+        [],
+        []
+    ],
+    "source": {
+        "name": "The Kitchn",
+        "url": "https://www.thekitchn.com/how-to-make-smoked-salmon-two-ways-cooking-lessons-from-the-kitchn-174543"
+    },
+    "nutrition": {
+        "calories": 250,
+        "protein": "35g",
+        "carbs": "5g",
+        "fat": "10g"
+    }
+}

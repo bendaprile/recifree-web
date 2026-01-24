@@ -1,0 +1,143 @@
+{
+    "id": "feta-sweet-potato-white-bean-soup",
+    "title": "Feta Sweet Potato & White Bean Soup",
+    "description": "A cozy, healthy comfort food featuring creamy sweet potatoes, protein-packed white beans, and a tangy feta finish. Perfect for a warming meal.",
+    "image": "/images/recipes/feta-sweet-potato-white-bean-soup.png",
+    "prepTime": "15 mins",
+    "cookTime": "30 mins",
+    "totalTime": "45 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Soup",
+        "Vegetarian",
+        "Comfort Food",
+        "Sweet Potato",
+        "Beans"
+    ],
+    "ingredients": [
+        {
+            "amount": "1",
+            "unit": "large",
+            "item": "sweet potato, peeled and diced"
+        },
+        {
+            "amount": "1",
+            "unit": "can (15 oz)",
+            "item": "white beans (cannellini or navy), drained and rinsed"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "onion, diced (yellow preferred)"
+        },
+        {
+            "amount": "2",
+            "unit": "cloves",
+            "item": "garlic, minced"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "kale or spinach, chopped"
+        },
+        {
+            "amount": "4",
+            "unit": "cups",
+            "item": "vegetable broth"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "coconut milk"
+        },
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "olive oil"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "dried thyme"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "smoked paprika"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "crushed red pepper flakes"
+        },
+        {
+            "amount": "1/2",
+            "unit": "cup",
+            "item": "feta cheese, crumbled"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Salt to taste"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Pepper to taste"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Fresh herbs (parsley or cilantro) for garnish"
+        }
+    ],
+    "instructions": [
+        "Heat the olive oil in a large pot over medium heat. Add the diced onion and minced garlic, sautéing for about 5 minutes until the onion is translucent.",
+        "Add the diced sweet potato, thyme, smoked paprika, red pepper flakes, salt, and pepper. Stir well and cook for 5 minutes to start softening the potato.",
+        "Pour in the vegetable broth and bring to a simmer. Cook gently for 15-20 minutes until the sweet potatoes are fork-tender.",
+        "Stir in the white beans, kale (or spinach), and coconut milk. Simmer for another 5-10 minutes until heated through and greens are wilted.",
+        "Remove from heat and stir in the crumbled feta cheese.",
+        "Serve hot, garnished with fresh herbs and extra feta if desired."
+    ],
+    "stepIngredients": [
+        [
+            7,
+            2,
+            3
+        ],
+        [
+            0,
+            8,
+            9,
+            10,
+            12,
+            13
+        ],
+        [
+            5
+        ],
+        [
+            1,
+            4,
+            6
+        ],
+        [
+            11
+        ],
+        [
+            14,
+            11
+        ]
+    ],
+    "source": {
+        "name": "Deliciously Made at Home",
+        "url": "https://www.deliciouslymadeathome.com/feta-sweet-potato-white-bean-soup-recipe-healthy-comfort-food/"
+    },
+    "nutrition": {
+        "calories": 320,
+        "protein": "12g",
+        "carbs": "45g",
+        "fat": "14g"
+    }
+}
