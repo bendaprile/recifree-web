@@ -18,8 +18,8 @@ function Navbar() {
       <div className="container">
         <nav className="navbar-inner">
           <Link to="/" className="navbar-logo" onClick={closeMenu}>
-            <span className="logo-icon">🍳</span>
-            <span className="logo-text">Recifree</span>
+            <img src="/images/logo.png" alt="Recifree Logo" className="logo-image" />
+            <h1 className="logo-text">Recifree</h1>
           </Link>
 
           <button

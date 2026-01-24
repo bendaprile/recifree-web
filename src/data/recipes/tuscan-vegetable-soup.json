@@ -1,0 +1,107 @@
+{
+    "id": "tuscan-vegetable-soup",
+    "title": "Tuscan Vegetable Soup",
+    "description": "A hearty Italian soup packed with fresh vegetables like zucchini, carrots, spinach, and cannellini beans. A comforting and healthy meal.",
+    "image": "/images/recipes/tuscan-vegetable-soup.png",
+    "prepTime": "15 mins",
+    "cookTime": "15 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Italian",
+        "Vegetarian",
+        "Soup",
+        "Dinner"
+    ],
+    "ingredients": [
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "Olive oil"
+        },
+        {
+            "amount": "1",
+            "unit": "medium",
+            "item": "Yellow onion, diced"
+        },
+        {
+            "amount": "2",
+            "unit": "",
+            "item": "Carrots, diced"
+        },
+        {
+            "amount": "2",
+            "unit": "stalks",
+            "item": "Celery, diced"
+        },
+        {
+            "amount": "1",
+            "unit": "",
+            "item": "Zucchini, diced"
+        },
+        {
+            "amount": "3",
+            "unit": "cloves",
+            "item": "Garlic, minced"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "Dried oregano"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "Dried basil"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "Kosher salt"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "Black pepper"
+        },
+        {
+            "amount": "4",
+            "unit": "cups",
+            "item": "Vegetable broth"
+        },
+        {
+            "amount": "14.5",
+            "unit": "oz",
+            "item": "Diced tomatoes, undrained"
+        },
+        {
+            "amount": "15",
+            "unit": "oz",
+            "item": "Cannellini beans, drained and rinsed"
+        },
+        {
+            "amount": "3",
+            "unit": "cups",
+            "item": "Baby spinach"
+        }
+    ],
+    "instructions": [
+        "Mash half of the cannellini beans with a fork and set aside.",
+        "Heat the olive oil in a large pot over medium-high heat.",
+        "Add the onion, carrots, celery, zucchini, garlic, oregano, basil, salt, and pepper. Cook, stirring occasionally, for 6-8 minutes until onions are translucent.",
+        "Pour in the vegetable broth and diced tomatoes. Bring the mixture to a boil.",
+        "Add both the mashed beans and the whole beans to the pot. Stir well and simmer for 5 minutes.",
+        "Add the spinach and cook for an additional 2 minutes until wilted. Serve hot."
+    ],
+    "source": {
+        "name": "Cooking Made Healthy",
+        "url": "https://cookingmadehealthy.com/tuscan-vegetable-soup/"
+    },
+    "nutrition": {
+        "calories": 280,
+        "protein": "12g",
+        "carbs": "45g",
+        "fat": "5g"
+    }
+}

@@ -14,8 +14,7 @@ describe('Navbar Component', () => {
 
     it('renders the logo correctly', () => {
         renderNavbar();
-        expect(screen.getByText('Recifree')).toBeInTheDocument();
-        expect(screen.getByText('🍳')).toBeInTheDocument();
+        expect(screen.getByAltText('Recifree Logo')).toBeInTheDocument();
     });
 
     it('renders navigation links', () => {

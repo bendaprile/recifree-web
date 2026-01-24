@@ -1,0 +1,107 @@
+{
+    "id": "stuffed-bell-peppers",
+    "title": "Stuffed Bell Peppers",
+    "description": "Colorful bell peppers stuffed with a hearty mixture of seasoned ground beef, rice, and topped with melted cheese. A classic comfort dish that's both nutritious and delicious.",
+    "image": "/images/recipes/stuffed-bell-peppers.png",
+    "prepTime": "15 mins",
+    "cookTime": "35 mins",
+    "totalTime": "50 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "American",
+        "Dinner",
+        "Beef",
+        "Gluten-Free"
+    ],
+    "ingredients": [
+        {
+            "amount": "4",
+            "unit": "",
+            "item": "Large bell peppers (red, yellow, green, or orange)"
+        },
+        {
+            "amount": "1",
+            "unit": "lb",
+            "item": "Ground beef (or turkey/chicken)"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "Cooked rice (white, brown, or quinoa)"
+        },
+        {
+            "amount": "1",
+            "unit": "small",
+            "item": "Onion, diced"
+        },
+        {
+            "amount": "2",
+            "unit": "cloves",
+            "item": "Garlic, minced"
+        },
+        {
+            "amount": "14",
+            "unit": "oz",
+            "item": "Diced tomatoes (canned)"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "Shredded cheese (cheddar or mozzarella)"
+        },
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "Tomato paste"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "Italian seasoning"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "Paprika"
+        },
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "Olive oil"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Salt and pepper to taste"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Fresh parsley (optional, for garnish)"
+        }
+    ],
+    "instructions": [
+        "Preheat oven to 375°F (190°C).",
+        "Cut the tops off the bell peppers and remove the seeds and membranes. Place peppers in a baking dish.",
+        "Heat olive oil in a large pan over medium heat. Add diced onion and minced garlic, and sauté for 2-3 minutes until fragrant.",
+        "Add ground beef and cook until browned, breaking it up with a spoon.",
+        "Stir in diced tomatoes, tomato paste, Italian seasoning, paprika, salt, and pepper. Simmer for 5 minutes.",
+        "Add cooked rice and half of the shredded cheese. Mix well.",
+        "Spoon the filling mixture into each bell pepper, pressing down slightly to pack it tightly.",
+        "Top each pepper with the remaining shredded cheese.",
+        "Cover the baking dish with foil and bake for 25 minutes.",
+        "Remove foil and bake for an additional 10 minutes until cheese is melted and bubbly.",
+        "Garnish with fresh parsley if desired. Serve hot."
+    ],
+    "source": {
+        "name": "Recipe Daze",
+        "url": "https://recipedaze.com/quick-and-easy-stuffed-bell-peppers/"
+    },
+    "nutrition": {
+        "calories": 380,
+        "protein": "28g",
+        "carbs": "32g",
+        "fat": "16g"
+    }
+}
