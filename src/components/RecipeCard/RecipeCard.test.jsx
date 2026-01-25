@@ -1,7 +1,26 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import RecipeCard from './RecipeCard';
+import { ShoppingListProvider } from '../../context/ShoppingListContext';
+
+// Mock localStorage
+const localStorageMock = (function () {
+    let store = {};
+    return {
+        getItem: vi.fn((key) => store[key] || null),
+        setItem: vi.fn((key, value) => {
+            store[key] = value.toString();
+        }),
+        clear: vi.fn(() => {
+            store = {};
+        })
+    };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock
+});
 
 const mockRecipe = {
     id: 'test-recipe',
@@ -19,11 +38,17 @@ const mockRecipeNoImage = {
 };
 
 describe('RecipeCard Component', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     const renderCard = (recipe = mockRecipe) => {
         return render(
-            <BrowserRouter>
-                <RecipeCard recipe={recipe} />
-            </BrowserRouter>
+            <ShoppingListProvider>
+                <BrowserRouter>
+                    <RecipeCard recipe={recipe} />
+                </BrowserRouter>
+            </ShoppingListProvider>
         );
     };
 

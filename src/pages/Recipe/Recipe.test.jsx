@@ -2,6 +2,25 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Recipe from './Recipe';
+import { ShoppingListProvider } from '../../context/ShoppingListContext';
+
+// Mock localStorage
+const localStorageMock = (function () {
+    let store = {};
+    return {
+        getItem: vi.fn((key) => store[key] || null),
+        setItem: vi.fn((key, value) => {
+            store[key] = value.toString();
+        }),
+        clear: vi.fn(() => {
+            store = {};
+        })
+    };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock
+});
 
 vi.mock('../../data/recipes', () => ({
     default: [
@@ -71,16 +90,22 @@ vi.mock('../../data/recipes', () => ({
 }));
 
 describe('Recipe Page', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     // Helper to render component with router context
     const renderRecipe = (id = 'test-recipe') => {
         window.scrollTo = vi.fn(); // Mock scrollTo
 
         return render(
-            <MemoryRouter initialEntries={[`/recipe/${id}`]}>
-                <Routes>
-                    <Route path="/recipe/:id" element={<Recipe />} />
-                </Routes>
-            </MemoryRouter>
+            <ShoppingListProvider>
+                <MemoryRouter initialEntries={[`/recipe/${id}`]}>
+                    <Routes>
+                        <Route path="/recipe/:id" element={<Recipe />} />
+                    </Routes>
+                </MemoryRouter>
+            </ShoppingListProvider>
         );
     };
 

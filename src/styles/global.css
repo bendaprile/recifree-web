@@ -242,7 +242,10 @@ a:not(.btn):hover {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
+  height: 40px;
+  /* Explicit height */
+  padding: 0 var(--space-6);
+  /* Removed vertical padding, relying on height + flex centering */
   font-size: var(--text-base);
   font-weight: var(--font-semibold);
   line-height: 1;

@@ -1,7 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+// Mock localStorage
+Object.defineProperty(window, 'localStorage', {
+    value: {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+    },
+    writable: true
+});
 
 describe('App Component', () => {
     it('renders the navbar and hero section', () => {

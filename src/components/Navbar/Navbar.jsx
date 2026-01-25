@@ -54,6 +54,16 @@ function Navbar() {
                   About
                 </NavLink>
               </li>
+
+              <li>
+                <NavLink
+                  to="/shopping-list"
+                  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+                  onClick={closeMenu}
+                >
+                  Shopping List
+                </NavLink>
+              </li>
             </ul>
           </div>
 

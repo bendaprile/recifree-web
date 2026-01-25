@@ -3,28 +3,32 @@ import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Home from './pages/Home/Home';
 import Recipe from './pages/Recipe/Recipe';
+import ShoppingList from './pages/ShoppingList/ShoppingList';
+import { ShoppingListProvider } from './context/ShoppingListContext';
 import './styles/global.css';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Navbar />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-
-            <Route path="/recipe/:id" element={<Recipe />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/privacy" element={<PrivacyPolicyPage />} />
-            <Route path="/dmca" element={<DMCAPolicyPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <ShoppingListProvider>
+      <Router>
+        <div className="app">
+          <Navbar />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/recipe/:id" element={<Recipe />} />
+              <Route path="/shopping-list" element={<ShoppingList />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/dmca" element={<DMCAPolicyPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </ShoppingListProvider>
   );
 }
 

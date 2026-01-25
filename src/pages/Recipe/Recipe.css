@@ -123,10 +123,6 @@
     font-size: var(--text-base);
 }
 
-.jump-btn {
-    margin-top: var(--space-2);
-}
-
 /* Responsive Hero */
 @media (min-width: 768px) {
     .recipe-hero {

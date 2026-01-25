@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import recipes from '../../data/recipes';
+import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import './Recipe.css';
 
 function Recipe() {
@@ -136,9 +137,12 @@ function Recipe() {
                             </div>
                         </div>
 
-                        <button onClick={scrollToRecipe} className="btn btn-primary jump-btn">
-                            Jump to Recipe ↓
-                        </button>
+                        <div className="recipe-actions flex gap-4 items-center">
+                            <button onClick={scrollToRecipe} className="btn btn-primary jump-btn">
+                                Jump to Recipe ↓
+                            </button>
+                            <AddToShoppingListButton recipe={recipe} variant="large" className="hero-add-btn" />
+                        </div>
                     </div>
                 </div>
             </header>

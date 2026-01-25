@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import AddToShoppingListButton from '../AddToShoppingListButton/AddToShoppingListButton';
 import './RecipeCard.css';
 
 function RecipeCard({ recipe }) {
@@ -18,6 +19,9 @@ function RecipeCard({ recipe }) {
                         e.target.src = defaultImage;
                     }}
                 />
+                <div className="card-actions">
+                    <AddToShoppingListButton recipe={recipe} variant="icon-only" />
+                </div>
                 {difficulty && (
                     <span className={`recipe-difficulty difficulty-${difficulty.toLowerCase()}`}>
                         {difficulty}
