@@ -8,13 +8,32 @@ function Home() {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Get all unique tags
-    const allTags = useMemo(() => {
-        const tags = new Set();
+    const [isTagsExpanded, setIsTagsExpanded] = useState(false);
+    const INITIAL_TAG_COUNT = 10;
+
+    // Get all unique tags sorted by popularity (recipe count)
+    const { allTags, visibleTags, hasMoreTags } = useMemo(() => {
+        const tagCounts = {};
         recipes.forEach(recipe => {
-            recipe.tags?.forEach(tag => tags.add(tag));
+            recipe.tags?.forEach(tag => {
+                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            });
         });
-        return ['All', ...Array.from(tags).sort()];
-    }, []);
+
+        // Sort tags by count (descending), then alphabetically
+        const sortedTags = Object.keys(tagCounts).sort((a, b) => {
+            const countDiff = tagCounts[b] - tagCounts[a];
+            return countDiff !== 0 ? countDiff : a.localeCompare(b);
+        });
+
+        const fullTagList = ['All', ...sortedTags];
+
+        return {
+            allTags: fullTagList,
+            visibleTags: isTagsExpanded ? fullTagList : fullTagList.slice(0, INITIAL_TAG_COUNT),
+            hasMoreTags: fullTagList.length > INITIAL_TAG_COUNT
+        };
+    }, [isTagsExpanded]);
 
     // Filter recipes based on selected tag and search query
     const filteredRecipes = useMemo(() => {
@@ -64,7 +83,7 @@ function Home() {
                 <div className="container">
                     {/* Tag Filters */}
                     <div className="tag-filters">
-                        {allTags.map(tag => (
+                        {visibleTags.map(tag => (
                             <button
                                 key={tag}
                                 className={`tag-filter ${selectedTag === tag ? 'active' : ''}`}
@@ -73,6 +92,15 @@ function Home() {
                                 {tag}
                             </button>
                         ))}
+
+                        {hasMoreTags && (
+                            <button
+                                className="tag-toggle-btn"
+                                onClick={() => setIsTagsExpanded(!isTagsExpanded)}
+                            >
+                                {isTagsExpanded ? 'Show Less' : `Show More (${allTags.length - INITIAL_TAG_COUNT}+)`}
+                            </button>
+                        )}
                     </div>
 
                     {/* Recipe Count */}

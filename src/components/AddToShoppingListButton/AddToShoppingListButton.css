@@ -65,6 +65,8 @@
     font-size: 1.4em;
     /* Slightly larger for the plus symbol */
     font-weight: 400;
+    /* Optical adjustment for vertical centering */
+    transform: translateY(-1px);
 }
 
 /* Tooltip Styles */
