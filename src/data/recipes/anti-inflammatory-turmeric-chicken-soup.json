@@ -1,0 +1,146 @@
+{
+    "id": "anti-inflammatory-turmeric-chicken-soup",
+    "title": "Anti-Inflammatory Turmeric Chicken Soup",
+    "description": "A nourishing, one-pot soup packed with veggies, turmeric, and coconut milk. Perfect for meal prep and naturally gluten-free and dairy-free.",
+    "image": "/images/recipes/anti-inflammatory-turmeric-chicken-soup.png",
+    "prepTime": "15 mins",
+    "cookTime": "45 mins",
+    "totalTime": "1 hr",
+    "servings": 6,
+    "difficulty": "Medium",
+    "tags": [
+        "Soup",
+        "Dinner",
+        "Healthy",
+        "Gluten-Free",
+        "Dairy-Free",
+        "Chicken"
+    ],
+    "ingredients": [
+        {
+            "amount": "1/4",
+            "unit": "cup",
+            "item": "olive oil"
+        },
+        {
+            "amount": "1",
+            "unit": "medium",
+            "item": "onion, diced"
+        },
+        {
+            "amount": "1",
+            "unit": "large",
+            "item": "leek, white/light green parts thinly sliced"
+        },
+        {
+            "amount": "3",
+            "unit": "large",
+            "item": "carrots, thinly sliced"
+        },
+        {
+            "amount": "3",
+            "unit": "stalks",
+            "item": "celery, thinly sliced"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "kosher salt (plus more to taste)"
+        },
+        {
+            "amount": "3",
+            "unit": "cloves",
+            "item": "garlic, chopped"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "dried powdered turmeric"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "poultry or all-purpose seasoning"
+        },
+        {
+            "amount": "6",
+            "unit": "cups",
+            "item": "chicken broth"
+        },
+        {
+            "amount": "1",
+            "unit": "can (13.5 oz)",
+            "item": "coconut milk"
+        },
+        {
+            "amount": "1.25",
+            "unit": "lbs",
+            "item": "boneless skinless chicken thighs or breasts"
+        },
+        {
+            "amount": "10",
+            "unit": "oz",
+            "item": "frozen peas (optional)"
+        },
+        {
+            "amount": "1/4",
+            "unit": "cup",
+            "item": "fresh parsley, chopped"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "black pepper"
+        }
+    ],
+    "instructions": [
+        "Heat olive oil in a large soup pot over medium heat. Add onion, leeks, carrots, celery, and 1 tsp salt. Sauté for 14-16 minutes until leeks are soft.",
+        "Stir in chopped garlic, turmeric, and poultry seasoning. Cook for 2-3 minutes until fragrant.",
+        "Add chicken broth, coconut milk, and raw chicken. Bring to a bare simmer (do not boil vigorously). Simmer for 15-20 minutes until chicken is cooked through and vegetables are tender.",
+        "Remove chicken to a cutting board and shred with two forks or cut into bite-sized pieces.",
+        "Return chicken to the pot along with frozen peas and parsley. Simmer for 5 minutes until peas are tender.",
+        "Season with additional salt and black pepper to taste. Serve hot."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        [
+            6,
+            7,
+            8
+        ],
+        [
+            9,
+            10,
+            11
+        ],
+        [
+            11
+        ],
+        [
+            11,
+            12,
+            13
+        ],
+        [
+            14,
+            5
+        ]
+    ],
+    "source": {
+        "name": "Nyssa's Kitchen",
+        "url": "https://nyssaskitchen.com/anti-inflammatory-turmeric-chicken-soup/"
+    },
+    "nutrition": {
+        "calories": 450,
+        "protein": "30g",
+        "carbs": "25g",
+        "fat": "28g"
+    }
+}

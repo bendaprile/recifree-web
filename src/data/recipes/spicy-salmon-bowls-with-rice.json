@@ -1,0 +1,176 @@
+{
+    "id": "spicy-salmon-bowls-with-rice",
+    "title": "Spicy Salmon Bowls with Coconut Rice",
+    "description": "These easy, delicious spicy salmon bowls feature fluffy coconut rice topped with quick pickled cucumber, avocado, and a zesty spicy mayo.",
+    "image": "/images/recipes/spicy-salmon-bowls-with-rice.png",
+    "prepTime": "20 mins",
+    "cookTime": "20 mins",
+    "totalTime": "40 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Dinner",
+        "Salmon",
+        "Bowl",
+        "Healthy",
+        "Gluten-Free",
+        "Seafood"
+    ],
+    "ingredients": [
+        {
+            "amount": "1 1/3",
+            "unit": "cups",
+            "item": "jasmine rice, rinsed & drained"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "full fat coconut milk (canned)"
+        },
+        {
+            "amount": "1/2 cup + 2 tbsp",
+            "unit": "",
+            "item": "water"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "kosher salt"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "coconut sugar"
+        },
+        {
+            "amount": "2",
+            "unit": "small",
+            "item": "cucumbers, thinly sliced"
+        },
+        {
+            "amount": "1/4",
+            "unit": "cup",
+            "item": "rice vinegar"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "white sugar"
+        },
+        {
+            "amount": "1",
+            "unit": "lb",
+            "item": "salmon (skin removed, cubed)"
+        },
+        {
+            "amount": "3",
+            "unit": "tbsp",
+            "item": "avocado oil"
+        },
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "low sodium tamari (or soy sauce)"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "brown sugar (or coconut sugar)"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "garlic powder"
+        },
+        {
+            "amount": "3/4",
+            "unit": "tsp",
+            "item": "ginger powder"
+        },
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "white sesame seeds"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "nanami togarashi (optional)"
+        },
+        {
+            "amount": "1/3",
+            "unit": "cup",
+            "item": "mayonnaise"
+        },
+        {
+            "amount": "2",
+            "unit": "tsp",
+            "item": "sriracha"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "lime juice"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "For garnish: Avocado, furikake, fresh chives"
+        }
+    ],
+    "instructions": [
+        "In a rice cooker or pot, combine rinsed jasmine rice, coconut milk, water, salt, and 1 tsp coconut sugar. Cook according to manufacturer instructions or bringing to a boil and simmering covered for 15-18 mins. Fluff when done.",
+        "While rice cooks, mix rice vinegar and 1 tsp white sugar in a small bowl. Toss in sliced cucumbers and set aside to pickle.",
+        "Preheat oven broiler to High (550°F / 290°C).",
+        "Place cubed salmon in a large bowl. Toss with avocado oil, tamari, brown sugar, garlic powder, ginger powder, sesame seeds, and togarashi (if using).",
+        "Spread salmon on a rimmed baking sheet. Broil for 6-8 minutes until slightly browned and cooked through.",
+        "Whisk together mayonnaise, sriracha, and lime juice in a small bowl to make the spicy mayo.",
+        "Assemble bowls: Start with coconut rice, top with pickled cucumber and broiled salmon. Add sliced avocado and garnish with furikake and chives. Drizzle with spicy mayo and serve."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1,
+            2,
+            3,
+            4
+        ],
+        [
+            5,
+            6,
+            7
+        ],
+        [],
+        [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+        ],
+        [
+            8
+        ],
+        [
+            16,
+            17,
+            18
+        ],
+        [
+            19
+        ]
+    ],
+    "source": {
+        "name": "Holistic Foodie",
+        "url": "https://holisticfoodie.com/spicy-salmon-bowls-with-rice/"
+    },
+    "nutrition": {
+        "calories": 650,
+        "protein": "30g",
+        "carbs": "55g",
+        "fat": "35g"
+    }
+}

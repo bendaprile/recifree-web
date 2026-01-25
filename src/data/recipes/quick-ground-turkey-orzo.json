@@ -1,0 +1,133 @@
+{
+    "id": "quick-ground-turkey-orzo",
+    "title": "Quick Ground Turkey Orzo",
+    "description": "A nutritious and easy weeknight dinner featuring lean ground turkey, broccoli, and toasted orzo in a creamy lemon-pepper sauce.",
+    "image": "/images/recipes/quick-ground-turkey-orzo.png",
+    "prepTime": "10 mins",
+    "cookTime": "20 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Dinner",
+        "Turkey",
+        "Pasta",
+        "Quick",
+        "Healthy"
+    ],
+    "ingredients": [
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "olive oil"
+        },
+        {
+            "amount": "12",
+            "unit": "oz",
+            "item": "broccoli, cut into florets"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tbsp",
+            "item": "olive oil (for turkey)"
+        },
+        {
+            "amount": "1",
+            "unit": "lb",
+            "item": "extra lean ground turkey"
+        },
+        {
+            "amount": "1 1/3",
+            "unit": "cups",
+            "item": "orzo (uncooked)"
+        },
+        {
+            "amount": "2",
+            "unit": "tsp",
+            "item": "lemon pepper seasoning (salt-free)"
+        },
+        {
+            "amount": "2",
+            "unit": "tsp",
+            "item": "Dijon mustard"
+        },
+        {
+            "amount": "1/4",
+            "unit": "cup",
+            "item": "fresh lemon juice"
+        },
+        {
+            "amount": "2 1/2",
+            "unit": "cups",
+            "item": "chicken broth"
+        },
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "butter"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "whole milk"
+        },
+        {
+            "amount": "2",
+            "unit": "oz",
+            "item": "shredded parmesan cheese"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Red pepper flakes (optional)"
+        }
+    ],
+    "instructions": [
+        "Heat 1 tbsp olive oil in a skillet over medium heat. Add broccoli and sauté for 5-6 minutes until slightly charred. Remove and set aside.",
+        "Add remaining 1/2 tbsp olive oil to the skillet. Cook ground turkey, breaking it apart, until fully browned. Move turkey to one side of the pan.",
+        "Add orzo to the empty side of the skillet. Toast for 1-2 minutes until fragrant and golden.",
+        "Stir in lemon pepper, Dijon mustard, and lemon juice. Add 1 cup broth to deglaze the pan, then add the remaining 1.5 cups broth. Stir to combine.",
+        "Simmer for 6-8 minutes until orzo is cooked and liquid is absorbed.",
+        "Reduce heat. Stir in butter, milk, and parmesan cheese until melted and creamy.",
+        "Stir the cooked broccoli back into the skillet. Serve warm, topped with extra parmesan and red pepper flakes if desired."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1
+        ],
+        [
+            2,
+            3
+        ],
+        [
+            4
+        ],
+        [
+            5,
+            6,
+            7,
+            8
+        ],
+        [],
+        [
+            9,
+            10,
+            11
+        ],
+        [
+            1,
+            12
+        ]
+    ],
+    "source": {
+        "name": "Molly's Home Guide",
+        "url": "https://mollyshomeguide.com/quick-ground-turkey-orzo-recipe-39795/"
+    },
+    "nutrition": {
+        "calories": 400,
+        "protein": "35g",
+        "carbs": "40g",
+        "fat": "15g"
+    }
+}
