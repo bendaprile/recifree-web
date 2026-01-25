@@ -62,13 +62,6 @@ function AboutPage() {
             so you can explore further if you'd like.
           </p>
 
-          <h2>Get Involved</h2>
-          <p>
-            Recifree is open source and community-driven. Whether you want to suggest
-            recipes, contribute code, or just spread the word, we'd love to have you
-            join our mission to make cooking accessible for everyone.
-          </p>
-
           <div className="about-cta">
             <a href="https://github.com/bendaprile/recifree-web" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               View on GitHub

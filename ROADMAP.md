@@ -24,6 +24,11 @@ Implementation: Store selected ingredients in localStorage.
 UX: Checkboxes next to ingredients; a localized "Shopping List" page or modal showing aggregated items.
 Improvement Future: Multiple types of the same ingredients in the shopping list will combine into one ingredient and add the amount to each other. (Example: Two recipes use 2 chicken breasts will just display as 4 chicken breasts on the shopping list)
 
+4. Recipe Health Score
+Problem: Users would like to know how healthy a recipe is at a glance before making.
+
+Implementation: Calculate health score based on ingredients and nutrition information during recipe generation.
+UX: Display health score on recipe cards and detail pages.
 
 ## Phase 2: Personalization (No Login Required)
 Features that make the site feel personal without compromising privacy.
