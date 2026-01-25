@@ -73,3 +73,99 @@
   color: var(--color-text-secondary);
   margin-bottom: var(--space-6);
 }
+
+/* =================================
+   Legal Pages (Privacy, DMCA)
+   ================================= */
+.legal-page {
+  background-color: var(--color-background);
+}
+
+.legal-content {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.legal-content h1 {
+  margin-bottom: var(--space-2);
+}
+
+.legal-updated {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-6);
+}
+
+.legal-content .lead {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  line-height: 1.7;
+}
+
+.legal-content h2 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-xl);
+  color: var(--color-text);
+}
+
+.legal-content h3 {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-lg);
+  color: var(--color-text);
+}
+
+.legal-content p {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: var(--space-4);
+}
+
+.legal-content ul,
+.legal-content ol {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-6);
+}
+
+.legal-content li {
+  margin-bottom: var(--space-2);
+}
+
+.legal-content strong {
+  color: var(--color-text);
+}
+
+.legal-content a:not(.btn) {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.legal-content a:not(.btn):hover {
+  color: var(--color-primary-light);
+}
+
+.legal-contact-box {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin: var(--space-4) 0;
+}
+
+.legal-contact-box p {
+  margin-bottom: var(--space-2);
+}
+
+.legal-contact-box p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-cta {
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border-light);
+}

@@ -23,7 +23,6 @@ function Footer() {
                             <h4 className="footer-heading">Navigate</h4>
                             <ul>
                                 <li><Link to="/">Home</Link></li>
-                                <li><Link to="/recipes">Browse Recipes</Link></li>
                                 <li><Link to="/about">About</Link></li>
                             </ul>
                         </div>

@@ -21,7 +21,6 @@ describe('Footer Component', () => {
     it('renders navigation links', () => {
         renderFooter();
         expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('Browse Recipes')).toBeInTheDocument();
         expect(screen.getByText('About')).toBeInTheDocument();
     });
 
