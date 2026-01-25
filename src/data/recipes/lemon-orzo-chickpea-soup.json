@@ -1,0 +1,155 @@
+{
+    "id": "lemon-orzo-chickpea-soup",
+    "title": "Lemon Orzo Chickpea Soup",
+    "description": "A refreshing and hearty dish that combines the bright flavors of lemon with wholesome ingredients like orzo, chickpeas, and fresh vegetables.",
+    "image": "/images/recipes/lemon-orzo-chickpea-soup.png",
+    "prepTime": "15 mins",
+    "cookTime": "25 mins",
+    "totalTime": "40 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Soup",
+        "Dinner",
+        "Vegetarian",
+        "Mediterranean"
+    ],
+    "ingredients": [
+        {
+            "title": "Vegetable Broth",
+            "items": [
+                {
+                    "amount": "6",
+                    "unit": "cups",
+                    "item": "vegetable broth"
+                }
+            ]
+        },
+        {
+            "title": "Soup Base",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "olive oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "medium onion, diced"
+                },
+                {
+                    "amount": "3",
+                    "unit": "cloves",
+                    "item": "garlic, minced"
+                },
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "medium carrots, diced"
+                },
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "celery stalks, diced"
+                }
+            ]
+        },
+        {
+            "title": "Seasonings & Grains",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "dried oregano"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "turmeric"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "black pepper"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "salt"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "orzo pasta"
+                }
+            ]
+        },
+        {
+            "title": "Add-ins",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "can",
+                    "item": "chickpeas (15 oz), drained and rinsed"
+                },
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "lemons, juiced and zested"
+                },
+                {
+                    "amount": "2",
+                    "unit": "cups",
+                    "item": "fresh spinach, chopped"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "fresh dill or parsley, chopped"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Heat olive oil in a large pot over medium heat. Add onion, garlic, carrots, and celery, and sauté for 5–6 minutes until softened.",
+        "Stir in oregano, turmeric, pepper, and salt. Pour in vegetable broth and bring to a boil.",
+        "Add orzo and cook for 8–10 minutes, stirring occasionally, until al dente.",
+        "Stir in chickpeas, lemon juice, and zest. Simmer for 2 minutes.",
+        "Add spinach and fresh herbs. Cook just until spinach is wilted. Taste and adjust seasoning before serving hot."
+    ],
+    "stepIngredients": [
+        [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        [
+            6,
+            7,
+            8,
+            9,
+            0
+        ],
+        [
+            10
+        ],
+        [
+            11,
+            12
+        ],
+        [
+            13,
+            14
+        ]
+    ],
+    "source": {
+        "name": "The Recipes Home",
+        "url": "https://therecipeshome.com/lemon-orzo-chickpea-soup-recipe/"
+    },
+    "nutrition": {
+        "calories": 260
+    }
+}

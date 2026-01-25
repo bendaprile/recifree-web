@@ -1,0 +1,201 @@
+{
+    "id": "old-fashioned-beef-stew",
+    "title": "Old Fashioned Beef Stew",
+    "description": "Pure comfort in a bowl with melt-in-your-mouth chunks of beef, hearty vegetables, and all the right herbs and spices.",
+    "image": "/images/recipes/old-fashioned-beef-stew.png",
+    "prepTime": "20 mins",
+    "cookTime": "2 hrs",
+    "totalTime": "2 hrs 20 mins",
+    "servings": 6,
+    "difficulty": "Medium",
+    "tags": [
+        "Beef",
+        "Stew",
+        "Comfort Food",
+        "Dinner"
+    ],
+    "ingredients": [
+        {
+            "title": "Beef & Searing",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "lbs",
+                    "item": "beef stew meat, cubed chuck roast"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "cornstarch (for coating)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "salt"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "black pepper"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "olive oil"
+                }
+            ]
+        },
+        {
+            "title": "Aromatics & Broth",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "cloves",
+                    "item": "garlic, minced"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "tomato paste"
+                },
+                {
+                    "amount": "4",
+                    "unit": "cups",
+                    "item": "beef broth"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "Worcestershire sauce"
+                }
+            ]
+        },
+        {
+            "title": "Vegetables",
+            "items": [
+                {
+                    "amount": "1 1/2",
+                    "unit": "lbs",
+                    "item": "red potatoes, cut into bite-sized chunks"
+                },
+                {
+                    "amount": "10",
+                    "unit": "oz",
+                    "item": "pearl onions"
+                },
+                {
+                    "amount": "4",
+                    "unit": "",
+                    "item": "medium carrots, sliced"
+                },
+                {
+                    "amount": "4",
+                    "unit": "",
+                    "item": "medium celery ribs, sliced"
+                }
+            ]
+        },
+        {
+            "title": "Seasonings",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "granulated sugar"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "dried basil"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "dried oregano"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "dried parsley"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "paprika"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "ground allspice"
+                }
+            ]
+        },
+        {
+            "title": "Thickening",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "cornstarch (remaining)"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "cold water"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Dust the beef stew meat with 2 tablespoons of cornstarch and season with salt and pepper.",
+        "In a large pot or Dutch oven, heat olive oil over medium-high heat. Add the seasoned beef and sear for about 5 minutes, until all sides are browned, stirring frequently.",
+        "Stir in minced garlic and tomato paste. Cook for 1-2 minutes until fragrant.",
+        "Pour in beef broth and Worcestershire sauce to deglaze the pan. Add potatoes, pearl onions, carrots, and celery. Sprinkle in sugar, basil, oregano, parsley, paprika, and allspice. Stir to combine.",
+        "Bring to a boil, then reduce heat to low. Cover and simmer for 90 to 120 minutes, stirring occasionally, until beef is tender.",
+        "In a small bowl, mix the remaining 2 tablespoons of cornstarch with cold water. Slowly pour into the stew, stirring constantly. Cook on low heat for a few more minutes until thickened.",
+        "Taste and adjust seasoning with more salt and pepper if necessary. Serve hot."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1,
+            2,
+            3
+        ],
+        [
+            4,
+            0
+        ],
+        [
+            5,
+            6
+        ],
+        [
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+        ],
+        [],
+        [
+            19,
+            20
+        ],
+        []
+    ],
+    "source": {
+        "name": "The Stay At Home Chef",
+        "url": "https://thestayathomechef.com/old-fashioned-beef-stew/#wprm-recipe-container-10502"
+    },
+    "nutrition": {
+        "calories": 450
+    }
+}

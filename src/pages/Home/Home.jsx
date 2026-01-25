@@ -20,9 +20,11 @@ function Home() {
     const filteredRecipes = useMemo(() => {
         return recipes.filter(recipe => {
             const matchesTag = selectedTag === 'All' || recipe.tags?.includes(selectedTag);
+            const searchLower = searchQuery.toLowerCase();
             const matchesSearch = searchQuery === '' ||
-                recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                recipe.description.toLowerCase().includes(searchQuery.toLowerCase());
+                recipe.title.toLowerCase().includes(searchLower) ||
+                recipe.description.toLowerCase().includes(searchLower) ||
+                recipe.tags?.some(tag => tag.toLowerCase().includes(searchLower));
             return matchesTag && matchesSearch;
         });
     }, [selectedTag, searchQuery]);

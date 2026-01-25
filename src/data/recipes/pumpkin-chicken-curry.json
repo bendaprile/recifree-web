@@ -1,0 +1,191 @@
+{
+    "id": "pumpkin-chicken-curry",
+    "title": "Pumpkin Chicken Curry",
+    "description": "A healthy, hearty curry full of warm spices and creamy coconut milk, featuring pumpkin puree and tender chicken.",
+    "image": "/images/recipes/pumpkin-chicken-curry.png",
+    "prepTime": "15 mins",
+    "cookTime": "25 mins",
+    "totalTime": "40 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Chicken",
+        "Dinner",
+        "Curry",
+        "Fall"
+    ],
+    "ingredients": [
+        {
+            "title": "Curry",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "medium chicken breasts, diced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "olive oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "medium yellow onion, diced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "can",
+                    "item": "diced tomatoes (14.5oz)"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "tomato paste"
+                },
+                {
+                    "amount": "1",
+                    "unit": "can",
+                    "item": "pumpkin puree (15oz)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "can",
+                    "item": "full fat coconut milk (13.5oz)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "small lemon, juiced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "brown sugar"
+                }
+            ]
+        },
+        {
+            "title": "Spices",
+            "items": [
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "curry powder"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tsp",
+                    "item": "mild chili powder"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "salt"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "black pepper"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "ground cumin"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "ground mustard seed"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "ground coriander seed"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "ground cinnamon"
+                }
+            ]
+        },
+        {
+            "title": "Serving",
+            "items": [
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Cooked rice (white or brown)"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Fresh cilantro, chopped (optional)"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Red pepper flakes (optional)"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Dice chicken into small pieces. Drizzle with olive oil and season generously with salt and pepper.",
+        "In a large skillet over medium heat, sauté chicken in batches until browned. Set aside.",
+        "Dice onion and add to the skillet. Deglaze with a bit of water if needed and sauté for 2-3 minutes until soft.",
+        "Add diced tomatoes, tomato paste, pumpkin puree, coconut milk, and lemon juice. Mix well.",
+        "Stir in brown sugar and all spices. Mix cooked chicken back into the pan.",
+        "Cover, reduce heat to low, and simmer for 10-15 minutes.",
+        "Serve over rice and top with fresh cilantro and red pepper flakes if desired."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1,
+            11,
+            12
+        ],
+        [
+            0,
+            1
+        ],
+        [
+            2
+        ],
+        [
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+        ],
+        [
+            0
+        ],
+        [
+            17,
+            18,
+            19
+        ]
+    ],
+    "source": {
+        "name": "Garlic Salt and Lime",
+        "url": "https://garlicsaltandlime.com/pumpkin-chicken-curry/"
+    },
+    "nutrition": {
+        "calories": 450
+    }
+}

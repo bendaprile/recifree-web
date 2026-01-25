@@ -1,0 +1,171 @@
+{
+    "id": "hot-honey-feta-chicken",
+    "title": "Hot Honey Feta Chicken",
+    "description": "Crispy pan-seared chicken seasoned with savory spices, topped with creamy melted feta, and drizzled with a homemade spicy honey sauce.",
+    "image": "/images/recipes/hot-honey-feta-chicken.png",
+    "prepTime": "15 mins",
+    "cookTime": "15 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Medium",
+    "tags": [
+        "Chicken",
+        "Dinner",
+        "Mediterranean",
+        "Spicy"
+    ],
+    "ingredients": [
+        {
+            "title": "Chicken",
+            "items": [
+                {
+                    "amount": "1 1/2",
+                    "unit": "lbs",
+                    "item": "boneless, skinless chicken thighs or breasts"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "olive oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "lemon juice"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "paprika"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "garlic powder"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "onion powder"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "cumin"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "tsp",
+                    "item": "salt"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "tsp",
+                    "item": "black pepper"
+                }
+            ]
+        },
+        {
+            "title": "Hot Honey Sauce",
+            "items": [
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "honey"
+                },
+                {
+                    "amount": "1-2",
+                    "unit": "tsp",
+                    "item": "chili flakes"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "apple cider vinegar or lemon juice"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "butter or olive oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "garlic clove, finely minced"
+                }
+            ]
+        },
+        {
+            "title": "Garnish",
+            "items": [
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "crumbled feta cheese"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Fresh parsley or mint, chopped"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Lemon zest or juice"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Pat chicken dry and place in a bowl. Drizzle with olive oil and lemon juice, then coat evenly with paprika, garlic powder, onion powder, cumin, salt, and pepper. Let marinate for 10-15 minutes.",
+        "To make the sauce: In a small saucepan, combine honey, chili flakes, vinegar, butter, and minced garlic. Simmer over medium heat for 2-3 minutes until bubbly and fragrant. Adjust spice level to taste.",
+        "Heat a skillet over medium-high heat. Sear chicken for 5-6 minutes per side for thighs (or 4-5 minutes for breasts) until cooked through and golden brown. Alternatively, bake at 400°F (200°C) for 20-25 minutes.",
+        "Pour the hot honey sauce over the cooked chicken and top with disintegrated feta. Let it sit for a few minutes to allow the feta to slightly melt.",
+        "Garnish with fresh herbs and lemon zest before serving. Serve with rice, couscous, or roasted vegetables."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+        ],
+        [
+            9,
+            10,
+            11,
+            12,
+            13
+        ],
+        [
+            0
+        ],
+        [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+        ],
+        [
+            15,
+            16
+        ]
+    ],
+    "source": {
+        "name": "Recipes By Layla",
+        "url": "https://www.recipesbylayla.com/hot-honey-feta-chicken/"
+    },
+    "nutrition": {
+        "calories": 420,
+        "protein": "35g",
+        "carbs": "12g",
+        "fat": "25g"
+    }
+}

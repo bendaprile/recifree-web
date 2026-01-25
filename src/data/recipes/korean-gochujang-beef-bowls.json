@@ -1,0 +1,170 @@
+{
+    "id": "korean-gochujang-beef-bowls",
+    "title": "20 Minute Korean Gochujang Beef Bowls",
+    "description": "A quick and flavorful meal featuring tender ground beef cooked with vibrant bell peppers, garlic, and shallots, coated in a rich, slightly spicy gochujang sauce. Paired with a refreshing cucumber salad.",
+    "image": "/images/recipes/korean-gochujang-beef-bowls.png",
+    "prepTime": "10 mins",
+    "cookTime": "10 mins",
+    "totalTime": "20 mins",
+    "servings": 6,
+    "difficulty": "Easy",
+    "tags": [
+        "Beef",
+        "Dinner",
+        "Asian",
+        "Spicy",
+        "Quick"
+    ],
+    "ingredients": [
+        {
+            "title": "Main Ingredients",
+            "items": [
+                {
+                    "amount": "1 1/2",
+                    "unit": "lb",
+                    "item": "ground beef (or chicken or pork)"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "butter"
+                },
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "bell peppers, sliced"
+                },
+                {
+                    "amount": "3",
+                    "unit": "",
+                    "item": "shallots, sliced"
+                },
+                {
+                    "amount": "4",
+                    "unit": "cloves",
+                    "item": "garlic, chopped"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "pickled ginger (or 1 tbsp fresh grated)"
+                },
+                {
+                    "amount": "1/2",
+                    "unit": "cup",
+                    "item": "tamari or soy sauce"
+                },
+                {
+                    "amount": "2-3",
+                    "unit": "tbsp",
+                    "item": "Gochujang (Korean chili paste)"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "ginger juice"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "maple syrup or honey"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "toasted sesame seeds"
+                },
+                {
+                    "amount": "1/3",
+                    "unit": "cup",
+                    "item": "chopped roasted peanuts"
+                }
+            ]
+        },
+        {
+            "title": "Cucumber Salad",
+            "items": [
+                {
+                    "amount": "4",
+                    "unit": "",
+                    "item": "Persian cucumbers, chopped"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "Gochujang (Korean chili paste)"
+                },
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "chopped green onion or Thai basil"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tbsp",
+                    "item": "ginger juice or rice vinegar"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "salt"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "chili flakes (optional)"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "In a large skillet over medium heat, add the ground beef seasoned with a pinch of black pepper. Cook, breaking up the meat with a spatula, until it is browned and cooked through, about 5 minutes.",
+        "Add the butter, sliced bell peppers, chopped garlic, sliced shallots, and pickled (or fresh) ginger to the skillet. Cook together for 2 minutes to soften the vegetables and develop flavor.",
+        "Pour in the tamari or soy sauce, then add the Gochujang, ginger juice, and 1/3 cup of water. Stir well and cook until the sauce thickens and coats the beef and vegetables, about 2-3 minutes.",
+        "Stir in the maple syrup or honey and continue to cook, stirring regularly, for another 1-2 minutes until the beef mixture becomes caramelized. Remove from heat and toss with toasted sesame seeds.",
+        "In a bowl, combine the chopped cucumbers with salt, optional chili flakes, Gochujang, ginger juice or rice vinegar, and chopped green onions. Let sit for 5 minutes to marinate.",
+        "Spoon the beef and pepper mixture over cooked rice. Serve alongside the cucumber salad and top with chopped roasted peanuts."
+    ],
+    "stepIngredients": [
+        [
+            0
+        ],
+        [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        [
+            6,
+            7,
+            8
+        ],
+        [
+            9,
+            10
+        ],
+        [
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+        ],
+        [
+            11
+        ]
+    ],
+    "source": {
+        "name": "Pies By Paula",
+        "url": "https://piesbypaula.com/20-minute-korean-gochujang-beef-bowls-recipe/"
+    },
+    "nutrition": {
+        "calories": 420,
+        "protein": "28g",
+        "carbs": "22g",
+        "fat": "23g"
+    }
+}

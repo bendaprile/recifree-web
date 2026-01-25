@@ -1,0 +1,175 @@
+{
+    "id": "korean-beef-bibimbap-bowl",
+    "title": "Korean Beef Bibimbap Bowl",
+    "description": "A comforting Korean Beef Bibimbap Bowl with tender beef, colorful veggies, and a runny egg over rice.",
+    "image": "/images/recipes/korean-beef-bibimbap-bowl.png",
+    "prepTime": "15 mins",
+    "cookTime": "15 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "Beef",
+        "Dinner",
+        "Asian",
+        "Bowl"
+    ],
+    "ingredients": [
+        {
+            "title": "Korean Beef",
+            "items": [
+                {
+                    "amount": "1",
+                    "unit": "lb",
+                    "item": "ground beef"
+                },
+                {
+                    "amount": "3",
+                    "unit": "tbsp",
+                    "item": "soy sauce"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "sesame oil"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tbsp",
+                    "item": "brown sugar"
+                },
+                {
+                    "amount": "2",
+                    "unit": "cloves",
+                    "item": "garlic, minced"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "grated ginger"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "gochujang (Korean chili paste)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "tsp",
+                    "item": "sesame seeds"
+                }
+            ]
+        },
+        {
+            "title": "Bibimbap Bowl",
+            "items": [
+                {
+                    "amount": "4",
+                    "unit": "cups",
+                    "item": "cooked white rice (short grain preferred)"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "julienned carrots"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "bean sprouts"
+                },
+                {
+                    "amount": "1",
+                    "unit": "",
+                    "item": "zucchini, julienned"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "spinach"
+                },
+                {
+                    "amount": "1",
+                    "unit": "cup",
+                    "item": "shiitake mushrooms, sliced"
+                },
+                {
+                    "amount": "4",
+                    "unit": "",
+                    "item": "eggs"
+                },
+                {
+                    "amount": "2",
+                    "unit": "tsp",
+                    "item": "sesame oil (for veggies)"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Gochujang (for serving)"
+                },
+                {
+                    "amount": "",
+                    "unit": "",
+                    "item": "Sesame seeds and green onions, for garnish"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Cook short grain white rice according to package instructions until tender and sticky.",
+        "In a skillet over medium heat, cook ground beef until browned. Stir in soy sauce, sesame oil, brown sugar, garlic, ginger, and gochujang. Cook until fragrant and sauce thickens slightly. Sprinkle with 1 tsp sesame seeds.",
+        "In a clean pan, drizzle a little sesame oil and cook each vegetable (carrots, bean sprouts, zucchini, mushrooms) separately for 1–2 minutes until just tender.",
+        "Lightly sauté the spinach with sesame oil, or blanch for 30 seconds in boiling water and squeeze out excess moisture. Season lightly with salt if desired.",
+        "In a non-stick skillet, fry the eggs sunny-side-up so the yolk stays runny.",
+        "Divide rice into bowls. Arrange beef and vegetables in sections on top of the rice. Top with a fried egg. Serve with extra gochujang and garnish with sesame seeds and green onions."
+    ],
+    "stepIngredients": [
+        [
+            8
+        ],
+        [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        [
+            15,
+            9,
+            10,
+            11,
+            13
+        ],
+        [
+            12,
+            15
+        ],
+        [
+            14
+        ],
+        [
+            8,
+            0,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            16,
+            17
+        ]
+    ],
+    "source": {
+        "name": "Savoring Moments",
+        "url": "https://savoringmoments.com/korean-beef-bibimbap-bowl/#recipe"
+    },
+    "nutrition": {
+        "calories": 560
+    }
+}

@@ -1,0 +1,167 @@
+{
+    "id": "italian-sausage-and-white-bean-soup",
+    "title": "Italian Sausage and White Bean Soup",
+    "description": "Hearty and flavorful, this sausage and white bean soup is a cozy, protein and fiber-rich meal perfect for any season.",
+    "image": "/images/recipes/italian-sausage-and-white-bean-soup.png",
+    "prepTime": "15 mins",
+    "cookTime": "35 mins",
+    "totalTime": "50 mins",
+    "servings": 6,
+    "difficulty": "Easy",
+    "tags": [
+        "Italian",
+        "Soup",
+        "Dinner",
+        "Sausage",
+        "White Beans"
+    ],
+    "ingredients": [
+        {
+            "amount": "1",
+            "unit": "lb",
+            "item": "Italian sausage"
+        },
+        {
+            "amount": "1",
+            "unit": "small",
+            "item": "sweet onion, diced"
+        },
+        {
+            "amount": "3",
+            "unit": "",
+            "item": "carrots, peeled and diced"
+        },
+        {
+            "amount": "3",
+            "unit": "stalks",
+            "item": "celery, diced"
+        },
+        {
+            "amount": "4",
+            "unit": "cloves",
+            "item": "garlic, minced"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "poultry seasoning"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "Italian seasoning"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "kosher salt"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "black pepper"
+        },
+        {
+            "amount": "1",
+            "unit": "pinch",
+            "item": "red pepper flakes"
+        },
+        {
+            "amount": "3",
+            "unit": "tbsp",
+            "item": "flour"
+        },
+        {
+            "amount": "4",
+            "unit": "",
+            "item": "gold potatoes, cubed"
+        },
+        {
+            "amount": "6",
+            "unit": "cups",
+            "item": "chicken broth"
+        },
+        {
+            "amount": "2",
+            "unit": "cans",
+            "item": "white beans, drained and rinsed"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "heavy cream"
+        },
+        {
+            "amount": "1",
+            "unit": "bunch",
+            "item": "Tuscan kale, ribs removed and thinly sliced"
+        },
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "red wine vinegar"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "For serving: fresh parsley, chives, basil, parmesan cheese"
+        }
+    ],
+    "instructions": [
+        "Heat a large soup pot over medium-high heat and cook the Italian sausage, breaking it up until browned. Remove sausage to a plate, leaving 1-2 tablespoons of grease.",
+        "Add the onion, carrots, and celery. Sauté for 4-6 minutes until softened.",
+        "Stir in the garlic, poultry seasoning, Italian seasoning, salt, black pepper, and red pepper flakes. Cook for 1 minute until fragrant.",
+        "Sprinkle in the flour and stir to coat the vegetables.",
+        "Add the potatoes and chicken broth. Bring to a boil, then reduce heat and simmer for 20 minutes until potatoes are tender.",
+        "Stir in the white beans, kale, heavy cream, and the cooked sausage. Simmer until the kale is wilted.",
+        "Stir in the red wine vinegar and adjust seasoning with salt and pepper if needed.",
+        "Serve hot topped with fresh herbs and parmesan cheese."
+    ],
+    "stepIngredients": [
+        [
+            0
+        ],
+        [
+            1,
+            2,
+            3
+        ],
+        [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+        ],
+        [
+            10
+        ],
+        [
+            11,
+            12
+        ],
+        [
+            0,
+            13,
+            15,
+            14
+        ],
+        [
+            16
+        ],
+        [
+            17
+        ]
+    ],
+    "source": {
+        "name": "Flavorful Life",
+        "url": "https://flavorfulife.com/sausage-and-white-bean-soup/"
+    },
+    "nutrition": {
+        "calories": 552,
+        "protein": "22g",
+        "carbs": "43.5g",
+        "fat": "32.7g"
+    }
+}
