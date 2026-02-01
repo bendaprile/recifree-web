@@ -4,14 +4,14 @@
     "description": "A classic North Indian dish made with leafy greens (saag) and paneer. This creamy, mildly spiced curry is a delicious way to enjoy your greens!",
     "image": "/images/recipes/saag-paneer.png",
     "prepTime": "15 mins",
-    "cookTime": "20 mins",
-    "totalTime": "35 mins",
+    "cookTime": "30 mins",
+    "totalTime": "45 mins",
     "servings": 4,
     "difficulty": "Medium",
     "tags": [
         "Indian",
         "Vegetarian",
-        "Instant Pot",
+        "Stovetop",
         "Gluten-Free"
     ],
     "ingredients": [
@@ -99,9 +99,9 @@
                     "item": "Salt"
                 },
                 {
-                    "amount": "3/4",
+                    "amount": "1",
                     "unit": "cup",
-                    "item": "Water (divided)"
+                    "item": "Water"
                 }
             ]
         },
@@ -127,14 +127,15 @@
         }
     ],
     "instructions": [
-        "Set Instant Pot to Saute mode. Heat ghee and oil. Add hing, ginger, garlic, chili, and cashews. Cook for 1 minute.",
-        "Add chopped onion and cook for 2 minutes until soft. Add chopped tomato and cook for 1 more minute.",
-        "Add the chopped spinach and mustard greens. Cook until wilted (3-4 minutes).",
-        "Add coriander powder, turmeric, red chili powder, and salt. Stir well.",
-        "Add 1/2 cup water. Close lid and pressure cook on High for 10 minutes. Natural pressure release.",
-        "Open lid. Use an immersion blender to puree the saag to your desired consistency (coarse or smooth).",
-        "Set Instant Pot back to Saute mode. Add paneer cubes and simmer for 2-3 minutes.",
-        "Stir in garam masala and heavy cream (if using). Serve hot with naan or rice."
+        "Heat ghee and oil in a pot over medium heat. Add hing, ginger, garlic, green chili, and cashews. Sauté for 1 minute until aromatic.",
+        "Add the chopped onion and cook for 2 minutes until soft.",
+        "Add the chopped tomato and cook for 1 minute.",
+        "Add the chopped spinach and mustard greens. Stir until the leaves wilt.",
+        "Add coriander powder, turmeric, red chili powder, salt, and 1 cup of water. Stir well.",
+        "Cover the pot and cook for 20 minutes on medium heat. Stir occasionally and add a splash of more water if it dries out.",
+        "Remove from heat. Use an immersion blender to puree the saag to your desired consistency.",
+        "Return to heat. Add paneer cubes and simmer for 5 minutes.",
+        "Stir in garam masala and heavy cream (if using). Serve hot."
     ],
     "source": {
         "name": "Cook With Manali",
@@ -157,7 +158,9 @@
             6
         ],
         [
-            7,
+            7
+        ],
+        [
             8
         ],
         [
@@ -168,15 +171,10 @@
             11,
             12,
             13,
-            14
+            14,
+            15
         ],
-        [
-            {
-                "id": 15,
-                "amount": "1/2",
-                "unit": "cup"
-            }
-        ],
+        [],
         [],
         [
             16
