@@ -41,7 +41,7 @@ function Recipe() {
     };
 
     const scrollToRecipe = () => {
-        document.getElementById('ingredients')?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('instructions')?.scrollIntoView({ behavior: 'smooth' });
     };
 
     // Helper to get flat list of ingredients for indexed lookup
@@ -218,7 +218,7 @@ function Recipe() {
                             </section>
 
                             {/* Instructions */}
-                            <section className="recipe-section">
+                            <section id="instructions" className="recipe-section">
                                 <h2 className="section-heading">
                                     <span className="heading-icon">👨‍🍳</span>
                                     Instructions

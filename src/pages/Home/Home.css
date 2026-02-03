@@ -11,6 +11,12 @@
     background-repeat: no-repeat;
     /* Soft overlay to ensure readability if needed, though the image has a clear center */
     /* background-blend-mode: overlay; */
+    transition: background-image var(--transition-base), background-color var(--transition-base);
+}
+
+[data-theme='dark'] .hero {
+    background-image: url('/images/hero-bg-dark.png');
+    background-color: #121212;
 }
 
 .hero-content {
