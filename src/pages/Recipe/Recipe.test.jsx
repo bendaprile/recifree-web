@@ -206,4 +206,22 @@ describe('Recipe Page', () => {
         fireEvent.click(step1);
         expect(step1).toHaveClass('checked');
     });
+
+    it('renders Jump to Recipe button which scrolls to instructions', () => {
+        renderRecipe();
+
+        const jumpButton = screen.getByText(/Jump to Recipe/i);
+        expect(jumpButton).toBeInTheDocument();
+
+        // Mock getElementById to return a dummy element with scrollIntoView
+        const scrollIntoViewMock = vi.fn();
+        vi.spyOn(document, 'getElementById').mockReturnValue({
+            scrollIntoView: scrollIntoViewMock
+        });
+
+        fireEvent.click(jumpButton);
+
+        expect(document.getElementById).toHaveBeenCalledWith('instructions');
+        expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
+    });
 });

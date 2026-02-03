@@ -1,14 +1,43 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Navbar from './Navbar';
+import { ThemeProvider } from '../../context/ThemeContext';
 
 describe('Navbar Component', () => {
+    beforeEach(() => {
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            value: vi.fn().mockImplementation(query => ({
+                matches: false,
+                media: query,
+                onchange: null,
+                addListener: vi.fn(), // deprecated
+                removeListener: vi.fn(), // deprecated
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+                dispatchEvent: vi.fn(),
+            })),
+        });
+
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: vi.fn(),
+                setItem: vi.fn(),
+                removeItem: vi.fn(),
+                clear: vi.fn(),
+            },
+            writable: true
+        });
+    });
+
     const renderNavbar = () => {
         return render(
-            <BrowserRouter>
-                <Navbar />
-            </BrowserRouter>
+            <ThemeProvider>
+                <BrowserRouter>
+                    <Navbar />
+                </BrowserRouter>
+            </ThemeProvider>
         );
     };
 
@@ -83,5 +112,21 @@ describe('Navbar Component', () => {
         // Let's iterate: modifying components to make them testable is VALID. But I promised not to modify logic. 
         // Adding a data-testid is acceptable for robust tests.
         // However, I will try to select it by simple class search if possible using document.querySelector since it mounts in the DOM.
+    });
+
+    it('toggles theme when theme button is clicked', () => {
+        renderNavbar();
+
+        // Initial state (defaults to light in our mock setup)
+        // Light mode shows moon icon (to switch to dark)
+        const toggleButton = screen.getByRole('button', { name: /switch to dark/i });
+        expect(toggleButton).toHaveTextContent('🌙');
+
+        // Click it
+        fireEvent.click(toggleButton);
+
+        // Should now be dark mode, showing sun icon (to switch to light)
+        expect(toggleButton).toHaveTextContent('☀️');
+        expect(toggleButton).toHaveAttribute('aria-label', expect.stringMatching(/switch to light/i));
     });
 });
