@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Footer.css';
 
 function Footer() {
@@ -16,6 +17,9 @@ function Footer() {
                         <p className="footer-tagline">
                             Recipes without the clutter. Just ingredients, steps, and deliciousness.
                         </p>
+                        <div className="footer-theme-toggle">
+                            <ThemeToggle />
+                        </div>
                     </div>
 
                     <div className="footer-links">

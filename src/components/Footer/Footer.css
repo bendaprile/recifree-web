@@ -40,6 +40,23 @@
     color: var(--color-text-muted);
     font-size: var(--text-sm);
     line-height: 1.6;
+    margin-bottom: var(--space-4);
+}
+
+.footer-theme-toggle {
+    display: inline-block;
+    margin-top: var(--space-2);
+}
+
+.footer-theme-toggle .theme-toggle {
+    color: inherit;
+    border-color: currentColor;
+    opacity: 0.8;
+}
+
+.footer-theme-toggle .theme-toggle:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Links Section */

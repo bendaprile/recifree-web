@@ -114,19 +114,5 @@ describe('Navbar Component', () => {
         // However, I will try to select it by simple class search if possible using document.querySelector since it mounts in the DOM.
     });
 
-    it('toggles theme when theme button is clicked', () => {
-        renderNavbar();
 
-        // Initial state (defaults to light in our mock setup)
-        // Light mode shows moon icon (to switch to dark)
-        const toggleButton = screen.getByRole('button', { name: /switch to dark/i });
-        expect(toggleButton).toHaveTextContent('🌙');
-
-        // Click it
-        fireEvent.click(toggleButton);
-
-        // Should now be dark mode, showing sun icon (to switch to light)
-        expect(toggleButton).toHaveTextContent('☀️');
-        expect(toggleButton).toHaveAttribute('aria-label', expect.stringMatching(/switch to light/i));
-    });
 });

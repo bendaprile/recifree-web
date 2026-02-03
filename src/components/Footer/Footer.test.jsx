@@ -1,14 +1,43 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Footer from './Footer';
+import { ThemeProvider } from '../../context/ThemeContext';
 
 describe('Footer Component', () => {
+    beforeEach(() => {
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            value: vi.fn().mockImplementation(query => ({
+                matches: false, // Default to light
+                media: query,
+                onchange: null,
+                addListener: vi.fn(),
+                removeListener: vi.fn(),
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+                dispatchEvent: vi.fn(),
+            })),
+        });
+
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: vi.fn(),
+                setItem: vi.fn(),
+                removeItem: vi.fn(),
+                clear: vi.fn(),
+            },
+            writable: true
+        });
+    });
+
     const renderFooter = () => {
         return render(
-            <BrowserRouter>
-                <Footer />
-            </BrowserRouter>
+            <ThemeProvider>
+                <BrowserRouter>
+                    <Footer />
+                </BrowserRouter>
+            </ThemeProvider>
         );
     };
 
@@ -41,5 +70,18 @@ describe('Footer Component', () => {
         const githubLink = screen.getByText('GitHub');
         expect(githubLink).toBeInTheDocument();
         expect(githubLink).toHaveAttribute('href', 'https://github.com/bendaprile/recifree-web');
+    });
+
+    it('renders and functions theme toggle', () => {
+        renderFooter();
+        // Since we default to light mode mock, it should show switch to dark button
+        const toggleButton = screen.getByLabelText(/switch to dark/i);
+        expect(toggleButton).toBeInTheDocument();
+
+        // Click to toggle
+        fireEvent.click(toggleButton);
+
+        // Should now be switch to light
+        expect(toggleButton).toHaveAttribute('aria-label', expect.stringMatching(/switch to light/i));
     });
 });
