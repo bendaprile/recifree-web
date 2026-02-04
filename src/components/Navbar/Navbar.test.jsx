@@ -114,5 +114,34 @@ describe('Navbar Component', () => {
         // However, I will try to select it by simple class search if possible using document.querySelector since it mounts in the DOM.
     });
 
+    it('navigates to About page from mobile menu', () => {
+        renderNavbar();
+        const toggleButton = screen.getByLabelText('Toggle navigation menu');
+
+        // Open
+        fireEvent.click(toggleButton);
+
+        const aboutLink = screen.getByRole('link', { name: /about/i });
+        expect(aboutLink).toHaveAttribute('href', '/about');
+
+        // Verify click closes menu
+        fireEvent.click(aboutLink);
+        expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    it('navigates to Shopping List page from mobile menu', () => {
+        renderNavbar();
+        const toggleButton = screen.getByLabelText('Toggle navigation menu');
+
+        // Open
+        fireEvent.click(toggleButton);
+
+        const listLink = screen.getByRole('link', { name: /shopping list/i });
+        expect(listLink).toHaveAttribute('href', '/shopping-list');
+
+        fireEvent.click(listLink);
+        expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
+    });
+
 
 });
