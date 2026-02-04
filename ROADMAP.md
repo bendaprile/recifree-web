@@ -56,4 +56,5 @@ Future Considerations
 PWA (Progressive Web App): Allow "installing" the site to the home screen for offline access.
 Nutrition Visualizer: Charts/graphs for macros instead of just text.
 
-8. Recipe language changes (can be crazy)
+8. Fun Recipe Wording
+There is a setting that allows users to change the level of vulgarity and humor in the recipe wording. There are 3 levels: 0 (no vulgarity or humor), 1 (some vulgarity or humor), and 2 (lots of vulgarity and humor). When the recipe is generated, these three levels will be generated and add some humor to the recipe.

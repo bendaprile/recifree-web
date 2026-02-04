@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Cache
+.npm-cache
+.eslintcache
+.stylelintcache
+.npm-cache/_cacache/index-v5/12/e6/adcab1be7b7fc14da117a64bb8a260f85ebe31592aac409bef55659ce4f9
