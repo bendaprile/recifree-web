@@ -1,0 +1,17 @@
+{
+    "name": "Recifree",
+    "short_name": "Recifree",
+    "description": "Recipes Without the Clutter",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FDFBF7",
+    "theme_color": "#4A5D4E",
+    "icons": [
+        {
+            "src": "/images/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
