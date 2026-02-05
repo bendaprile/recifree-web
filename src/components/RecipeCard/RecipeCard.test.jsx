@@ -56,7 +56,7 @@ describe('RecipeCard Component', () => {
         renderCard();
         expect(screen.getByText(mockRecipe.title)).toBeInTheDocument();
         expect(screen.getByText(mockRecipe.totalTime)).toBeInTheDocument();
-        expect(screen.getByText(mockRecipe.servings)).toBeInTheDocument();
+        expect(screen.getByText(`${mockRecipe.servings} servings`)).toBeInTheDocument();
         expect(screen.getByText(mockRecipe.difficulty)).toBeInTheDocument();
     });
 

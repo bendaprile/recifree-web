@@ -43,7 +43,7 @@ describe('Navbar Component', () => {
 
     it('renders the logo correctly', () => {
         renderNavbar();
-        expect(screen.getByAltText('Recifree Logo')).toBeInTheDocument();
+        expect(screen.getByText('Recifree')).toBeInTheDocument();
     });
 
     it('renders navigation links', () => {
