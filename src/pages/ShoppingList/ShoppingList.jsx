@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useShoppingList } from '../../context/ShoppingListContext';
+import { CheckIcon } from '../../components/Icons/Icons';
 import './ShoppingList.css';
 
 function ShoppingList() {
@@ -10,7 +11,6 @@ function ShoppingList() {
             <div className="shopping-list-page section">
                 <div className="container">
                     <div className="empty-list">
-                        <span className="empty-icon">📝</span>
                         <h2>Your shopping list is empty</h2>
                         <p>Start adding ingredients from our delicious recipes!</p>
                         <Link to="/" className="btn btn-primary">
@@ -58,7 +58,7 @@ function ShoppingList() {
                                         onClick={() => toggleItem(group.recipeId, ing.id)}
                                     >
                                         <div className="checkbox-visual">
-                                            {ing.checked && '✓'}
+                                            {ing.checked && <CheckIcon size={14} />}
                                         </div>
                                         <div className="item-content">
                                             {ing.amount && (

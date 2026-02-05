@@ -1,9 +1,12 @@
+/* =================================
+   Navbar - Minimalist Cookbook Style
+   ================================= */
 .navbar {
     position: sticky;
     top: 0;
     z-index: 100;
     background-color: var(--color-surface);
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border);
     height: var(--header-height);
 }
 
@@ -18,27 +21,27 @@
     height: 100%;
 }
 
-/* Logo */
+/* Logo - Serif Style */
 .navbar-logo {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
     text-decoration: none;
     z-index: 101;
 }
 
-
 .logo-image {
-    height: 48px;
+    height: 44px;
     width: auto;
     object-fit: contain;
 }
 
 .logo-text {
     font-family: var(--font-heading);
-    font-size: var(--text-3xl);
-    font-weight: var(--font-bold);
-    color: var(--color-primary);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-medium);
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
 }
 
 /* Hamburger Toggle */
@@ -47,10 +50,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -59,10 +62,9 @@
 
 .hamburger-line {
     display: block;
-    width: 24px;
-    height: 2px;
+    width: 22px;
+    height: 1.5px;
     background-color: var(--color-text-primary);
-    border-radius: 2px;
     transition: all var(--transition-base);
 }
 
@@ -78,7 +80,7 @@
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Navigation Menu */
+/* Navigation Menu - Mobile */
 .navbar-menu {
     position: fixed;
     top: 0;
@@ -86,11 +88,10 @@
     width: 280px;
     height: 100vh;
     background-color: var(--color-surface);
-    padding: calc(var(--header-height) + var(--space-6)) var(--space-6) var(--space-6);
+    padding: calc(var(--header-height) + var(--space-8)) var(--space-6) var(--space-6);
     box-shadow: var(--shadow-xl);
     transition: right var(--transition-slow);
     z-index: 102;
-    /* Ensure above overlay (99) and navbar (100) */
 }
 
 .navbar-menu.open {
@@ -100,28 +101,26 @@
 .navbar-links {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-1);
 }
 
 .nav-link {
     display: block;
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--text-lg);
-    font-weight: var(--font-medium);
-    color: var(--color-text-primary);
+    padding: var(--space-4) var(--space-4);
+    font-size: var(--text-base);
+    font-weight: var(--font-normal);
+    color: var(--color-text-secondary);
     text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast);
 }
 
 .nav-link:hover {
-    background-color: var(--color-border-light);
-    color: var(--color-primary);
+    color: var(--color-text-primary);
 }
 
 .nav-link.active {
-    background-color: var(--color-primary);
-    color: white;
+    color: var(--color-text-primary);
+    font-weight: var(--font-medium);
 }
 
 /* Overlay */
@@ -131,7 +130,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 99;
 }
 
@@ -152,29 +151,33 @@
 
     .navbar-links {
         flex-direction: row;
-        gap: var(--space-1);
+        gap: 0;
     }
 
     .nav-link {
-        font-size: var(--text-base);
-        padding: var(--space-2) var(--space-4);
-    }
-
-    .nav-link.active {
-        background-color: transparent;
-        color: var(--color-primary);
+        font-size: var(--text-sm);
+        padding: var(--space-2) var(--space-5);
         position: relative;
     }
 
-    .nav-link.active::after {
+    .nav-link::after {
         content: '';
         position: absolute;
-        bottom: 0;
-        left: var(--space-4);
-        right: var(--space-4);
-        height: 2px;
-        background-color: var(--color-primary);
-        border-radius: 2px;
+        bottom: -2px;
+        left: var(--space-5);
+        right: var(--space-5);
+        height: 1px;
+        background-color: var(--color-text-primary);
+        transform: scaleX(0);
+        transition: transform var(--transition-base);
+    }
+
+    .nav-link:hover::after {
+        transform: scaleX(1);
+    }
+
+    .nav-link.active::after {
+        transform: scaleX(1);
     }
 
     .navbar-overlay {

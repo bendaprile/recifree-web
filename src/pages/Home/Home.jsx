@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
 import recipes from '../../data/recipes';
+import { PlateIcon } from '../../components/Icons/Icons';
 import './Home.css';
 
 function Home() {
@@ -63,7 +64,6 @@ function Home() {
                         </p>
 
                         <div className="hero-search">
-                            <span className="search-icon">🔍</span>
                             <input
                                 type="text"
                                 placeholder="Search for a recipe..."
@@ -119,7 +119,7 @@ function Home() {
                         </div>
                     ) : (
                         <div className="no-recipes">
-                            <span className="no-recipes-icon">🍽️</span>
+                            <PlateIcon size={48} className="no-recipes-icon" />
                             <h3>No recipes found</h3>
                             <p>Try adjusting your search or filters</p>
                             <button
@@ -143,25 +143,25 @@ function Home() {
 
                     <div className="features-grid">
                         <div className="feature-card">
-                            <span className="feature-icon">🚫</span>
+                            <span className="feature-icon">×</span>
                             <h3>No Ads. Ever.</h3>
                             <p>We believe recipes should be free from visual clutter and interruptions.</p>
                         </div>
 
                         <div className="feature-card">
-                            <span className="feature-icon">📖</span>
+                            <span className="feature-icon">≡</span>
                             <h3>Just the Recipe</h3>
                             <p>No 10-paragraph stories about grandma's kitchen. Just ingredients and steps.</p>
                         </div>
 
                         <div className="feature-card">
-                            <span className="feature-icon">⚡</span>
+                            <span className="feature-icon">→</span>
                             <h3>Lightning Fast</h3>
                             <p>Lightweight pages that load instantly, even on slow connections.</p>
                         </div>
 
                         <div className="feature-card">
-                            <span className="feature-icon">💚</span>
+                            <span className="feature-icon">♥</span>
                             <h3>100% Free</h3>
                             <p>Open source and community-driven. No paywalls, no premium tiers.</p>
                         </div>

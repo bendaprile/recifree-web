@@ -32,29 +32,15 @@ Problem: Users lose track of recipes they liked. Solution: "Heart" recipes to sa
 Implementation: Persist recipe IDs in localStorage.
 UX: Heart icon on recipe cards and detail pages; a new "My Favorites" filter or page.
 
-5. Dietary Preferences filter
-Problem: Finding recipes for specific needs (Vegan, GF, Keto) relies on generic search. Solution: Dedicated dietary preference filters.
-
-Implementation: Parse recipe ingredients/tags to auto-categorize (or add explicit metadata).
-UX: Multi-select toggle buttons on the Home page (e.g., "Show only Vegan").
-
 
 ## Phase 3: Social & Discovery
 Features to help users find and share content.
 
-6. "Surprise Me" Button
+5. "Surprise Me" Button
 Problem: "What should I cook vs what can I cook?" Analysis paralysis. Solution: Random recipe generator.
 
 Implementation: Simple client-side randomizer from the recipe array.
 UX: Fun button in the hero section or navbar.
 
-7. Print-Friendly View
-Problem: Printing web pages often includes UI clutter (navbars, footers). Solution: optimized @media print CSS.
-
-Implementation: Hide nav, footer, and buttons; format text for legibility on A4/Letter paper; include QR code link back to site.
-Future Considerations
-PWA (Progressive Web App): Allow "installing" the site to the home screen for offline access.
-Nutrition Visualizer: Charts/graphs for macros instead of just text.
-
-8. Fun Recipe Wording
+6. Fun Recipe Wording
 There is a setting that allows users to change the level of vulgarity and humor in the recipe wording. There are 3 levels: 0 (no vulgarity or humor), 1 (some vulgarity or humor), and 2 (lots of vulgarity and humor). When the recipe is generated, these three levels will be generated and add some humor to the recipe.

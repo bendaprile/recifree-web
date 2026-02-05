@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import AddToShoppingListButton from '../AddToShoppingListButton/AddToShoppingListButton';
+import { ClockIcon, UsersIcon } from '../Icons/Icons';
 import './RecipeCard.css';
 
 function RecipeCard({ recipe }) {
@@ -34,12 +35,12 @@ function RecipeCard({ recipe }) {
 
                 <div className="recipe-card-meta">
                     <div className="meta-item">
-                        <span className="meta-icon">⏱️</span>
+                        <ClockIcon size={16} className="meta-icon" />
                         <span>{totalTime}</span>
                     </div>
                     <div className="meta-item">
-                        <span className="meta-icon">👥</span>
-                        <span>{servings}</span>
+                        <UsersIcon size={16} className="meta-icon" />
+                        <span>{servings} servings</span>
                     </div>
                 </div>
 

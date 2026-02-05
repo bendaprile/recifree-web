@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import { LeafIcon, HeartIcon } from '../Icons/Icons';
 import './Footer.css';
 
 function Footer() {
@@ -11,7 +12,7 @@ function Footer() {
                 <div className="footer-content">
                     <div className="footer-brand">
                         <Link to="/" className="footer-logo">
-                            <span className="logo-icon">🍳</span>
+                            <LeafIcon size={20} className="logo-icon" />
                             <span className="logo-text">Recifree</span>
                         </Link>
                         <p className="footer-tagline">
@@ -57,7 +58,7 @@ function Footer() {
                 </div>
 
                 <div className="footer-bottom">
-                    <p>© {currentYear} Recifree. Made with ❤️ for home cooks everywhere.</p>
+                    <p>© {currentYear} Recifree. Made with <HeartIcon size={14} className="heart-icon" /> for home cooks everywhere.</p>
                     <p className="footer-note">
                         100% free, open source, and ad-free. Forever.
                     </p>

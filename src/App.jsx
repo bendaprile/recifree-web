@@ -6,6 +6,7 @@ import Recipe from './pages/Recipe/Recipe';
 import ShoppingList from './pages/ShoppingList/ShoppingList';
 import { ShoppingListProvider } from './context/ShoppingListContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { SkilletIcon } from './components/Icons/Icons';
 import './styles/global.css';
 import './App.css';
 
@@ -81,7 +82,7 @@ function NotFoundPage() {
   return (
     <div className="not-found-page section">
       <div className="container text-center">
-        <span className="not-found-emoji">🍳</span>
+        <SkilletIcon size={48} className="not-found-emoji" />
         <h1>404 - Page Not Found</h1>
         <p>Oops! This recipe seems to have gone missing.</p>
         <a href="/" className="btn btn-primary">Back to Home</a>

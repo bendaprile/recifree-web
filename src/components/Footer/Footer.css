@@ -1,7 +1,11 @@
+/* =================================
+   Footer - Minimalist Cookbook Style
+   ================================= */
 .footer {
-    background-color: var(--color-text-primary);
-    color: var(--color-background);
-    padding: var(--space-12) 0 var(--space-6);
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: var(--space-12) 0 var(--space-8);
     margin-top: auto;
     transition: background-color var(--transition-base), color var(--transition-base);
 }
@@ -14,32 +18,33 @@
 
 /* Brand Section */
 .footer-brand {
-    max-width: 300px;
+    max-width: 320px;
 }
 
 .footer-logo {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
     text-decoration: none;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
 }
 
 .footer-logo .logo-icon {
-    font-size: var(--text-2xl);
+    font-size: var(--text-xl);
+    opacity: 0.8;
 }
 
 .footer-logo .logo-text {
     font-family: var(--font-heading);
     font-size: var(--text-xl);
-    font-weight: var(--font-bold);
-    color: var(--color-primary-light);
+    font-weight: var(--font-medium);
+    color: var(--color-text-primary);
 }
 
 .footer-tagline {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
-    line-height: 1.6;
+    line-height: 1.7;
     margin-bottom: var(--space-4);
 }
 
@@ -49,36 +54,36 @@
 }
 
 .footer-theme-toggle .theme-toggle {
-    color: inherit;
-    border-color: currentColor;
-    opacity: 0.8;
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
 }
 
 .footer-theme-toggle .theme-toggle:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+    border-color: var(--color-text-secondary);
 }
 
 /* Links Section */
 .footer-links {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
+    gap: var(--space-8);
 }
 
 .footer-section h4.footer-heading {
-    color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-heading);
     font-size: var(--text-sm);
-    font-weight: var(--font-semibold);
+    font-weight: var(--font-medium);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     margin-bottom: var(--space-4);
 }
 
 .footer-section ul {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-3);
 }
 
 .footer-section a {
@@ -89,13 +94,13 @@
 }
 
 .footer-section a:hover {
-    color: var(--color-primary-light);
+    color: var(--color-text-primary);
 }
 
 /* Bottom Section */
 .footer-bottom {
     padding-top: var(--space-6);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--color-border-light);
     text-align: center;
 }
 
@@ -106,25 +111,22 @@
 }
 
 .footer-note {
-    color: var(--color-primary-light);
+    color: var(--color-primary);
     font-weight: var(--font-medium);
+}
+
+/* Inline heart icon */
+.footer-bottom .heart-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0.15em;
+    color: var(--color-primary);
 }
 
 /* Dark Mode Overrides */
 [data-theme='dark'] .footer {
-    background-color: #0d0e0e;
-    /* Darker than main background #18191A */
-    color: var(--color-text-primary);
-    border-top: 1px solid var(--color-border);
-}
-
-[data-theme='dark'] .footer-section h4.footer-heading {
-    color: var(--color-text-primary);
-}
-
-[data-theme='dark'] .footer-logo .logo-text {
-    color: var(--color-primary);
-    /* slightly brighter in dark mode */
+    background-color: var(--color-surface);
+    border-top-color: var(--color-border);
 }
 
 /* Tablet and up */

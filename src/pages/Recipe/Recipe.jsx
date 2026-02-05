@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import recipes from '../../data/recipes';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
+import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import './Recipe.css';
 
 function Recipe() {
@@ -82,7 +83,7 @@ function Recipe() {
         return (
             <div className="recipe-not-found">
                 <div className="container">
-                    <span className="not-found-icon">🔍</span>
+                    <PlateIcon size={48} className="not-found-icon" />
                     <h1>Recipe Not Found</h1>
                     <p>Sorry, we couldn't find the recipe you're looking for.</p>
                     <Link to="/" className="btn btn-primary">
@@ -155,7 +156,6 @@ function Recipe() {
                             {/* Ingredients */}
                             <section id="ingredients" className="recipe-section">
                                 <h2 className="section-heading">
-                                    <span className="heading-icon">🛒</span>
                                     Ingredients
                                 </h2>
                                 <p className="section-hint">Tap items to check them off</p>
@@ -175,7 +175,7 @@ function Recipe() {
                                                             onClick={() => toggleIngredient(uniqueId)}
                                                         >
                                                             <span className="ingredient-checkbox">
-                                                                {checkedIngredients.includes(uniqueId) ? '✓' : ''}
+                                                                {checkedIngredients.includes(uniqueId) ? <CheckIcon size={14} /> : ''}
                                                             </span>
                                                             <span className="ingredient-text">
                                                                 {ingredient.amount && (
@@ -201,7 +201,7 @@ function Recipe() {
                                                 onClick={() => toggleIngredient(index)}
                                             >
                                                 <span className="ingredient-checkbox">
-                                                    {checkedIngredients.includes(index) ? '✓' : ''}
+                                                    {checkedIngredients.includes(index) ? <CheckIcon size={14} /> : ''}
                                                 </span>
                                                 <span className="ingredient-text">
                                                     {ingredient.amount && (
@@ -220,7 +220,6 @@ function Recipe() {
                             {/* Instructions */}
                             <section id="instructions" className="recipe-section">
                                 <h2 className="section-heading">
-                                    <span className="heading-icon">👨‍🍳</span>
                                     Instructions
                                 </h2>
                                 <p className="section-hint">Tap steps to mark as complete</p>
@@ -249,7 +248,6 @@ function Recipe() {
                             {recipe.nutrition && (
                                 <section className="recipe-section nutrition-section">
                                     <h2 className="section-heading">
-                                        <span className="heading-icon">📊</span>
                                         Nutrition (per serving)
                                     </h2>
 
@@ -315,7 +313,7 @@ function Recipe() {
                                     className="btn btn-secondary"
                                     onClick={() => window.print()}
                                 >
-                                    🖨️ Print Recipe
+                                    <PrinterIcon size={18} /> Print Recipe
                                 </button>
                             </div>
 
