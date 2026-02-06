@@ -184,3 +184,19 @@
         display: none;
     }
 }
+
+/* Dark Mode Overrides */
+[data-theme='dark'] .nav-link {
+    color: var(--color-text-primary);
+}
+
+[data-theme='dark'] .nav-link:hover,
+[data-theme='dark'] .nav-link.active {
+    color: var(--color-primary);
+}
+
+@media (min-width: 768px) {
+    [data-theme='dark'] .nav-link::after {
+        background-color: var(--color-primary);
+    }
+}
