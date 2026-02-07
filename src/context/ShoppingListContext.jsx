@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { CATEGORIES, categorizeIngredient, aggregateIngredients } from '../utils/ingredientCategories';
 
 const ShoppingListContext = createContext();
 
@@ -117,8 +118,82 @@ export function ShoppingListProvider({ children }) {
         setItems([]);
     };
 
+    // Clear only checked items
+    const clearChecked = () => {
+        setItems(prevItems => {
+            return prevItems.map(group => ({
+                ...group,
+                ingredients: group.ingredients.filter(ing => !ing.checked)
+            })).filter(group => group.ingredients.length > 0);
+        });
+    };
+
     // Get total item count
     const itemCount = items.reduce((total, group) => total + group.ingredients.length, 0);
+
+    // Compute items grouped by category (Store View)
+    const itemsByCategory = useMemo(() => {
+        // Flatten all ingredients with recipe context
+        const flatIngredients = items.flatMap(group =>
+            group.ingredients.map(ing => ({
+                ...ing,
+                recipeId: group.recipeId,
+                recipeTitle: group.recipeTitle
+            }))
+        );
+
+        // Group by category
+        const grouped = {};
+        CATEGORIES.forEach(cat => {
+            grouped[cat.id] = {
+                ...cat,
+                items: []
+            };
+        });
+
+        flatIngredients.forEach(ing => {
+            const category = categorizeIngredient(ing.item);
+            grouped[category.id].items.push(ing);
+        });
+
+        // Aggregate items within each category and filter empty categories
+        const result = {};
+        CATEGORIES.forEach(cat => {
+            if (grouped[cat.id].items.length > 0) {
+                result[cat.id] = {
+                    ...grouped[cat.id],
+                    aggregatedItems: aggregateIngredients(grouped[cat.id].items)
+                };
+            }
+        });
+
+        return result;
+    }, [items]);
+
+    // Generate plain text list for clipboard
+    const getPlainTextList = () => {
+        let text = 'Shopping List\n';
+        text += '='.repeat(40) + '\n\n';
+
+        Object.values(itemsByCategory).forEach(category => {
+            text += `${category.icon} ${category.name}\n`;
+            text += '-'.repeat(20) + '\n';
+
+            category.aggregatedItems.forEach(item => {
+                // Format quantities
+                const quantityStr = item.quantities
+                    .map(q => `${q.amount || ''} ${q.unit || ''}`.trim())
+                    .filter(Boolean)
+                    .join(' + ') || '';
+
+                const checked = item.quantities.every(q => q.checked) ? '✓ ' : '☐ ';
+                text += `${checked}${quantityStr} ${item.displayName}\n`;
+            });
+            text += '\n';
+        });
+
+        return text.trim();
+    };
 
     const value = {
         items,
@@ -127,7 +202,10 @@ export function ShoppingListProvider({ children }) {
         removeRecipe,
         toggleItem,
         clearList,
-        itemCount
+        clearChecked,
+        itemCount,
+        itemsByCategory,
+        getPlainTextList
     };
 
     return (
@@ -136,3 +214,4 @@ export function ShoppingListProvider({ children }) {
         </ShoppingListContext.Provider>
     );
 }
+
