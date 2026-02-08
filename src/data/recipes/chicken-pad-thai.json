@@ -1,0 +1,168 @@
+{
+    "id": "chicken-pad-thai",
+    "title": "Chicken Pad Thai",
+    "description": "Indulge in the vibrant flavors of Thailand with this quick and easy Chicken Pad Thai recipe. Perfect for busy weeknights or special occasions, this delightful dish combines tender chicken, fresh vegetables, and a savory sauce that delivers a flavor explosion in every bite.",
+    "image": "/images/recipes/chicken-pad-thai.png",
+    "prepTime": "15 mins",
+    "cookTime": "15 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Medium",
+    "tags": [
+        "Thai",
+        "Dinner",
+        "Main",
+        "Stir-fry",
+        "Chicken",
+        "Noodles"
+    ],
+    "ingredients": [
+        {
+            "amount": "12",
+            "unit": "oz",
+            "item": "Thai rice noodles"
+        },
+        {
+            "amount": "1 1/2",
+            "unit": "lb",
+            "item": "chicken breasts, sliced"
+        },
+        {
+            "amount": "5",
+            "unit": "tbsp",
+            "item": "brown sugar"
+        },
+        {
+            "amount": "1/2",
+            "unit": "cup",
+            "item": "soy sauce"
+        },
+        {
+            "amount": "1/4",
+            "unit": "cup",
+            "item": "rice vinegar"
+        },
+        {
+            "amount": "3",
+            "unit": "tbsp",
+            "item": "chili garlic sauce or sriracha"
+        },
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "lime, juiced"
+        },
+        {
+            "amount": "2",
+            "unit": "tbsp",
+            "item": "oil"
+        },
+        {
+            "amount": "3",
+            "unit": "",
+            "item": "eggs, beaten"
+        },
+        {
+            "amount": "1",
+            "unit": "",
+            "item": "red bell pepper, sliced"
+        },
+        {
+            "amount": "2",
+            "unit": "cups",
+            "item": "bean sprouts"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "matchstick carrots"
+        },
+        {
+            "amount": "2",
+            "unit": "",
+            "item": "green onions, chopped"
+        },
+        {
+            "amount": "1/4",
+            "unit": "cup",
+            "item": "peanuts, chopped"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "Fresh cilantro"
+        }
+    ],
+    "instructions": [
+        "Mix brown sugar, soy sauce, rice vinegar, chili garlic sauce, and lime juice in a bowl to make the sauce.",
+        "Cook noodles according to package instructions until al dente. Drain and set aside.",
+        "Heat 1 tablespoon of oil in a large skillet over medium-high heat. Add sliced chicken and cook for 4-6 minutes until done. Remove from skillet.",
+        "In the same skillet, heat 1 teaspoon of oil. Add beaten eggs and scramble until fully cooked. Remove and set aside.",
+        "Add remaining oil to the skillet. Sauté bell pepper for 1-2 minutes. Add bean sprouts and carrots; cook for 1-2 minutes until softened.",
+        "Add drained noodles, cooked chicken, scrambled eggs, and the prepared sauce to the skillet. Toss everything together over medium heat for about 1 minute until heated through.",
+        "Serve garnished with chopped peanuts, green onions, and fresh cilantro."
+    ],
+    "stepIngredients": [
+        [
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        [
+            0
+        ],
+        [
+            1,
+            {
+                "id": 7,
+                "amount": "1",
+                "unit": "tbsp"
+            }
+        ],
+        [
+            8,
+            {
+                "id": 7,
+                "amount": "1",
+                "unit": "tsp"
+            }
+        ],
+        [
+            9,
+            10,
+            11,
+            {
+                "id": 7,
+                "amount": "remaining",
+                "unit": ""
+            }
+        ],
+        [
+            0,
+            1,
+            8,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        [
+            12,
+            13,
+            14
+        ]
+    ],
+    "source": {
+        "name": "Savory Dome",
+        "url": "https://savorydome.com/chicken-pad-thai/?utm_source=Pinterest&utm_medium=organic"
+    },
+    "nutrition": {
+        "calories": 480,
+        "protein": "32g",
+        "carbs": "60g",
+        "fat": "15g"
+    }
+}
