@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import recipes from '../../data/recipes';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
+import InstructionItem from '../../components/InstructionItem/InstructionItem';
 import './Recipe.css';
 
 function Recipe() {
@@ -10,6 +11,7 @@ function Recipe() {
     const [recipe, setRecipe] = useState(null);
     const [checkedIngredients, setCheckedIngredients] = useState([]);
     const [checkedSteps, setCheckedSteps] = useState([]);
+    const [expandedSteps, setExpandedSteps] = useState([]); // New state for expanded steps
     const [hoveredStep, setHoveredStep] = useState(null);
     const [hoveredStepY, setHoveredStepY] = useState(0);
     const [adjustedPopupY, setAdjustedPopupY] = useState(0);
@@ -19,7 +21,9 @@ function Recipe() {
         const foundRecipe = recipes.find(r => r.id === id);
         setRecipe(foundRecipe);
         setCheckedIngredients([]);
+        setCheckedIngredients([]);
         setCheckedSteps([]);
+        setExpandedSteps([]);
 
         // Scroll to top when recipe loads
         window.scrollTo(0, 0);
@@ -33,8 +37,19 @@ function Recipe() {
         );
     };
 
-    const toggleStep = (index) => {
+    const toggleStep = (index, e) => {
+        // Prevent triggering expansion when clicking checkbox
+        if (e) e.stopPropagation();
+
         setCheckedSteps(prev =>
+            prev.includes(index)
+                ? prev.filter(i => i !== index)
+                : [...prev, index]
+        );
+    };
+
+    const toggleStepExpansion = (index) => {
+        setExpandedSteps(prev =>
             prev.includes(index)
                 ? prev.filter(i => i !== index)
                 : [...prev, index]
@@ -222,25 +237,51 @@ function Recipe() {
                                 <h2 className="section-heading">
                                     Instructions
                                 </h2>
-                                <p className="section-hint">Tap steps to mark as complete</p>
+                                <div className="section-hint-wrapper">
+                                    <p className="section-hint hint-mobile">Tap text to view ingredients, check circle to complete</p>
+                                    <p className="section-hint hint-desktop">Hover over steps to view ingredients</p>
+                                </div>
 
                                 <ol className="instructions-list">
-                                    {recipe.instructions.map((step, index) => (
-                                        <li
-                                            key={index}
-                                            className={`instruction-item ${checkedSteps.includes(index) ? 'checked' : ''}`}
-                                            onClick={() => toggleStep(index)}
-                                            onMouseEnter={(e) => {
-                                                setHoveredStep(index);
-                                                const rect = e.currentTarget.getBoundingClientRect();
-                                                setHoveredStepY(rect.top);
-                                            }}
-                                            onMouseLeave={() => setHoveredStep(null)}
-                                        >
-                                            <span className="step-number">{index + 1}</span>
-                                            <p className="step-text">{step}</p>
-                                        </li>
-                                    ))}
+                                    {recipe.instructions.map((step, index) => {
+                                        const isExpanded = expandedSteps.includes(index);
+                                        const hasIngredients = recipe.stepIngredients && recipe.stepIngredients[index] && recipe.stepIngredients[index].length > 0;
+
+                                        // Resolve inline ingredients
+                                        const inlineIngredients = hasIngredients ? recipe.stepIngredients[index].map((entry) => {
+                                            const isObject = typeof entry === 'object' && entry !== null;
+                                            const ingredientIndex = isObject ? entry.id : entry;
+                                            const ingredient = flatIngredients[ingredientIndex];
+
+                                            if (!ingredient) return null;
+
+                                            return {
+                                                amount: isObject && entry.amount !== undefined ? entry.amount : ingredient.amount,
+                                                unit: isObject && entry.unit !== undefined ? entry.unit : ingredient.unit,
+                                                item: ingredient.item
+                                            };
+                                        }).filter(Boolean) : [];
+
+                                        return (
+                                            <InstructionItem
+                                                key={index}
+                                                step={step}
+                                                index={index}
+                                                isChecked={checkedSteps.includes(index)}
+                                                isExpanded={isExpanded}
+                                                hasIngredients={hasIngredients}
+                                                inlineIngredients={inlineIngredients}
+                                                onToggle={toggleStep}
+                                                onExpand={toggleStepExpansion}
+                                                onHover={(e) => {
+                                                    setHoveredStep(index);
+                                                    const rect = e.currentTarget.getBoundingClientRect();
+                                                    setHoveredStepY(rect.top);
+                                                }}
+                                                onLeave={() => setHoveredStep(null)}
+                                            />
+                                        );
+                                    })}
                                 </ol>
                             </section>
 

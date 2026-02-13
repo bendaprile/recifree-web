@@ -197,14 +197,39 @@ describe('Recipe Page', () => {
         expect(flourItem).toHaveClass('checked');
     });
 
-    it('toggles instruction steps', () => {
+    it('toggles instruction steps completion when checkbox is clicked', () => {
         renderRecipe();
 
         const step1 = screen.getByText('Mix ingredients').closest('li');
+        const checkbox = step1.querySelector('.instruction-checkbox-wrapper');
+
         expect(step1).not.toHaveClass('checked');
 
-        fireEvent.click(step1);
+        fireEvent.click(checkbox);
         expect(step1).toHaveClass('checked');
+    });
+
+    it('toggles step expansion and shows inline ingredients when step is clicked', () => {
+        renderRecipe();
+
+        const step1 = screen.getByText('Mix ingredients').closest('li');
+
+        // Initially not expanded
+        expect(step1).not.toHaveClass('expanded');
+        expect(screen.queryByText('2 cups', { selector: '.step-ingredient-text strong' })).not.toBeInTheDocument();
+
+        // Click to expand
+        fireEvent.click(step1);
+
+        expect(step1).toHaveClass('expanded');
+        // Check for inline ingredient presence
+        expect(screen.getByText('2 cups', { selector: '.step-ingredient-text strong' })).toBeInTheDocument();
+        expect(screen.getByText('Flour', { selector: '.step-ingredient-text' })).toBeInTheDocument();
+
+        // Click to collapse
+        fireEvent.click(step1);
+        expect(step1).not.toHaveClass('expanded');
+        expect(screen.queryByText('2 cups', { selector: '.step-ingredient-text strong' })).not.toBeInTheDocument();
     });
 
     it('renders Jump to Recipe button which scrolls to instructions', () => {
