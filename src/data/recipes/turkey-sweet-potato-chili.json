@@ -1,0 +1,158 @@
+{
+    "id": "turkey-sweet-potato-chili",
+    "title": "Turkey Sweet Potato Chili",
+    "description": "A healthy and delicious 30-minute chili featuring ground turkey, sweet potatoes, and corn in a hearty tomato broth.",
+    "image": "/images/recipes/turkey-sweet-potato-chili.png",
+    "prepTime": "5 mins",
+    "cookTime": "25 mins",
+    "totalTime": "30 mins",
+    "servings": 4,
+    "difficulty": "Easy",
+    "tags": [
+        "American",
+        "Dinner",
+        "Healthy",
+        "Turkey",
+        "Sweet Potato",
+        "Chili"
+    ],
+    "ingredients": [
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "olive oil"
+        },
+        {
+            "amount": "1/2",
+            "unit": "",
+            "item": "sweet onion, diced"
+        },
+        {
+            "amount": "5-7",
+            "unit": "cloves",
+            "item": "garlic, minced"
+        },
+        {
+            "amount": "1",
+            "unit": "lb",
+            "item": "ground turkey"
+        },
+        {
+            "amount": "28",
+            "unit": "oz",
+            "item": "petite diced tomatoes"
+        },
+        {
+            "amount": "16",
+            "unit": "oz",
+            "item": "tomato sauce"
+        },
+        {
+            "amount": "1/2",
+            "unit": "cup",
+            "item": "chicken broth"
+        },
+        {
+            "amount": "1",
+            "unit": "large",
+            "item": "sweet potato (approx. 12 oz), 1-inch cubed"
+        },
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "chili powder"
+        },
+        {
+            "amount": "1",
+            "unit": "tsp",
+            "item": "smoked paprika"
+        },
+        {
+            "amount": "1/2",
+            "unit": "tsp",
+            "item": "ground cumin"
+        },
+        {
+            "amount": "1",
+            "unit": "tbsp",
+            "item": "granulated sugar"
+        },
+        {
+            "amount": "1",
+            "unit": "cup",
+            "item": "frozen corn"
+        },
+        {
+            "amount": "",
+            "unit": "",
+            "item": "salt and black pepper to taste"
+        },
+        {
+            "title": "Garnish",
+            "items": [
+                {
+                    "amount": "1/4",
+                    "unit": "cup",
+                    "item": "chopped cilantro"
+                },
+                {
+                    "amount": "1/3",
+                    "unit": "cup",
+                    "item": "shredded cheddar cheese"
+                },
+                {
+                    "amount": "2",
+                    "unit": "",
+                    "item": "avocados, sliced"
+                }
+            ]
+        }
+    ],
+    "instructions": [
+        "Heat olive oil in a large pot and sauté onion and garlic for 1-2 minutes until fragrant.",
+        "Add ground turkey, seasoned with a pinch of salt and pepper, and cook until mostly browned.",
+        "Stir in diced tomatoes, tomato sauce, chicken broth, sweet potatoes, chili powder, smoked paprika, cumin, and sugar. Boil, then simmer over medium heat for 15 minutes until sweet potatoes are tender.",
+        "Mix in frozen corn and simmer for a few more minutes until boiling again. Season with salt and pepper to taste.",
+        "Serve in bowls topped with cilantro, cheddar cheese, and avocado."
+    ],
+    "stepIngredients": [
+        [
+            0,
+            1,
+            2
+        ],
+        [
+            3,
+            13
+        ],
+        [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+        ],
+        [
+            12,
+            13
+        ],
+        [
+            14,
+            15,
+            16
+        ]
+    ],
+    "source": {
+        "name": "Joyous Apron",
+        "url": "https://www.joyousapron.com/turkey-sweet-potato-chili/?utm_source=Pinterest&utm_medium=organic#recipe"
+    },
+    "nutrition": {
+        "calories": 577,
+        "protein": "39g",
+        "carbs": "59g",
+        "fat": "25g"
+    }
+}

@@ -11,8 +11,8 @@ This document outlines the workflow for adding new recipes to Recifree using an 
 ## 🔄 The Process
 
 1.  **Select a Source**: Find a high-quality recipe from a blog or website.
-2.  **Copy Content**: Copy the entire text of the recipe (ingredients, instructions, headnotes, metadata).
-3.  **Feed the LLM**: Paste the "Recipe Generation Prompt" (below) followed by the copied recipe text into an LLM (ChatGPT, Claude, Gemini, etc.).
+2.  **Copy Content**: Copy the entire text of the recipe, but **specifically highlight the formal "Recipe Card" section** (ingredients, instructions, nutrition facts).
+3.  **Feed the LLM**: Paste the "Recipe Generation Prompt" (below) followed by the copied recipe text into an LLM.
 4.  **Review Output**: The LLM will generate a JSON block. Review it briefly for accuracy.
 5.  **Create File**:
     *   Create a new file in `src/data/recipes/` named `[id].json` (the LLM will generate the ID).
@@ -40,6 +40,8 @@ Your task is to extract recipe data from the text provided below and format it i
 3.  **NO MARKDOWN**: Output **ONLY** the raw JSON. Do not wrap it in \`\`\`json blocks\`\`\` or add conversational text.
 4.  **STANDARDIZE UNITS**: Use standard abbreviations ("tbsp", "tsp", "oz", "lb", "cup").
 5.  **INFER MISSING DATA**: If specific metadata (like "difficulty" or "tags") is missing, make a reasonable guess based on the recipe complexity.
+6.  **CARDS OVER NARRATIVE**: Prioritize the formal "Recipe Card" measurements over any amounts mentioned in the blog post body. Narrative text often mentions "what to buy" vs "what to use" (e.g., buying a 1lb sweet potato but only using 12oz).
+7.  **QUANTITY VS CONTAINER**: Do not confuse can/container sizes with ingredient amounts. If a recipe says "1/2 cup chicken broth (from a 15oz can)", the ingredient amount is "1/2 cup".
 
 ### 📄 JSON SCHEMA
 Follow this structure EXACTLY.
