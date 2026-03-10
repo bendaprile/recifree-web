@@ -586,6 +586,9 @@
 
 .print-card {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .print-card .btn {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import recipes from '../../data/recipes';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
-import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
+import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon, ShareIcon } from '../../components/Icons/Icons';
 import InstructionItem from '../../components/InstructionItem/InstructionItem';
 import './Recipe.css';
 
@@ -16,6 +16,14 @@ function Recipe() {
     const [hoveredStepY, setHoveredStepY] = useState(0);
     const [adjustedPopupY, setAdjustedPopupY] = useState(0);
     const popupRef = useRef(null);
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        });
+    };
 
     useEffect(() => {
         const foundRecipe = recipes.find(r => r.id === id);
@@ -355,6 +363,12 @@ function Recipe() {
                                     onClick={() => window.print()}
                                 >
                                     <PrinterIcon size={18} /> Print Recipe
+                                </button>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={handleShare}
+                                >
+                                    <ShareIcon size={18} /> {isCopied ? "Copied!" : "Share Recipe"}
                                 </button>
                             </div>
 
