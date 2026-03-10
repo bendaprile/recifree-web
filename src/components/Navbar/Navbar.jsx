@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 import './Navbar.css';
 
@@ -23,16 +24,19 @@ function Navbar() {
             <h1 className="logo-text">Recifree</h1>
           </Link>
 
-          <button
-            className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
-            onClick={toggleMenu}
-            aria-label="Toggle navigation menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-          </button>
+          <div className="navbar-actions">
+            <ThemeToggle />
+            <button
+              className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
+              onClick={toggleMenu}
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMenuOpen}
+            >
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </button>
+          </div>
 
           <div className={`navbar-menu ${isMenuOpen ? 'open' : ''}`}>
             <ul className="navbar-links">

@@ -44,6 +44,13 @@
     letter-spacing: -0.01em;
 }
 
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    z-index: 101;
+}
+
 /* Hamburger Toggle */
 .navbar-toggle {
     display: flex;
