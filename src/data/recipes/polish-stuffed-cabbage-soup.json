@@ -1,0 +1,62 @@
+{
+  "id": "polish-stuffed-cabbage-soup",
+  "title": "Polish Stuffed Cabbage Soup (Zupa Gołąbkowa)",
+  "description": "A cozy, one-pot Polish soup that combines ground meat, cabbage, rice, tomatoes, and simple herbs in a rich broth.",
+  "image": "/images/recipes/polish-stuffed-cabbage-soup.jpg",
+  "prepTime": "10 mins",
+  "cookTime": "40 mins",
+  "totalTime": "50 mins",
+  "servings": 5,
+  "difficulty": "Easy",
+  "tags": [
+    "Polish",
+    "Dinner",
+    "Soup",
+    "Pork"
+  ],
+  "ingredients": [
+    { "amount": "2", "unit": "tbsp", "item": "olive oil" },
+    { "amount": "10", "unit": "oz", "item": "ground pork (or beef)" },
+    { "amount": "1", "unit": "whole", "item": "leek (chopped)" },
+    { "amount": "1", "unit": "whole", "item": "white onion (diced)" },
+    { "amount": "1", "unit": "tbsp", "item": "butter" },
+    { "amount": "1", "unit": "whole", "item": "carrot (grated)" },
+    { "amount": "to taste", "unit": "", "item": "salt" },
+    { "amount": "to taste", "unit": "", "item": "pepper" },
+    { "amount": "1", "unit": "tsp", "item": "paprika" },
+    { "amount": "1", "unit": "tsp", "item": "oregano" },
+    { "amount": "1/2", "unit": "tsp", "item": "thyme" },
+    { "amount": "2", "unit": "quarts", "item": "chicken or vegetable broth" },
+    { "amount": "1", "unit": "head", "item": "white cabbage (chopped)" },
+    { "amount": "1/4", "unit": "cup", "item": "uncooked white rice" },
+    { "amount": "14.5", "unit": "oz", "item": "canned tomatoes" },
+    { "amount": "1", "unit": "tbsp", "item": "tomato paste" },
+    { "amount": "1", "unit": "tbsp", "item": "chopped dill" }
+  ],
+  "instructions": [
+    "Heat olive oil in a large pot over medium heat. Add ground pork and cook for 6-8 minutes until browned, breaking it into small pieces.",
+    "Add leek, white onion, and butter. Cook for 5 minutes until vegetables soften.",
+    "Stir in grated carrot, salt, pepper, paprika, oregano, and thyme. Cook for 2 minutes.",
+    "Pour in hot broth and bring to a gentle boil. Stir in chopped cabbage and white rice. Cover and simmer gently for 15 minutes.",
+    "Mix in canned tomatoes and tomato paste. Cook for 3 minutes over low to medium heat.",
+    "Turn off the heat and stir in chopped dill. Let sit for 3-5 minutes before serving."
+  ],
+  "stepIngredients": [
+    [0, 1],
+    [2, 3, 4],
+    [5, 6, 7, 8, 9, 10],
+    [11, 12, 13],
+    [14, 15],
+    [16]
+  ],
+  "source": {
+    "name": "Polish Feast",
+    "url": "https://polishfeast.com/polish-stuffed-cabbage-soup/"
+  },
+  "nutrition": {
+    "calories": 320,
+    "protein": "18g",
+    "carbs": "22g",
+    "fat": "18g"
+  }
+}
