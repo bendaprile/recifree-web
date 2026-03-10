@@ -1,0 +1,69 @@
+{
+  "id": "bifteki-with-lemon-potatoes",
+  "title": "Bifteki with Lemon Potatoes",
+  "description": "Greek-inspired beef meatballs packed with lemon, garlic, and fresh herbs, served alongside simple roasted zucchini and lemon-infused potatoes with a dollop of creamy Greek yogurt.",
+  "image": "/images/recipes/bifteki-with-lemon-potatoes.jpg",
+  "prepTime": "30 mins",
+  "cookTime": "10 mins",
+  "totalTime": "40 mins",
+  "servings": 2,
+  "difficulty": "Easy",
+  "tags": [
+    "Greek",
+    "Dinner",
+    "Beef",
+    "Meatballs",
+    "Sheet Pan"
+  ],
+  "ingredients": [
+    { "amount": "10", "unit": "oz", "item": "grass-fed ground beef" },
+    { "amount": "2", "unit": "", "item": "russet potatoes" },
+    { "amount": "2", "unit": "", "item": "zucchini" },
+    { "amount": "1", "unit": "", "item": "lemon" },
+    { "amount": "4", "unit": "cloves", "item": "garlic" },
+    { "amount": "1", "unit": "pkt", "item": "chicken broth concentrate" },
+    { "amount": "1/4", "unit": "oz", "item": "fresh dill" },
+    { "amount": "1/4", "unit": "oz", "item": "dried oregano" },
+    { "amount": "1", "unit": "oz", "item": "panko breadcrumbs" },
+    { "amount": "1", "unit": "", "item": "large egg" },
+    { "amount": "4", "unit": "oz", "item": "Greek yogurt" },
+    { "amount": "3", "unit": "tbsp", "item": "olive oil" },
+    { "amount": "1", "unit": "tsp", "item": "red wine vinegar" },
+    { "amount": "to taste", "unit": "", "item": "kosher salt" },
+    { "amount": "to taste", "unit": "", "item": "ground pepper" }
+  ],
+  "instructions": [
+    "Scrub potatoes and prick twice with a fork. Microwave on a microwave-safe plate on high for 5 minutes, flip, and continue for 3-5 minutes until easily pierced.",
+    "Cut zucchini into 1/2-inch pieces. Toss zucchini on a parchment-lined baking sheet with 1 tablespoon oil and a pinch of salt and pepper.",
+    "Finely grate 2 garlic cloves into a large bowl. Zest the lemon into a small bowl and set aside. Juice half the lemon into the large bowl with the garlic.",
+    "Stir the broth concentrate, 1 teaspoon oregano, and 2 tablespoons oil into the large bowl. Cut cooked potatoes into 1/2-inch pieces, add to the bowl, mix well, and season to taste.",
+    "Transfer potatoes to the baking sheet with the zucchini, reserving the large bowl.",
+    "Pick dill fronds from stems, reserving fronds and finely chopping stems. Finely grate 2 garlic cloves into the reserved bowl.",
+    "Add ground beef, lemon zest, chopped dill stems, panko, egg, 1 1/2 teaspoons salt, 1 teaspoon oregano, 1 teaspoon pepper, and vinegar to the bowl. Knead the meat mixture well.",
+    "Preheat the broiler with a rack about 4 inches from the heat. Evenly divide the meat mixture into 6 balls and arrange them around the baking sheet with the vegetables.",
+    "Broil the baking sheet on the top rack until the potatoes and zucchini are golden brown and the meatballs are cooked through (about 5-8 minutes). Watch closely and flip the potatoes if they darken too quickly.",
+    "Remove from the oven. Dollop Greek yogurt around the baking sheet and scatter the reserved dill fronds on top. Cut the remaining lemon half into wedges and serve alongside the dish. Drizzle lightly with olive oil if desired."
+  ],
+  "stepIngredients": [
+    [1],
+    [2, { "id": 11, "amount": "1", "unit": "tbsp" }, 13, 14],
+    [{ "id": 4, "amount": "2", "unit": "cloves" }, 3],
+    [5, { "id": 7, "amount": "1", "unit": "tsp" }, { "id": 11, "amount": "2", "unit": "tbsp" }, 1, 13, 14],
+    [1, 2],
+    [6, { "id": 4, "amount": "2", "unit": "cloves" }],
+    [0, 3, 6, 8, 9, { "id": 13, "amount": "1.5", "unit": "tsp" }, { "id": 7, "amount": "1", "unit": "tsp" }, { "id": 14, "amount": "1", "unit": "tsp" }, 12],
+    [0],
+    [],
+    [10, 6, 3, { "id": 11, "amount": "drizzle", "unit": "" }]
+  ],
+  "source": {
+    "name": "Marley Spoon",
+    "url": "https://marleyspoon.com"
+  },
+  "nutrition": {
+    "calories": 860,
+    "protein": "46g",
+    "carbs": "68g",
+    "fat": "40g"
+  }
+}
