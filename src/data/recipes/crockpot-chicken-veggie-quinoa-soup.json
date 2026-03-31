@@ -1,0 +1,65 @@
+{
+  "id": "crockpot-chicken-veggie-quinoa-soup",
+  "title": "Crockpot Chicken Veggie Quinoa Soup",
+  "description": "Try this simple Quinoa Soup recipe! Perfect for busy nights, it’s hearty, nutritious, and practically cooks itself.",
+  "image": "/images/recipes/crockpot-chicken-veggie-quinoa-soup.png",
+  "prepTime": "15 mins",
+  "cookTime": "3 hours",
+  "totalTime": "3 hours 15 mins",
+  "servings": 6,
+  "difficulty": "Easy",
+  "tags": [
+    "Soup",
+    "Dinner",
+    "Slow Cooker",
+    "Chicken"
+  ],
+  "ingredients": [
+    { "amount": "2", "unit": "tbsp", "item": "olive oil" },
+    { "amount": "1/2", "unit": "cup", "item": "yellow onion, finely diced" },
+    { "amount": "1/2", "unit": "cup", "item": "carrots, thinly sliced" },
+    { "amount": "1/2", "unit": "cup", "item": "celery, sliced" },
+    { "amount": "2", "unit": "tsp", "item": "garlic, minced" },
+    { "amount": "6", "unit": "oz", "item": "tomato paste" },
+    { "amount": "14.5", "unit": "oz", "item": "fire-roasted crushed tomatoes or diced tomatoes" },
+    { "amount": "1", "unit": "lb", "item": "boneless, skinless chicken thighs or breasts" },
+    { "amount": "15.5", "unit": "oz", "item": "pinto beans, drained and rinsed" },
+    { "amount": "1 1/2", "unit": "cups", "item": "frozen corn" },
+    { "amount": "3/4", "unit": "cup", "item": "tri-colored or plain quinoa" },
+    { "amount": "1", "unit": "large", "item": "orange (for juice)" },
+    { "amount": "5", "unit": "cups", "item": "chicken stock or broth" },
+    { "amount": "2", "unit": "", "item": "bay leaves" },
+    { "amount": "2", "unit": "tsp", "item": "cajun seasoning" },
+    { "amount": "1", "unit": "tsp", "item": "chicken bouillon powder" },
+    { "amount": "1", "unit": "tsp", "item": "dried oregano" },
+    { "amount": "1/2", "unit": "tsp", "item": "ground cumin" },
+    { "amount": "1/2", "unit": "tsp", "item": "paprika" },
+    { "amount": "1", "unit": "tsp", "item": "salt" },
+    { "amount": "1/2", "unit": "tsp", "item": "pepper" },
+    { "amount": "", "unit": "", "item": "Toppings (cheese, cilantro, lime, sour cream)" }
+  ],
+  "instructions": [
+    "Heat olive oil in a slow cooker or sauté pan over medium-high heat. Add onion, carrots, and celery, and sauté for 5-7 minutes. Add garlic, tomato paste, cajun seasoning, bouillon powder, oregano, cumin, paprika, salt, and pepper. Sauté for 5 more minutes. Pour in tomatoes and stir, scraping the bottom.",
+    "Trim fat off the chicken and cut into large pieces.",
+    "Transfer sautéed mixture to the slow cooker (if needed). Add chicken, pinto beans, corn, quinoa, 1/2 cup orange juice extracted from the orange, bay leaves, and chicken stock. Mix well. Slow cook on high for 3-5 hours.",
+    "Remove chicken and shred with 2 forks. Return shredded chicken to the slow cooker. Remove and discard bay leaves. Taste and add salt or pepper if needed.",
+    "Serve garnished with desired toppings like cheese, cilantro, lime, or sour cream."
+  ],
+  "stepIngredients": [
+    [0, 1, 2, 3, 4, 5, 6, 14, 15, 16, 17, 18, 19, 20],
+    [7],
+    [7, 8, 9, 10, 11, 12, 13],
+    [19, 20],
+    [21]
+  ],
+  "source": {
+    "name": "Chelsea's Messy Apron",
+    "url": "https://www.chelseasmessyapron.com/crockpot-chicken-veggie-quinoa-soup-video/"
+  },
+  "nutrition": {
+    "calories": 400,
+    "protein": "30g",
+    "carbs": "45g",
+    "fat": "12g"
+  }
+}
