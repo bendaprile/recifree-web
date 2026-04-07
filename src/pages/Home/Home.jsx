@@ -7,6 +7,7 @@ import './Home.css';
 function Home() {
     const [selectedTag, setSelectedTag] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+    const [gridColumns, setGridColumns] = useState(3);
 
     // Get all unique tags
     const [isTagsExpanded, setIsTagsExpanded] = useState(false);
@@ -103,16 +104,32 @@ function Home() {
                         )}
                     </div>
 
-                    {/* Recipe Count */}
-                    <p className="recipe-count">
-                        Showing {filteredRecipes.length} {filteredRecipes.length === 1 ? 'recipe' : 'recipes'}
-                        {selectedTag !== 'All' && ` in "${selectedTag}"`}
-                        {searchQuery && ` matching "${searchQuery}"`}
-                    </p>
+                    {/* Controls Container */}
+                    <div className="list-controls-container">
+                        <p className="recipe-count">
+                            Showing {filteredRecipes.length} {filteredRecipes.length === 1 ? 'recipe' : 'recipes'}
+                            {selectedTag !== 'All' && ` in "${selectedTag}"`}
+                            {searchQuery && ` matching "${searchQuery}"`}
+                        </p>
+
+                        <div className="grid-size-controls">
+                            <span className="controls-label">Columns:</span>
+                            {[3, 5].map(cols => (
+                                <button
+                                    key={cols}
+                                    className={`grid-size-btn ${gridColumns === cols ? 'active' : ''}`}
+                                    onClick={() => setGridColumns(cols)}
+                                    title={`View ${cols} items per row`}
+                                >
+                                    {cols}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
                     {/* Recipe Grid */}
                     {filteredRecipes.length > 0 ? (
-                        <div className="recipe-grid">
+                        <div className={`recipe-grid columns-${gridColumns}`}>
                             {filteredRecipes.map(recipe => (
                                 <RecipeCard key={recipe.id} recipe={recipe} />
                             ))}

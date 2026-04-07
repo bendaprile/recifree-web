@@ -167,11 +167,61 @@
     color: var(--color-primary);
 }
 
-/* Recipe Count */
+/* Recipe Count & Controls Container */
+.list-controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
 .recipe-count {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
-    margin-bottom: var(--space-8);
+    margin-bottom: 0;
+}
+
+/* Grid Size Controls */
+.grid-size-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.controls-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-right: var(--space-2);
+}
+
+.grid-size-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.grid-size-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: var(--color-surface);
+}
+
+.grid-size-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
+    font-weight: var(--font-medium);
 }
 
 /* Recipe Grid */
@@ -179,17 +229,31 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-8);
+    transition: grid-template-columns var(--transition-base), gap var(--transition-base);
 }
 
 @media (min-width: 640px) {
     .recipe-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .recipe-grid.columns-5 {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-6);
+    }
 }
 
 @media (min-width: 1024px) {
     .recipe-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+    .recipe-grid.columns-5 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .recipe-grid.columns-5 {
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 

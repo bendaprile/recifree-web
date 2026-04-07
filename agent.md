@@ -26,6 +26,7 @@ recifree/
 - **Tools**: Vitest + React Testing Library.
 - **Convention**: Keep tests alongside the components or utilities they verify. Run `test` or `test:watch` via package scripts.
 - **Data Mocking**: If writing tests around recipes, use mock JSON schemas rather than directly importing production data heavily.
+- **New Features**: Tests must be explicitly added and updated whenever new features or components are implemented.
 
 ## 🍽️ Adding a New Recipe
 If asked to add a new recipe, you **MUST** follow these specific conventions:

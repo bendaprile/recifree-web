@@ -114,4 +114,27 @@ describe('Home Page', () => {
         expect(screen.getByText('Showing 2 recipes')).toBeInTheDocument();
         expect(searchInput.value).toBe('');
     });
+
+    it('changes grid layout when column buttons are clicked', () => {
+        const { container } = renderHome();
+        
+        // Grid should default to 3 columns
+        const grid = container.querySelector('.recipe-grid');
+        expect(grid).toHaveClass('columns-3');
+
+        // Find and click the '5' column button
+        const button5 = screen.getByText('5');
+        fireEvent.click(button5);
+        
+        expect(grid).toHaveClass('columns-5');
+        expect(button5).toHaveClass('active');
+
+        // Find and click the '3' column button
+        const button3 = screen.getByText('3');
+        fireEvent.click(button3);
+        
+        expect(grid).toHaveClass('columns-3');
+        expect(button3).toHaveClass('active');
+        expect(button5).not.toHaveClass('active');
+    });
 });
