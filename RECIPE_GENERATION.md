@@ -18,6 +18,7 @@ This document outlines the workflow for adding new recipes to Recifree using an 
     *   Prompt Guidelines: "A delicious, high-quality food photography shot of [Recipe Title]. [Visual Description of Ingredients/Colors]. Professional food styling, 4k resolution."
     *   Save the image to `public/images/recipes/` ensuring the filename matches the JSON ID (e.g. `[id].png`).
     *   Update the `image` field in the JSON to point to `/images/recipes/[id].png`.
+7.  **Final Verification**: Double-check all facts, measurements, quantities, and metadata against the original source text to ensure rigorous accuracy. Specifically ensure the instructions are uniquely worded for copyright compliance while maintaining technical correctness.
 
 ---
 

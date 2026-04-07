@@ -1,0 +1,82 @@
+{
+  "id": "cajun-seasoning",
+  "title": "Cajun Seasoning",
+  "description": "A zesty, spicy, and savory homemade Cajun seasoning blend perfect for chicken, steak, veggies, and more.",
+  "image": "/images/recipes/cajun-seasoning.png",
+  "prepTime": "5 mins",
+  "cookTime": "0 mins",
+  "totalTime": "5 mins",
+  "servings": 12,
+  "difficulty": "Easy",
+  "tags": [
+    "American",
+    "Condiment",
+    "Gluten-Free",
+    "Spice Blend"
+  ],
+  "ingredients": [
+    {
+      "amount": "3",
+      "unit": "tbsp",
+      "item": "paprika"
+    },
+    {
+      "amount": "2",
+      "unit": "tbsp",
+      "item": "kosher salt"
+    },
+    {
+      "amount": "2",
+      "unit": "tbsp",
+      "item": "garlic powder"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "ground black pepper"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "ground white pepper"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "onion powder"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "dried oregano"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "cayenne"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tbsp",
+      "item": "dried thyme"
+    }
+  ],
+  "instructions": [
+    "Combine all the ingredients into a jar or bowl and mix thoroughly.",
+    "Keep the mixture in an airtight container for up to one year."
+  ],
+  "stepIngredients": [
+    [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    []
+  ],
+  "source": {
+    "name": "Gimme Some Oven",
+    "url": "https://www.gimmesomeoven.com/cajun-seasoning/"
+  },
+  "nutrition": {
+    "calories": 15,
+    "protein": "1g",
+    "carbs": "3g",
+    "fat": "0g"
+  }
+}

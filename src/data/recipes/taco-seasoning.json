@@ -1,0 +1,77 @@
+{
+  "id": "taco-seasoning",
+  "title": "Taco Seasoning",
+  "description": "Homemade taco seasoning is super easy, fresh, and inexpensive. It's perfect for all your Mexican-inspired recipes and avoids filler ingredients found in store-bought packets.",
+  "image": "/images/recipes/taco-seasoning.png",
+  "prepTime": "5 mins",
+  "cookTime": "0 mins",
+  "totalTime": "5 mins",
+  "servings": 1,
+  "difficulty": "Easy",
+  "tags": [
+    "Mexican",
+    "Seasoning",
+    "Condiment",
+    "Spice Blend"
+  ],
+  "ingredients": [
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "chili powder"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "ground cumin"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "garlic powder"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tsp",
+      "item": "paprika"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tsp",
+      "item": "oregano"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tsp",
+      "item": "kosher salt"
+    },
+    {
+      "amount": "1/4",
+      "unit": "tsp",
+      "item": "black pepper"
+    },
+    {
+      "amount": "1",
+      "unit": "pinch",
+      "item": "red pepper flakes"
+    }
+  ],
+  "instructions": [
+    "Combine chili powder, cumin, garlic powder, paprika, oregano, salt, pepper, and red pepper flakes in a small bowl.",
+    "Use the seasoning immediately in your recipe or store it in an airtight container for up to one year. Use approximately 2 tablespoons of this mix per one pound of ground beef."
+  ],
+  "stepIngredients": [
+    [0, 1, 2, 3, 4, 5, 6, 7],
+    []
+  ],
+  "source": {
+    "name": "Downshiftology",
+    "url": "https://downshiftology.com/recipes/taco-seasoning/"
+  },
+  "nutrition": {
+    "calories": 46,
+    "protein": "2g",
+    "carbs": "8g",
+    "fat": "1g"
+  }
+}
