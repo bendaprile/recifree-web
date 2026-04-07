@@ -1,0 +1,70 @@
+{
+  "id": "peanut-chicken-with-rice",
+  "title": "Peanut Chicken with Rice",
+  "description": "A rich and flavorful dish blending nutty peanut butter with tangy, sweet, and spicy notes. It features a vibrant array of healthy vegetables including broccoli, carrots, peppers, and onions, topped with crunchy dry roasted peanuts, fresh cilantro, and a zest of lime.",
+  "image": "/images/recipes/peanut-chicken-with-rice.png",
+  "prepTime": "15 mins",
+  "cookTime": "15 mins",
+  "totalTime": "30 mins",
+  "servings": 2,
+  "difficulty": "Easy",
+  "tags": [
+    "Asian-Inspired",
+    "Dinner",
+    "Chicken",
+    "Peanut"
+  ],
+  "ingredients": [
+    { "amount": "1/2", "unit": "cup", "item": "Peanut Delight Creamy Peanut Butter" },
+    { "amount": "1", "unit": "", "item": "lime (juiced)" },
+    { "amount": "3", "unit": "cloves", "item": "garlic (minced)" },
+    { "amount": "1", "unit": "tbsp", "item": "Burman's Hot Sauce" },
+    { "amount": "3", "unit": "tbsp", "item": "Friendly Farms 2% Milk" },
+    { "amount": "1", "unit": "tbsp", "item": "ALDI Honey" },
+    { "amount": "1", "unit": "tbsp", "item": "soy sauce" },
+    { "amount": "1/4", "unit": "tsp", "item": "Stonemill Ground Cinnamon" },
+    { "amount": "1/2", "unit": "tsp", "item": "Stonemill Crushed Red Pepper" },
+    { "amount": "1", "unit": "cup", "item": "ALDI Long Grain White Rice" },
+    { "amount": "3", "unit": "tbsp", "item": "Carlini Pure Olive Oil (divided)" },
+    { "amount": "2", "unit": "", "item": "Kirkwood Fresh Chicken Breasts (sliced into 1/2-inch strips)" },
+    { "amount": "1", "unit": "head", "item": "broccoli (cut into small florets)" },
+    { "amount": "1", "unit": "large", "item": "carrot (shredded)" },
+    { "amount": "1", "unit": "", "item": "red pepper (cut into 1/4-inch strips)" },
+    { "amount": "1", "unit": "", "item": "yellow pepper (cut into 1/4-inch strips)" },
+    { "amount": "1", "unit": "", "item": "red onion (sliced)" },
+    { "amount": "1/4", "unit": "cup", "item": "Season's Choice Sweet Peas" },
+    { "amount": "1", "unit": "", "item": "cucumber (cut into 1/16-inch strips)" },
+    { "amount": "1/4", "unit": "cup", "item": "Southern Grove Dry Roasted Peanuts" },
+    { "amount": "1", "unit": "sprig", "item": "cilantro" }
+  ],
+  "instructions": [
+    "In a small saucepan, whisk together peanut butter, lime juice, 1 clove minced garlic, hot sauce, milk, honey, soy sauce, cinnamon, and crushed red pepper. Cook over medium heat until bubbling.",
+    "Slowly add water until the desired consistency is reached. Set aside.",
+    "Prepare rice according to package instructions.",
+    "In a large skillet over medium heat, heat 2 tablespoons of oil. Add chicken and cook for 6 minutes.",
+    "Add the remaining 1 tablespoon of oil, 2 cloves of garlic, broccoli, carrot, peppers, and onion. Sauté for 3 minutes.",
+    "Add the sweet peas and cook for another 3 minutes.",
+    "Add the peanut sauce and cucumber to the skillet. Toss to coat all ingredients evenly.",
+    "Serve the chicken and vegetables over the prepared rice. Sprinkle with roasted peanuts, lime zest, and garnish with fresh cilantro."
+  ],
+  "stepIngredients": [
+    [0, 1, { "id": 2, "amount": "1", "unit": "clove" }, 3, 4, 5, 6, 7, 8],
+    [],
+    [9],
+    [{ "id": 10, "amount": "2", "unit": "tbsp" }, 11],
+    [{ "id": 10, "amount": "1", "unit": "tbsp" }, { "id": 2, "amount": "2", "unit": "cloves" }, 12, 13, 14, 15, 16],
+    [17],
+    [18],
+    [19, 20]
+  ],
+  "source": {
+    "name": "ALDI",
+    "url": "https://www.aldi.us/store/aldi/recipes/11938495-peanut-chicken-with-rice"
+  },
+  "nutrition": {
+    "calories": 550,
+    "protein": "35g",
+    "carbs": "45g",
+    "fat": "25g"
+  }
+}
