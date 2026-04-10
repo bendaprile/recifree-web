@@ -1,73 +1,56 @@
 # Recifree Feature Roadmap
-This roadmap outlines planned enhancements to elevate the Recifree user experience, expanding on our "no clutter" philosophy to build a truly robust yet minimalist cooking platform.
 
-## Phase 1: Experience Polish & Usability
-*Enhancing the core functionality to be smoother and more powerful.*
+This roadmap outlines planned enhancements to elevate the Recifree user experience, transitioning from a static MVP to a fully viable aggregator equipped with AI-extraction and sustainable monetization.
 
-1. **Advanced Search & Filtering**
-   - **Problem:** Finding specific types of recipes (e.g., "Quick Dinner" or "High Protein") is limited to basic text search.
-   - **Solution:** Add granular filters.
-   - **Implementation:** Filter by "Total Time" (< 30m), "Difficulty", and specific "Main Ingredient".
-   - **UX:** Sidebar or expandable filter menu on Home.
+## Phase 1: Architecture & Data Foundation
+*Setting the necessary technical groundwork before scaling logic and features.*
+- **User Accounts & Authentication:** Implement secure authentication (e.g., Firebase Auth or Supabase) to establish identities and manage rate limits.
+- **Database Migration for Recipes:** Migrate the static JSON recipe data layer to a cloud database (e.g., Firestore) to handle dynamic user-generated content.
+- **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:id`) instead of static local files.
+- **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.
 
-2. **Shopping List 2.0**
-   - **Problem:** The shopping list is a flat list of items, making it hard to use in a real store.
-   - **Solution:** Smart categorization and easy management.
-   - **Implementation:** Group items by aisle/category (Produce, Dairy, Pantry). Add "Clear All" and "Copy to Clipboard" buttons.
-   - **UX:** Sectioned list view with bulk actions.
+## Phase 2: The Extraction Engine (MVP)
+*Building the legal and functional core for ad-free recipe aggregation.*
+- **User-Initiated URL Extraction:** An input field for users to paste a recipe URL, initiating extraction on a per-user basis to minimize web-scraping liability.
+- **Prompt Security & Injection Defense:** Security protocols to ensure malicious URLs or hidden text cannot hijack the LLM prompt or leak backend system instructions.
+- **Hybrid Recipe Parsing Pipeline:** A layered approach: Step 1 uses a script to extract hidden `application/ld+json` schema for free. Step 2 uses an LLM to clean messy data or fallback if schema is missing.
+- **AI Image Generation Engine:** Automatically generate a unique visual representation for each extracted recipe to completely avoid scraping copyrighted photography.
+- **Manual Entry Fallback Form:** A clean manual input form to gracefully handle extraction failures or heavily bot-protected websites.
+- **Global Extraction Cache:** Store parsed text and AI images in the database so subsequent visits to the same recipe URL require zero AI API consumption.
+- **Source Attribution Component:** UI elements that prominently link and credit the original publisher.
 
-3. **Print-Friendly View**
-   - **Problem:** Printing a web page often includes navbars and hero images, wasting ink.
-   - **Solution:** Dedicated print style.
-   - **Implementation:** CSS `@media print` styles to hide everything except the recipe title, ingredients, and instructions.
-   - **UX:** "Print Recipe" button on the recipe detail page.
+## Phase 3: SEO Dominance & Core Performance
+*Maximizing organic acquisition by satisfying algorithmic requirements.*
+- **Dynamic JSON-LD Recipe Schema:** Auto-formatting parsed database data into perfect technical schema for Google Rich Snippets.
+- **Core Web Vitals Optimization:** Implement aggressive asset caching and edge delivery for instant, sub-second loading speeds.
 
-## Phase 2: Core Cooking Utilities
-*Features that make the actual act of cooking easier.*
+## Phase 4: Culinary UX & Functional Polish
+*Transforming the site from a simple reader into a powerful kitchen utility.*
+- **Advanced Search & Filtering:** Granular filters for aspects like "Total Time", "Difficulty", and "Main Ingredient" querying the new database.
+- **Shopping List 2.0:** Improve the shopping list with smart aisle categorization and bulk actions.
+- **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons.
+- **Dynamic Portion Scaling & Computation:** AI-powered serving size recalculation and automatic metric/imperial unit conversions.
+- **Print-Friendly View:** Dedicated CSS to hide everything except the recipe title, ingredients, and instructions when users print physically.
 
-4. **Dynamic Portion Scaling**
-   - **Problem:** Users often cook for different group sizes.
-   - **Solution:** +/- control for "Servings".
-   - **Implementation:** Automatically recalculate ingredient quantities based on the selected serving size.
-   - **UX:** Simple stepper control near the ingredients list.
+## Phase 5: Contextual Commerce (Monetization V1)
+*Non-intrusive revenue generation based on high-intent grocery actions.*
+- **"Send to Grocery Cart" Integration:** Connect to major retail network APIs (e.g., Instacart Connect or Chicory) to fulfill ingredient lists natively for a commission.
+- **Native AI Image Sponsorships:** Dynamically integrate brand sponsors natively into the AI image generation prompt (e.g., generating a KitchenAid mixer in the background with a subtle sponsor watermark) as a premium advertising tier.
+- **Specialized Ingredient Affiliate Links:** Automated hyperlinking of niche or expensive ingredients to specialty vendors or Amazon for affiliate kickbacks.
+- **Affiliate Disclosure & Legal Compliance UI:** Ensure FTC compliance and trust by rendering non-intrusive disclosures whenever commerce links are utilized.
 
-5. **Interactive "Cook Mode"**
-   - **Problem:** Screens dim while cooking; small text is hard to read from a distance.
-   - **Solution:** A focused, step-by-step view.
-   - **Implementation:** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and big navigation buttons.
-   - **UX:** Prominent "Start Cooking" button on recipe page.
+## Phase 6: Acquisition & Virality
+*Features designed specifically to encourage sharing and external discovery.*
+- **Social Sharing Mechanics:** Easily exportable, beautifully branded, ad-free image "Recipe Cards" optimized for sharing on Pinterest, Instagram, and TikTok.
+- **PWA Support (Offline Mode):** Service workers to cache recipes so the app works seamlessly from the user's mobile home screen, increasing retention.
 
-## Phase 3: Personalization & Engagement
-*Making the site feel personal without login walls.*
+## Phase 7: Freemium SaaS (Monetization V2)
+*Locking in "power users" with premium utility formats and recurring subscriptions.*
+- **Stripe / Payment Gateway Integration:** Secure infrastructure to handle subscription tiers and recurring billing.
+- **Digital Cookbooks & Custom Categorization:** Allow premium users to create unlimited permanent saves and highly customized folder organization.
 
-6. **Local Favorites**
-   - **Problem:** "I cooked this last week and loved it, but can't find it now."
-   - **Solution:** "Heart" recipes to save them locally.
-   - **Implementation:** Persist recipe IDs in `localStorage`.
-   - **UX:** Heart icon on cards; new "My Favorites" filter tab.
-
-7. **"Surprise Me"**
-   - **Problem:** Decision paralysis on what to cook.
-   - **Solution:** Random recipe picker.
-   - **UX:** "Shuffle" or "Surprise Me" button in the navbar.
-
-8. **Social Sharing**
-   - **Problem:** Sharing a recipe currently requires copying the URL manually.
-   - **Solution:** Native share integration.
-   - **Implementation:** `navigator.share()` API for mobile, copy-link fallback for desktop.
-
-## Phase 4: Long-Term Growth
-*Bigger features for the future.*
-
-9. **Recipe Health Score**
-   - **Problem:** Users want quick health context.
-   - **Solution:** Computed health rating.
-   - **Implementation:** Analyze ingredients/nutrition to generate a A-F or 1-100 score.
-
-10. **Fun Recipe Wording (Optional Setting)**
-    - **Concept:** Allow users to adjust the "personality" of the recipe text (0 = Neutral, 1 = Sassy, 2 = Chaotic).
-    - **Implementation:**  Dynamic text replacement or AI-generated variations.
-
-11. **PWA Support (Offline Mode)**
-    - **Concept:** Allow the app to work without internet.
-    - **Implementation:** Service workers to cache recipes.
+## Phase 8: Long-Term "Fun" Features
+*Optional enhancements that add novel value but aren't strictly necessary for the core loop.*
+- **"Surprise Me" (Randomizer):** A feature to combat decision paralysis with a randomized recipe suggestion.
+- **Recipe Health Score:** Analyze ingredients/nutrition to generate a quick A-F or 1-100 health contextual score.
+- **Fun Recipe Wording:** Settings allowing users to adjust the "personality" of the recipe instructional text (e.g., Sassy, Chaotic) via LLM prompting.

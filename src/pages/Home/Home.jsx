@@ -182,6 +182,18 @@ function Home() {
                             <h3>100% Free</h3>
                             <p>Open source and community-driven. No paywalls, no premium tiers.</p>
                         </div>
+
+                        <div className="feature-card">
+                            <span className="feature-icon">✓</span>
+                            <h3>Real & Tested</h3>
+                            <p>No AI-generated fluff. Every recipe is hand-picked, kitchen-tested, and guaranteed to be delicious.</p>
+                        </div>
+
+                        <div className="feature-card">
+                            <span className="feature-icon">🔒</span>
+                            <h3>Privacy First</h3>
+                            <p>No tracking, no accounts, no data selling. Your cooking journey stays perfectly private.</p>
+                        </div>
                     </div>
                 </div>
             </section>

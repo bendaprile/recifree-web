@@ -58,6 +58,9 @@ export function AboutPage() {
             and presents recipes in their purest form: just ingredients and steps. No ads,
             no pop-ups, no premium subscriptions, no gimmicks.
           </p>
+          <p>
+            Most importantly, there are <strong>zero AI-generated recipes</strong> here. Every single meal has been prepared, kitchen-tested, and verified by real human beings to guarantee both viability and exceptional taste.
+          </p>
 
           <h2>How It Works</h2>
           <p>
