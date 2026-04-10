@@ -34,5 +34,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
     css: true,
+    coverage: {
+      exclude: ['**/*.css', '**/*.json', 'src/setupTests.js']
+    }
   },
 })

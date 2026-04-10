@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import App, { AboutPage, NotFoundPage, PrivacyPolicyPage, DMCAPolicyPage } from './App';
 import { describe, it, expect, vi } from 'vitest';
 
 // Mock localStorage
@@ -19,12 +19,33 @@ describe('App Component', () => {
         render(<App />);
 
         // Check for Navbar logo
-        // Check for Navbar logo (appears in Navbar and Footer)
         const logos = screen.getAllByText('Recifree');
         expect(logos[0]).toBeInTheDocument();
 
         // Check for Hero title
         const titles = screen.getAllByText(/Recipes Without/i);
         expect(titles[0]).toBeInTheDocument();
+    });
+});
+
+describe('Auxiliary Pages', () => {
+    it('renders AboutPage correctly', () => {
+        render(<AboutPage />);
+        expect(screen.getByText('About Recifree')).toBeInTheDocument();
+    });
+
+    it('renders NotFoundPage correctly', () => {
+        render(<NotFoundPage />);
+        expect(screen.getByText('404 - Page Not Found')).toBeInTheDocument();
+    });
+
+    it('renders PrivacyPolicyPage correctly', () => {
+        render(<PrivacyPolicyPage />);
+        expect(screen.getByText('Privacy Policy')).toBeInTheDocument();
+    });
+
+    it('renders DMCAPolicyPage correctly', () => {
+        render(<DMCAPolicyPage />);
+        expect(screen.getByText('DMCA Policy')).toBeInTheDocument();
     });
 });

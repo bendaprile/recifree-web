@@ -37,7 +37,7 @@ function App() {
 }
 
 // Simple About Page
-function AboutPage() {
+export function AboutPage() {
   return (
     <div className="about-page section">
       <div className="container">
@@ -78,7 +78,7 @@ function AboutPage() {
 }
 
 // Simple 404 Page
-function NotFoundPage() {
+export function NotFoundPage() {
   return (
     <div className="not-found-page section">
       <div className="container text-center">
@@ -92,7 +92,7 @@ function NotFoundPage() {
 }
 
 // Privacy Policy Page
-function PrivacyPolicyPage() {
+export function PrivacyPolicyPage() {
   return (
     <div className="legal-page section">
       <div className="container">
@@ -228,7 +228,7 @@ function PrivacyPolicyPage() {
 }
 
 // DMCA Policy Page
-function DMCAPolicyPage() {
+export function DMCAPolicyPage() {
   return (
     <div className="legal-page section">
       <div className="container">
