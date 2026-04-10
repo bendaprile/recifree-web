@@ -26,30 +26,8 @@
 
 ---
 
-## 3. Epics & Features Breakdown (Prioritized)
+## 3. Strategic Feature Roadmap
 
-### Epic 1: Core Legal & Technical Foundation (MVP)
-*Priority: High / Immediate - Establishing the safe, minimal viable product.*
-- **Feature:** User-Initiated URL Extraction Engine (Input field for users to paste a recipe URL, initiating extraction on a per-user basis to avoid bot crawling liability).
-- **Feature:** LLM Recipe Parsing Pipeline (AI prompt logic to cleanly separate ingredients and instructions from narrative fluff).
-- **Feature:** AI Image Generation Engine (Automatically generate a unique visual representation to avoid copyright).
-- **Feature:** Global Cache & Database (Store parsed text and AI images so subsequent visits to the same recipe require zero AI API consumption).
-- **Feature:** Source Attribution Component (UI elements clearly backlinking to the original publisher).
+The specific Epics and Features formulated from this research, regarding how to build the Architecture, Extraction MVP, and Contextual Commerce integrations safely and profitably, have been actively migrated and expanded into the official repository roadmap.
 
-### Epic 2: SEO & User Acquisition
-*Priority: High - Necessary to combat the "thin content" paradox and drive organic traffic.*
-- **Feature:** Dynamic JSON-LD Recipe Schema (Auto-formatting parsed data into rich schema for Google Rich Snippets).
-- **Feature:** Core Web Vitals Optimization (Serverless deployment, aggressive static asset caching for instant load times).
-- **Feature:** Social Sharing Mechanics (Exportable, ad-free "Recipe Cards" optimized for Pinterest, Instagram, and TikTok).
-
-### Epic 3: Contextual Commerce Integration
-*Priority: Medium - Initial monetization phase.*
-- **Feature:** "Send to Grocery Cart" Integration (Connect to major APIs to fulfill ingredient shopping lists natively).
-- **Feature:** Specialized Ingredient Affiliate Links (Automated hyperlinking of niche ingredients to specialty vendors/Amazon when applicable).
-
-### Epic 4: Freemium SaaS Subscriptions
-*Priority: Low - Secondary monetization phase once the user base is established.*
-- **Feature:** User Authentication & Accounts (To save preferences securely).
-- **Feature:** Digital Cookbooks & Categorization (Unlimited permanent saves and folder organization).
-- **Feature:** AI Computational Utilities (Dynamic serving size scaling, metric/imperial unit conversions).
-- **Feature:** Offline PDF Printing (Clean, ad-free printouts for physical use).
+**Please refer to `ROADMAP.md` at the root of the repository for the active, prioritized execution plan.**

@@ -16,6 +16,7 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - **Hybrid Recipe Parsing Pipeline:** A layered approach: Step 1 uses a script to extract hidden `application/ld+json` schema for free. Step 2 uses an LLM to clean messy data or fallback if schema is missing.
 - **AI Image Generation Engine:** Automatically generate a unique visual representation for each extracted recipe to completely avoid scraping copyrighted photography.
 - **Manual Entry Fallback Form:** A clean manual input form to gracefully handle extraction failures or heavily bot-protected websites.
+- **The "Tried & True" Sign-Off:** A mandatory UX step during URL extraction or manual entry where the uploading user must click a checkbox formally verifying: "I have actually cooked this, and it is delicious."
 - **Global Extraction Cache:** Store parsed text and AI images in the database so subsequent visits to the same recipe URL require zero AI API consumption.
 - **Source Attribution Component:** UI elements that prominently link and credit the original publisher.
 
