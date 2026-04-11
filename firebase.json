@@ -1,4 +1,13 @@
 {
+    "emulators": {
+        "auth": {
+            "port": 9099
+        },
+        "ui": {
+            "enabled": true
+        },
+        "singleProjectMode": true
+    },
     "hosting": {
         "public": "dist",
         "ignore": [

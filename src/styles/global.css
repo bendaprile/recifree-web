@@ -618,6 +618,28 @@ a:not(.btn):hover {
   }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: inherit;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Secondary Button Spinner Colors */
+.btn-secondary .spinner {
+  border-color: rgba(74, 93, 78, 0.2); /* matches primary color fade */
+  border-top-color: var(--color-primary);
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -653,4 +675,49 @@ a:not(.btn):hover {
   h3 {
     font-size: var(--text-3xl);
   }
+}
+
+/* =================================
+   Form Helpers & Utils
+   ================================= */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  padding-right: 40px !important;
+  width: 100%;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.skeleton-text {
+  background: linear-gradient(90deg, var(--color-border) 25%, var(--color-surface) 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation: loadingSkeleton 1.5s infinite;
+  border-radius: var(--radius-sm);
+  opacity: 0.5;
+}
+
+@keyframes loadingSkeleton {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

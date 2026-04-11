@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import LoginModal from '../LoginModal/LoginModal';
 
 import './Navbar.css';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { currentUser, logout, loadingAuth } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -66,11 +69,30 @@ function Navbar() {
                 </NavLink>
               </li>
 
-
+              {loadingAuth ? (
+                <li>
+                  <div className="nav-link skeleton-text" style={{width: '60px', height: '24px', display: 'inline-block', padding: '0'}} />
+                </li>
+              ) : currentUser ? (
+                <>
+                  <li>
+                    <button className="nav-link" onClick={() => { logout(); closeMenu(); }}>
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <button className="nav-link" onClick={() => { setShowLoginModal(true); closeMenu(); }}>
+                    Login
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
           {isMenuOpen && <div className="navbar-overlay" onClick={closeMenu}></div>}
+          <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </nav>
       </div>
     </header>

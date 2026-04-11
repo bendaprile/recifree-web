@@ -4,7 +4,15 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 
 ## Phase 1: Architecture & Data Foundation
 *Setting the necessary technical groundwork before scaling logic and features.*
-- **User Accounts & Authentication:** Implement secure authentication (e.g., Firebase Auth or Supabase) to establish identities and manage rate limits.
+
+### 1a. User Authentication Finalization (In Progress)
+- **Email Verification Guard:** Require users to verify their email addresses via Firebase's authentication flow before gaining access to core features or DB writing privileges.
+- **Protected Routes Infrastructure:** Implement conditional `<ProtectedRoute>` wrappers in React Router to redirect unauthenticated users away from private features (e.g., `/saved`).
+- **Modal & Form Polish:** Implement keyboard trapping, `Escape` key close support, and auto-focusing on the first input out-of-the-box for `LoginModal`.
+- **Silent Auth Error Handling:** Intercept and silently dismiss `auth/popup-closed-by-user` errors so users don't see harsh red UI if they cancel a Google OAuth flow.
+- **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
+
+### 1b. Database & Routing Pipeline
 - **Database Migration for Recipes:** Migrate the static JSON recipe data layer to a cloud database (e.g., Firestore) to handle dynamic user-generated content.
 - **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:id`) instead of static local files.
 - **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.

@@ -4,6 +4,14 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Navbar from './Navbar';
 import { ThemeProvider } from '../../context/ThemeContext';
 
+vi.mock('../../context/AuthContext', () => ({
+    useAuth: () => ({
+        currentUser: null,
+        logout: vi.fn(),
+        loadingAuth: false
+    })
+}));
+
 describe('Navbar Component', () => {
     beforeEach(() => {
         Object.defineProperty(window, 'matchMedia', {
