@@ -1,0 +1,51 @@
+{
+  "id": "creamy-lemon-garlic-shrimp-pasta",
+  "title": "Creamy Lemon Garlic Shrimp Pasta",
+  "description": "A quick and elegant pasta dish with plump shrimp in a silky lemon-garlic cream sauce. The sauce and pasta cook simultaneously for a weeknight-friendly meal that feels like a restaurant showstopper.",
+  "image": "/images/recipes/creamy-lemon-garlic-shrimp-pasta.png",
+  "prepTime": "5 mins",
+  "cookTime": "20 mins",
+  "totalTime": "25 mins",
+  "servings": 4,
+  "difficulty": "Easy",
+  "tags": ["Italian", "Dinner", "Seafood", "Pasta", "Shrimp"],
+  "ingredients": [
+    { "amount": "500", "unit": "g", "item": "tagliatelle or pasta of choice" },
+    { "amount": "3", "unit": "tbsp", "item": "butter, divided" },
+    { "amount": "500", "unit": "g", "item": "shrimp/prawns, peeled and deveined" },
+    { "amount": "4", "unit": "cloves", "item": "garlic, crushed" },
+    { "amount": "1", "unit": "cup", "item": "heavy cream" },
+    { "amount": "2-3", "unit": "tbsp", "item": "fresh lemon juice" },
+    { "amount": "1", "unit": "handful", "item": "fresh parsley, finely chopped" },
+    { "amount": "", "unit": "", "item": "salt, to taste" },
+    { "amount": "", "unit": "", "item": "black pepper, to taste" }
+  ],
+  "instructions": [
+    "Cook pasta in a large pot of salted boiling water until al dente. Reserve 1 cup of cooking water before draining.",
+    "Melt 2 tbsp butter in a large skillet over medium-high heat. Cook shrimp in batches until golden and opaque. Season to taste, remove from pan, and set aside.",
+    "Add remaining butter and garlic to the pan. Cook for 30 seconds until fragrant.",
+    "Pour in cream and lemon juice (start with 2 tbsp). Add parsley and season to taste. Simmer until the sauce coats the back of a spoon.",
+    "Return shrimp to the sauce and adjust seasoning.",
+    "Add drained pasta and a splash of reserved cooking water. Toss until the pasta is evenly coated in the sauce.",
+    "Serve with fresh parsley and lemon wedges."
+  ],
+  "stepIngredients": [
+    [0],
+    [1, 2],
+    [1, 3],
+    [4, 5, 6, 7, 8],
+    [2],
+    [0],
+    [6]
+  ],
+  "source": {
+    "name": "Simply Delicious",
+    "url": "https://simply-delicious-food.com/creamy-lemon-garlic-shrimp-pasta/"
+  },
+  "nutrition": {
+    "calories": 680,
+    "protein": "38g",
+    "carbs": "72g",
+    "fat": "26g"
+  }
+}
