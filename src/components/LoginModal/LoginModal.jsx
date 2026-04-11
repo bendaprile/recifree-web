@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getFriendlyAuthErrorMessage } from '../../utils/auth-errors';
 import { EyeIcon, EyeOffIcon } from '../Icons/Icons';
@@ -14,7 +14,7 @@ function LoginModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false });
-  const navigate = useNavigate();
+  const modalRef = useRef(null);
   const signupsEnabled = import.meta.env.VITE_ENABLE_SIGNUPS === 'true';
 
   const emailErrorMsg = (() => {
@@ -31,6 +31,43 @@ function LoginModal({ isOpen, onClose }) {
   const handleBlur = (field) => {
     setTouched(prev => ({ ...prev, [field]: true }));
   };
+
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Auto-focus the first input when modal opens
+    const firstInput = modalRef.current?.querySelector('input');
+    firstInput?.focus();
+
+    // Close on Escape, trap focus within modal
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const focusable = modalRef.current?.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -85,6 +122,7 @@ function LoginModal({ isOpen, onClose }) {
       await loginWithGoogle();
       onClose();
     } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') return; // silently dismiss
       setError(getFriendlyAuthErrorMessage(err.code || err.message, onClose));
     } finally {
       setLoading(false);
@@ -93,7 +131,7 @@ function LoginModal({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content card animate-slide-up" onClick={e => e.stopPropagation()}>
+      <div className="modal-content card animate-slide-up" onClick={e => e.stopPropagation()} ref={modalRef}>
         <button className="modal-close" onClick={onClose} aria-label="Close">
           &times;
         </button>

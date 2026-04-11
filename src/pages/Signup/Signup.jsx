@@ -6,7 +6,7 @@ import { EyeIcon, EyeOffIcon } from '../../components/Icons/Icons';
 import './Signup.css';
 
 function SignupPage() {
-  const { signup, loginWithGoogle } = useAuth();
+  const { signup, loginWithGoogle, sendVerificationEmail } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -57,6 +57,7 @@ function SignupPage() {
       setError('');
       setLoading(true);
       await signup(email, password);
+      await sendVerificationEmail();
       navigate('/');
     } catch (err) {
       setError(getFriendlyAuthErrorMessage(err.code || err.message));
@@ -72,6 +73,7 @@ function SignupPage() {
       await loginWithGoogle();
       navigate('/');
     } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') return; // silently dismiss
       setError(getFriendlyAuthErrorMessage(err.code || err.message));
     } finally {
       setLoading(false);

@@ -60,13 +60,23 @@ function Navbar() {
               </li>
 
               <li>
-                <NavLink
-                  to="/shopping-list"
-                  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                  onClick={closeMenu}
-                >
-                  Shopping List
-                </NavLink>
+                {currentUser ? (
+                  <NavLink
+                    to="/shopping-list"
+                    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+                    onClick={closeMenu}
+                  >
+                    Shopping List
+                  </NavLink>
+                ) : (
+                  <button
+                    className="nav-link"
+                    onClick={() => { setShowLoginModal(true); closeMenu(); }}
+                    aria-label="Shopping List — log in required"
+                  >
+                    Shopping List
+                  </button>
+                )}
               </li>
 
               {loadingAuth ? (

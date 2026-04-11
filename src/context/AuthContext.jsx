@@ -6,7 +6,8 @@ import {
   signOut,
   GoogleAuthProvider,
   signInWithPopup,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  sendEmailVerification
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
@@ -41,6 +42,11 @@ export function AuthProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   }
 
+  function sendVerificationEmail() {
+    if (!auth.currentUser) return Promise.resolve();
+    return sendEmailVerification(auth.currentUser);
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setCurrentUser(user);
@@ -52,11 +58,13 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    isEmailVerified: currentUser?.emailVerified ?? false,
     login,
     signup,
     loginWithGoogle,
     logout,
     resetPassword,
+    sendVerificationEmail,
     loadingAuth: loading
   };
 

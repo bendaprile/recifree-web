@@ -5,6 +5,8 @@ import Home from './pages/Home/Home';
 import Recipe from './pages/Recipe/Recipe';
 import ShoppingList from './pages/ShoppingList/ShoppingList';
 import SignupPage from './pages/Signup/Signup';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import VerificationBanner from './components/VerificationBanner/VerificationBanner';
 import { ShoppingListProvider } from './context/ShoppingListContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
@@ -20,11 +22,12 @@ function App() {
           <Router>
             <div className="app">
               <Navbar />
+              <VerificationBanner />
               <main className="main-content">
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/recipe/:id" element={<Recipe />} />
-                  <Route path="/shopping-list" element={<ShoppingList />} />
+                  <Route path="/shopping-list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
                   <Route path="/signup" element={<SignupPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />

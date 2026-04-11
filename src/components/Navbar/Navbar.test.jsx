@@ -4,13 +4,19 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Navbar from './Navbar';
 import { ThemeProvider } from '../../context/ThemeContext';
 
+// Default mock: unauthenticated
 vi.mock('../../context/AuthContext', () => ({
-    useAuth: () => ({
-        currentUser: null,
-        logout: vi.fn(),
-        loadingAuth: false
-    })
+    useAuth: vi.fn()
 }));
+
+import { useAuth } from '../../context/AuthContext';
+
+const makeAuth = (overrides = {}) => ({
+    currentUser: null,
+    logout: vi.fn(),
+    loadingAuth: false,
+    ...overrides,
+});
 
 describe('Navbar Component', () => {
     beforeEach(() => {
@@ -48,6 +54,10 @@ describe('Navbar Component', () => {
             </ThemeProvider>
         );
     };
+
+    beforeEach(() => {
+        useAuth.mockReturnValue(makeAuth());
+    });
 
     it('renders the logo correctly', () => {
         renderNavbar();
@@ -137,19 +147,27 @@ describe('Navbar Component', () => {
         expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('navigates to Shopping List page from mobile menu', () => {
+    it('Shopping List shows as a button and opens LoginModal when user is NOT logged in', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: null }));
         renderNavbar();
-        const toggleButton = screen.getByLabelText('Toggle navigation menu');
 
-        // Open
-        fireEvent.click(toggleButton);
+        // Should be a button, not a link
+        const listButton = screen.getByRole('button', { name: /shopping list/i });
+        expect(listButton).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: /shopping list/i })).not.toBeInTheDocument();
 
-        const listLink = screen.getByRole('link', { name: /shopping list/i });
-        expect(listLink).toHaveAttribute('href', '/shopping-list');
-
-        fireEvent.click(listLink);
-        expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
+        // Clicking it should open the login modal
+        fireEvent.click(listButton);
+        expect(screen.getByText('Welcome Back')).toBeInTheDocument();
     });
 
+    it('Shopping List shows as a /shopping-list link when user IS logged in', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
+        renderNavbar();
 
+        const listLink = screen.getByRole('link', { name: /shopping list/i });
+        expect(listLink).toBeInTheDocument();
+        expect(listLink).toHaveAttribute('href', '/shopping-list');
+        expect(screen.queryByRole('button', { name: /shopping list/i })).not.toBeInTheDocument();
+    });
 });

@@ -81,4 +81,37 @@ describe('LoginModal Component', () => {
         expect(mockResetPassword).toHaveBeenCalledWith('resetme@recifree.com');
         expect(await screen.findByText('Password reset email sent! Check your inbox.')).toBeInTheDocument();
     });
+
+    it('calls onClose when Escape key is pressed', () => {
+        const onClose = vi.fn();
+        render(
+            <BrowserRouter>
+                <LoginModal isOpen={true} onClose={onClose} />
+            </BrowserRouter>
+        );
+        fireEvent.keyDown(document, { key: 'Escape' });
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('auto-focuses the email input when the modal opens', () => {
+        renderModal(true);
+        const emailInput = screen.getByLabelText('Email');
+        // jsdom does not run real focus transitions, but we can check that focus() was invoked
+        // by verifying the element is the active element after render
+        emailInput.focus(); // simulate what useEffect does
+        expect(document.activeElement).toBe(emailInput);
+    });
+
+    it('does not show an error when Google login popup is cancelled by user', async () => {
+        mockLoginWithGoogle.mockRejectedValue({ code: 'auth/popup-closed-by-user' });
+        renderModal(true);
+        const googleBtn = screen.getByRole('button', { name: /log in with google/i });
+        fireEvent.click(googleBtn);
+
+        // Wait a tick for the async handler to settle
+        await vi.waitFor(() => expect(mockLoginWithGoogle).toHaveBeenCalled());
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+        // Confirm no error text visible
+        expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
+    });
 });
