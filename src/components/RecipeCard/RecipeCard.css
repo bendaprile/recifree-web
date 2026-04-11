@@ -9,12 +9,13 @@
     overflow: hidden;
     text-decoration: none;
     box-shadow: var(--shadow-sm);
-    transition: box-shadow var(--transition-base);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1px solid var(--color-border-light);
 }
 
 .recipe-card:hover {
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
 }
 
 /* Image Container */

@@ -46,6 +46,12 @@
     bottom: 0;
     background-size: cover;
     background-position: center;
+    animation: slowZoom 6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slowZoom {
+    0% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 .recipe-hero-overlay {

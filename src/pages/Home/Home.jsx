@@ -57,17 +57,16 @@ function Home() {
                 <div className="container">
                     <div className="hero-content animate-slide-up">
                         <h1 className="hero-title">
-                            Recipes Without <span className="text-gradient">the Clutter</span>
+                            All flavor. <span className="text-gradient">No fluff.</span>
                         </h1>
                         <p className="hero-subtitle">
-                            Simple, straightforward recipes. No life stories, no ads, no distractions.
-                            Just ingredients and steps to create something delicious.
+                            Your next meal, minus the noise. Just what you need to cook.
                         </p>
 
                         <div className="hero-search">
                             <input
                                 type="text"
-                                placeholder="Search for a recipe..."
+                                placeholder="Your kitchen, zero pop-ups. Search recipes..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="search-input"
