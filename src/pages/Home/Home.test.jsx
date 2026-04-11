@@ -53,9 +53,9 @@ describe('Home Page', () => {
 
     it('renders the hero section', () => {
         renderHome();
-        expect(screen.getByText(/All flavor./i)).toBeInTheDocument();
-        expect(screen.getByText(/No fluff./i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Your kitchen, zero pop-ups. Search recipes...')).toBeInTheDocument();
+        expect(screen.getByText(/Recipes Without/i)).toBeInTheDocument();
+        expect(screen.getByText(/the Clutter/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search for a recipe...')).toBeInTheDocument();
     });
 
     it('renders all unique tags including "All"', () => {
@@ -74,7 +74,7 @@ describe('Home Page', () => {
 
     it('filters recipes by search query', () => {
         renderHome();
-        const searchInput = screen.getByPlaceholderText('Your kitchen, zero pop-ups. Search recipes...');
+        const searchInput = screen.getByPlaceholderText('Search for a recipe...');
         fireEvent.change(searchInput, { target: { value: 'Pasta' } });
 
         expect(screen.getByText('Showing 1 recipe matching "Pasta"')).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('Home Page', () => {
 
     it('shows no recipes found message when no matches', () => {
         renderHome();
-        const searchInput = screen.getByPlaceholderText('Your kitchen, zero pop-ups. Search recipes...');
+        const searchInput = screen.getByPlaceholderText('Search for a recipe...');
         fireEvent.change(searchInput, { target: { value: 'Pizza' } });
 
         expect(screen.getByText('No recipes found')).toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('Home Page', () => {
 
     it('clears filters when clear button is clicked', () => {
         renderHome();
-        const searchInput = screen.getByPlaceholderText('Your kitchen, zero pop-ups. Search recipes...');
+        const searchInput = screen.getByPlaceholderText('Search for a recipe...');
         fireEvent.change(searchInput, { target: { value: 'Pizza' } });
 
         const clearButton = screen.getByText('Clear filters');
