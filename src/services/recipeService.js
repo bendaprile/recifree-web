@@ -37,11 +37,9 @@ export async function getAllRecipes() {
   }
 }
 
-/**
- * Fetch a single recipe by its URL slug.
- * @param {string} slug - The kebab-case slug (e.g. "hot-honey-feta-chicken")
- * @returns {Promise<Object|null>} The recipe object or null if not found
- */
+export async function getRecipeBySlug(slug) {
+  const start = performance.now();
+  console.info(`[recipeService] Starting getRecipeBySlug(${slug}) fetch...`);
   // Check for hydration data from the Cloud Function SSR
   if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
     const hydratedData = window.__INITIAL_RECIPE__;
