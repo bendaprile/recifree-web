@@ -27,6 +27,7 @@
         "singleProjectMode": true
     },
     "hosting": {
+        "site": "recifree-web-4731f",
         "public": "dist",
         "ignore": [
             "firebase.json",

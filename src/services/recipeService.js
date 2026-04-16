@@ -12,13 +12,34 @@ import { collection, getDocs, query, where, addDoc, serverTimestamp } from 'fire
 import { db } from '../config/firebase';
 import staticRecipes from '../data/recipes';
 
+/**
+ * Helper to wrap a promise with a timeout.
+ * @param {Promise} promise - The promise to wrap
+ * @param {number} timeoutMs - Timeout in milliseconds
+ * @param {string} errorMessage - Error message if timed out
+ */
+function withTimeout(promise, timeoutMs, errorMessage) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error(errorMessage)), timeoutMs)
+    )
+  ]);
+}
+
+const FIRESTORE_TIMEOUT = 3000; // 3 seconds is plenty for healthy Firestore
+
 /** @returns {Promise<Object[]>} All recipes, sorted by title */
 export async function getAllRecipes() {
   const start = performance.now();
   console.info('[recipeService] Starting getAllRecipes fetch...');
   try {
     const recipesRef = collection(db, 'recipes');
-    const snapshot = await getDocs(recipesRef);
+    const snapshot = await withTimeout(
+      getDocs(recipesRef),
+      FIRESTORE_TIMEOUT,
+      'Firestore connection timed out'
+    );
     const end = performance.now();
     console.info(`[recipeService] getAllRecipes took ${Math.round(end - start)}ms for ${snapshot.size} docs.`);
 
@@ -32,7 +53,7 @@ export async function getAllRecipes() {
       .sort((a, b) => a.title.localeCompare(b.title));
   } catch (err) {
     const end = performance.now();
-    console.warn(`[recipeService] Firestore fetch failed after ${Math.round(end - start)}ms:`, err.message);
+    console.warn(`[recipeService] Firestore fetch failed or timed out after ${Math.round(end - start)}ms: ${err.message}`);
     return staticRecipes;
   }
 }
@@ -57,7 +78,11 @@ export async function getRecipeBySlug(slug) {
 
   try {
     const q = query(collection(db, 'recipes'), where('slug', '==', slug));
-    const snapshot = await getDocs(q);
+    const snapshot = await withTimeout(
+      getDocs(q),
+      FIRESTORE_TIMEOUT,
+      'Firestore connection timed out'
+    );
     const end = performance.now();
     console.info(`[recipeService] getRecipeBySlug took ${Math.round(end - start)}ms`);
 
@@ -66,7 +91,7 @@ export async function getRecipeBySlug(slug) {
     return mapRecipeFromFirestore(doc);
   } catch (err) {
     const end = performance.now();
-    console.warn(`[recipeService] getRecipeBySlug failed after ${Math.round(end - start)}ms:`, err.message);
+    console.warn(`[recipeService] getRecipeBySlug failed or timed out after ${Math.round(end - start)}ms: ${err.message}`);
     return staticRecipes.find(r => r.id === slug) ?? null;
   }
 }
