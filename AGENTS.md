@@ -53,6 +53,12 @@ When editing code in this repository, you **MUST** follow these rules:
 4. **Maintain Documentation Integrity**
    - Before completing any task that alters architecture, features, or deployment behavior, you **MUST** ensure the `README.md`, `ROADMAP.md`, and any relevant `AGENTS.md` files are fully updated to reflect those changes. Never leave the documentation in a stale state.
 
+5. **Secret Management & Security**
+   - **NEVER** hardcode secrets, API keys, or service account details in the source code.
+   - **Frontend Config**: Use `.env` files and `import.meta.env` for Firebase/Vite configuration. Reference `.env.example` for the required keys.
+   - **Backend Secrets**: For Cloud Functions or extraction logic, use **Firebase Secret Manager** (`firebase functions:secrets:set KEY=VALUE`).
+   - **Local Scripts**: Scripts requiring elevated privileges (like migration scripts) should look for keys in the `.secret/` directory, which is globally git-ignored.
+
 ## 🧑‍🍳 Adding a New Recipe
 If a user asks you to add a new recipe, you should utilize the recipe generation workflow located at `.agent/workflows/recipe.md` (which users may refer to conversationally as `recipes.md`). Also reference `RECIPE_GENERATION.md` for specific formatting instructions and expectations.
 
