@@ -62,6 +62,26 @@ function Navbar() {
               <li>
                 {currentUser ? (
                   <NavLink
+                    to="/saved"
+                    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+                    onClick={closeMenu}
+                  >
+                    Saved
+                  </NavLink>
+                ) : (
+                  <button
+                    className="nav-link"
+                    onClick={() => { setShowLoginModal(true); closeMenu(); }}
+                    aria-label="Saved Recipes — log in required"
+                  >
+                    Saved
+                  </button>
+                )}
+              </li>
+
+              <li>
+                {currentUser ? (
+                  <NavLink
                     to="/shopping-list"
                     className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
                     onClick={closeMenu}

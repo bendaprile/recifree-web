@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import AddToShoppingListButton from '../AddToShoppingListButton/AddToShoppingListButton';
+import SaveRecipeButton from '../SaveRecipeButton/SaveRecipeButton';
 import { ClockIcon, UsersIcon } from '../Icons/Icons';
 import './RecipeCard.css';
 
@@ -11,6 +11,9 @@ function RecipeCard({ recipe }) {
 
     return (
         <Link to={`/recipe/${id}`} className="recipe-card">
+            <div className="card-actions">
+                <SaveRecipeButton recipe={recipe} variant="icon-only" />
+            </div>
             <div className="recipe-card-image">
                 <img
                     src={image || defaultImage}
@@ -20,9 +23,6 @@ function RecipeCard({ recipe }) {
                         e.target.src = defaultImage;
                     }}
                 />
-                <div className="card-actions">
-                    <AddToShoppingListButton recipe={recipe} variant="icon-only" />
-                </div>
                 {difficulty && (
                     <span className={`recipe-difficulty difficulty-${difficulty.toLowerCase()}`}>
                         {difficulty}
