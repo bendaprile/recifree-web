@@ -1,4 +1,4 @@
-# 🍳 Recifree
+# Recifree
 
 **Recipes without the clutter.** A 100% free, open-source, ad-free recipe website.
 
