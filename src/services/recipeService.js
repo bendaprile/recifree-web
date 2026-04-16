@@ -43,7 +43,9 @@ export async function getRecipeBySlug(slug) {
 
     if (isMatch) {
       console.info('[recipeService] Using hydrated recipe data for:', slug);
-      return hydratedData;
+      // Ensure the hydrated data goes through the same mapping logic as Firestore docs
+      // (e.g. parsing stepIngredients JSON)
+      return mapRecipeFromHydration(hydratedData);
     }
   }
 
@@ -119,6 +121,23 @@ export async function addRecipe(recipeData) {
  */
 function mapRecipeFromFirestore(doc) {
   const data = doc.data();
+  return {
+    ...mapRecipeData(data),
+    _docId: doc.id
+  };
+}
+
+/**
+ * Maps hydrated data (already a plain object) to a recipe object.
+ */
+function mapRecipeFromHydration(data) {
+  return mapRecipeData(data);
+}
+
+/**
+ * Shared mapping logic for recipe data (handles stepIngredients parsing).
+ */
+function mapRecipeData(data) {
   if (data.stepIngredients && typeof data.stepIngredients === 'string') {
     try {
       data.stepIngredients = JSON.parse(data.stepIngredients);
@@ -126,5 +145,5 @@ function mapRecipeFromFirestore(doc) {
       // Keep it as a string or fallback if parsing fails
     }
   }
-  return { ...data, _docId: doc.id };
+  return data;
 }

@@ -96,7 +96,7 @@ app.get('/recipe/:slug', async (req, res) => {
                 ${JSON.stringify(jsonLd)}
             </script>
             <script id="hydration-data">
-                window.__INITIAL_RECIPE__ = ${JSON.stringify(recipe)};
+                window.__INITIAL_RECIPE__ = ${JSON.stringify(recipe).replace(/</g, '\\u003c')};
             </script>
         `;
 
