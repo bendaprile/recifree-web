@@ -14,7 +14,7 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 ### 1b. Database & Routing Pipeline
 - ✅ **Database Migration for Recipes:** Migrate the static JSON recipe data layer to a cloud database (e.g., Firestore) to handle dynamic user-generated content.
 - ✅ **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:slug`) instead of static local files.
-- **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.
+- ✅ **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.
 - **User Saved Recipes:** Implement a system for users to save recipes to their profile and create different lists for different types of recipes.
 - **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
 
@@ -31,7 +31,7 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 
 ## Phase 3: SEO Dominance & Core Performance
 *Maximizing organic acquisition by satisfying algorithmic requirements.*
-- **Dynamic JSON-LD Recipe Schema:** Auto-formatting parsed database data into perfect technical schema for Google Rich Snippets.
+- ✅ **Dynamic JSON-LD Recipe Schema:** Auto-formatting parsed database data into perfect technical schema for Google Rich Snippets.
 - **Core Web Vitals Optimization:** Implement aggressive asset caching and edge delivery for instant, sub-second loading speeds.
 
 ## Phase 4: Culinary UX & Functional Polish

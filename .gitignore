@@ -33,3 +33,6 @@ dist-ssr
 # Testing
 coverage
 coverage/
+
+# Functions
+functions/index.html

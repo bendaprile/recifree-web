@@ -9,7 +9,7 @@ Welcome to the **Recifree** repository! This document provides an onboarding gui
 - **Framework**: React 19 + Vite (Vanilla JS, no TypeScript)
 - **Data Layer**: Firestore Database, accessed exclusively via `src/services/recipeService.js` (with a local emulator and JSON fallback).
 - **Styling**: Vanilla CSS for flexibility and control.
-- **Deployment**: Firebase Hosting configured via GitHub Actions.
+- **Deployment**: Firebase Hosting (Static SPA) + Firebase Cloud Functions (Dynamic SEO Metadata Injection) configured via GitHub Actions.
 
 ## 📂 Repository Structure
 ```text
@@ -19,6 +19,7 @@ recifree/
 ├── docs/                # Planning and branding documentation
 │   ├── BRANDING.md      # Brand identity & UI/UX philosophy
 │   └── market_research_verdict.md # Market feasibility and legal strategy
+├── functions/           # Cloud Functions (serverless logic & SEO generation)
 ├── public/              # Static assets and images
 ├── src/
 │   ├── components/      # Reusable UI elements (has its own AGENTS.md)
@@ -48,6 +49,9 @@ When editing code in this repository, you **MUST** follow these rules:
 
 3. **Shared Component Frontend Architecture**
    - Use our shared component frontend architecture. If you notice repeatable UI elements being copy-pasted, refactor them into a reusable element inside `src/components/`.
+
+4. **Maintain Documentation Integrity**
+   - Before completing any task that alters architecture, features, or deployment behavior, you **MUST** ensure the `README.md`, `ROADMAP.md`, and any relevant `AGENTS.md` files are fully updated to reflect those changes. Never leave the documentation in a stale state.
 
 ## 🧑‍🍳 Adding a New Recipe
 If a user asks you to add a new recipe, you should utilize the recipe generation workflow located at `.agent/workflows/recipe.md` (which users may refer to conversationally as `recipes.md`). Also reference `RECIPE_GENERATION.md` for specific formatting instructions and expectations.

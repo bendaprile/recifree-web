@@ -74,6 +74,7 @@ recifree/
 │   ├── data/            # Recipe data (JSON)
 │   ├── services/        # Service layer (Firebase/Firestore)
 │   └── styles/          # Global styles
+├── functions/           # Cloud Functions (SEO Metadata Injection)
 ├── public/              # Static assets
 └── .github/workflows/   # CI/CD configuration
 ```

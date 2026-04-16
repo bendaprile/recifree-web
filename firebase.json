@@ -2,12 +2,24 @@
     "firestore": {
         "rules": "firestore.rules"
     },
+    "functions": {
+        "source": "functions",
+        "ignore": [
+            "node_modules",
+            ".git",
+            "firebase-debug.log",
+            "firebase-debug.*.log"
+        ]
+    },
     "emulators": {
         "auth": {
             "port": 9099
         },
         "firestore": {
             "port": 8080
+        },
+        "functions": {
+            "port": 5001
         },
         "ui": {
             "enabled": true
@@ -22,6 +34,10 @@
             "**/node_modules/**"
         ],
         "rewrites": [
+            {
+                "source": "/recipe/**",
+                "function": "ssrRecipe"
+            },
             {
                 "source": "**",
                 "destination": "/index.html"

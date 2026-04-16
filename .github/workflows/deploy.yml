@@ -55,8 +55,22 @@ jobs:
       - name: Build project
         run: npm run build
       
-      # Step 5: Deploy to Firebase Hosting
-      - name: Deploy to Firebase
+      # Step 5: Install Functions dependencies
+      - name: Install Functions dependencies
+        working-directory: ./functions
+        run: npm ci
+
+      # Step 6: Deploy Cloud Functions
+      - name: Deploy Cloud Functions
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT_ID: recifree-web-4731f
+      
+      # Step 7: Deploy to Firebase Hosting
+      - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

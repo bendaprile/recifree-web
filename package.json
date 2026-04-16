@@ -9,7 +9,7 @@
     "emulators": "firebase emulators:start",
     "migrate": "node scripts/migrate-to-firestore.js",
     "migrate:local": "FIRESTORE_EMULATOR_HOST=\"127.0.0.1:8080\" node scripts/migrate-to-firestore.js",
-    "build": "vite build",
+    "build": "vite build && mkdir -p functions && cp dist/index.html functions/index.html",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
