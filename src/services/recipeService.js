@@ -74,11 +74,15 @@ export async function getRecipeBySlug(slug) {
       'Firestore connection timed out'
     );
 
-    if (snapshot.empty) return null;
+    if (snapshot.empty) {
+      // Fallback to static recipes if not found in DB (essential for local dev/emulator)
+      return staticRecipes.find(r => r.id === slug || r.slug === slug) ?? null;
+    }
+
     const doc = snapshot.docs[0];
     return mapRecipeFromFirestore(doc);
   } catch (err) {
-    return staticRecipes.find(r => r.id === slug) ?? null;
+    return staticRecipes.find(r => r.id === slug || r.slug === slug) ?? null;
   }
 }
 

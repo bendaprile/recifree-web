@@ -1,7 +1,7 @@
 // src/config/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator, enableMultiTabIndexedDbPersistence } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDVs0zywPcHBOUOO29sN1NlHzyykj6XWgg",
@@ -12,26 +12,11 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:568309379296:web:342fcef7986fd4077ee085"
 };
 
-import { initializeFirestore, CACHE_SIZE_UNLIMITED, enableMultiTabIndexedDbPersistence } from 'firebase/firestore';
-
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// Enable offline persistence only in real browser environments (not during tests)
-if (typeof window !== 'undefined' && import.meta.env.MODE !== 'test') {
-  enableMultiTabIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.warn('[Firebase] Persistence failed: Multiple tabs open');
-    } else if (err.code === 'unimplemented') {
-      console.warn('[Firebase] Persistence failed: Browser not supported');
-    }
-  });
-}
-
-// Only connect to emulators if:
-// 1. We are NOT in production (safety guard)
-// 2. The explicit emulator flag is set
+// 1. Connect to emulators FIRST (before persistence or any other DB access)
 if (!import.meta.env.PROD) {
   if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
     connectAuthEmulator(auth, "http://127.0.0.1:9099");
@@ -42,4 +27,15 @@ if (!import.meta.env.PROD) {
     connectFirestoreEmulator(db, '127.0.0.1', 8080);
     console.info('[Firebase] Connecting to Firestore Emulator');
   }
+}
+
+// 2. Enable offline persistence AFTER emulator connection
+if (typeof window !== 'undefined' && import.meta.env.MODE !== 'test') {
+  enableMultiTabIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.warn('[Firebase] Persistence failed: Multiple tabs open');
+    } else if (err.code === 'unimplemented') {
+      console.warn('[Firebase] Persistence failed: Browser not supported');
+    }
+  });
 }

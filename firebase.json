@@ -21,6 +21,9 @@
         "functions": {
             "port": 5001
         },
+        "hosting": {
+            "port": 5005
+        },
         "ui": {
             "enabled": true
         },

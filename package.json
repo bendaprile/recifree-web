@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"npm run emulators\"",
     "dev:ui": "vite",
-    "emulators": "firebase emulators:start",
+    "emulators": "firebase emulators:start --import=./emulator-data --export-on-exit",
     "migrate": "node scripts/migrate-to-firestore.js",
     "migrate:local": "FIRESTORE_EMULATOR_HOST=\"127.0.0.1:8080\" node scripts/migrate-to-firestore.js",
     "build": "vite build && mkdir -p functions && cp dist/index.html functions/index.html",
