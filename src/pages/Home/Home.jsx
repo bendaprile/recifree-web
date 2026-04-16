@@ -1,13 +1,23 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
-import recipes from '../../data/recipes';
+import { getAllRecipes } from '../../services/recipeService';
 import { PlateIcon } from '../../components/Icons/Icons';
 import './Home.css';
 
 function Home() {
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [selectedTag, setSelectedTag] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [gridColumns, setGridColumns] = useState(3);
+
+    useEffect(() => {
+        getAllRecipes()
+            .then(setRecipes)
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false));
+    }, []);
 
     // Get all unique tags
     const [isTagsExpanded, setIsTagsExpanded] = useState(false);
@@ -35,7 +45,7 @@ function Home() {
             visibleTags: isTagsExpanded ? fullTagList : fullTagList.slice(0, INITIAL_TAG_COUNT),
             hasMoreTags: fullTagList.length > INITIAL_TAG_COUNT
         };
-    }, [isTagsExpanded]);
+    }, [isTagsExpanded, recipes]);
 
     // Filter recipes based on selected tag and search query
     const filteredRecipes = useMemo(() => {
@@ -48,7 +58,7 @@ function Home() {
                 recipe.tags?.some(tag => tag.toLowerCase().includes(searchLower));
             return matchesTag && matchesSearch;
         });
-    }, [selectedTag, searchQuery]);
+    }, [selectedTag, searchQuery, recipes]);
 
     return (
         <div className="home">
@@ -127,7 +137,19 @@ function Home() {
                     </div>
 
                     {/* Recipe Grid */}
-                    {filteredRecipes.length > 0 ? (
+                    {loading ? (
+                        <div className="recipe-grid-loading" role="status" aria-label="Loading recipes">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="recipe-card-skeleton" aria-hidden="true" />
+                            ))}
+                        </div>
+                    ) : error ? (
+                        <div className="no-recipes">
+                            <PlateIcon size={48} className="no-recipes-icon" />
+                            <h3>Couldn't load recipes</h3>
+                            <p>{error}</p>
+                        </div>
+                    ) : filteredRecipes.length > 0 ? (
                         <div className={`recipe-grid columns-${gridColumns}`}>
                             {filteredRecipes.map(recipe => (
                                 <RecipeCard key={recipe.id} recipe={recipe} />

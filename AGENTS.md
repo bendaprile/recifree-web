@@ -7,7 +7,7 @@ Welcome to the **Recifree** repository! This document provides an onboarding gui
 
 ## 🏗️ Architecture & Stack
 - **Framework**: React 19 + Vite (Vanilla JS, no TypeScript)
-- **Data Layer**: Static JSON (`src/data/recipes.json` or `src/data/recipes/[id].json`).
+- **Data Layer**: Firestore Database, accessed exclusively via `src/services/recipeService.js` (with a local emulator and JSON fallback).
 - **Styling**: Vanilla CSS for flexibility and control.
 - **Deployment**: Firebase Hosting configured via GitHub Actions.
 
@@ -25,6 +25,7 @@ recifree/
 │   ├── context/         # React Context providers (has its own AGENTS.md)
 │   ├── data/            # Local Recipe DB as JSON (has its own AGENTS.md)
 │   ├── pages/           # Page view components (has its own AGENTS.md)
+│   ├── services/        # External services / DB logic (has its own AGENTS.md)
 │   ├── styles/          # Global styles
 │   └── App.jsx          # Main application component
 ├── AGENTS.md            # This file

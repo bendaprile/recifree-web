@@ -1,8 +1,27 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Recipe from './Recipe';
 import { ShoppingListProvider } from '../../context/ShoppingListContext';
+
+// Prevent any real Firebase/Firestore SDK initialization
+vi.mock('../../config/firebase', () => ({ db: {}, auth: {} }));
+vi.mock('firebase/firestore', () => ({
+    getFirestore: vi.fn(() => ({})),
+    collection: vi.fn(),
+    getDocs: vi.fn(),
+    query: vi.fn(),
+    where: vi.fn(),
+    addDoc: vi.fn(),
+    serverTimestamp: vi.fn(),
+    connectFirestoreEmulator: vi.fn(),
+}));
+vi.mock('firebase/app', () => ({ initializeApp: vi.fn(() => ({})) }));
+vi.mock('firebase/auth', () => ({
+    getAuth: vi.fn(() => ({})),
+    connectAuthEmulator: vi.fn(),
+    onAuthStateChanged: vi.fn(),
+}));
 
 // Mock localStorage
 const localStorageMock = (function () {
@@ -22,95 +41,114 @@ Object.defineProperty(window, 'localStorage', {
     value: localStorageMock
 });
 
-vi.mock('../../data/recipes', () => ({
-    default: [
+const mockTestRecipe = {
+    id: 'test-recipe',
+    slug: 'test-recipe',
+    title: 'Test Recipe',
+    description: 'Test Description',
+    prepTime: '10 min',
+    cookTime: '20 min',
+    totalTime: '30 min',
+    servings: 4,
+    ingredients: [
+        { item: 'Flour', amount: '2', unit: 'cups' },
+        { item: 'Sugar', amount: '1', unit: 'cup' }
+    ],
+    instructions: [
+        'Mix ingredients',
+        'Add sugar carefully',
+        'Rest for 10 mins'
+    ],
+    stepIngredients: [
+        [0, 1],
+        [{ "id": 1, "amount": "1/2", "unit": "cup" }],
+        []
+    ],
+    difficulty: 'Easy',
+    tags: ['TestTag']
+};
+
+const mockSectionedRecipe = {
+    id: 'sectioned-recipe',
+    slug: 'sectioned-recipe',
+    title: 'Sectioned Test Recipe',
+    description: 'Test Description',
+    prepTime: '10 min',
+    cookTime: '20 min',
+    totalTime: '30 min',
+    servings: 4,
+    ingredients: [
         {
-            id: 'test-recipe',
-            title: 'Test Recipe',
-            description: 'Test Description',
-            prepTime: '10 min',
-            cookTime: '20 min',
-            totalTime: '30 min',
-            servings: 4,
-            ingredients: [
-                { item: 'Flour', amount: '2', unit: 'cups' },
-                { item: 'Sugar', amount: '1', unit: 'cup' }
-            ],
-            instructions: [
-                'Mix ingredients',
-                'Add sugar carefully',
-                'Rest for 10 mins'
-            ],
-            stepIngredients: [
-                [0, 1], // Standard: Flour and Sugar
-                [{ "id": 1, "amount": "1/2", "unit": "cup" }], // Split: 1/2 cup Sugar
-                [] // Empty: No ingredients
-            ],
-            difficulty: 'Easy',
-            tags: ['TestTag']
+            title: 'Sauce',
+            items: [
+                { item: 'Soy Sauce', amount: '2', unit: 'tbsp' },
+                { item: 'Ginger', amount: '1', unit: 'tsp' }
+            ]
         },
         {
-            id: 'sectioned-recipe',
-            title: 'Sectioned Test Recipe',
-            description: 'Test Description',
-            prepTime: '10 min',
-            cookTime: '20 min',
-            totalTime: '30 min',
-            servings: 4,
-            ingredients: [
-                {
-                    title: 'Sauce',
-                    items: [
-                        { item: 'Soy Sauce', amount: '2', unit: 'tbsp' },
-                        { item: 'Ginger', amount: '1', unit: 'tsp' }
-                    ]
-                },
-                {
-                    title: 'Main',
-                    items: [
-                        { item: 'Chicken', amount: '1', unit: 'lb' },
-                        { item: 'Rice', amount: '1', unit: 'cup' }
-                    ]
-                }
-            ],
-            instructions: [
-                'Make sauce',
-                'Cook chicken',
-                'Serve'
-            ],
-            stepIngredients: [
-                [0, 1], // Sauce ingredients (Indices 0 and 1 from flattened list)
-                [2],    // Chicken (Index 2 from flattened list)
-                [3]     // Rice (Index 3 from flattened list)
-            ],
-            difficulty: 'Medium',
-            tags: ['Sectioned']
+            title: 'Main',
+            items: [
+                { item: 'Chicken', amount: '1', unit: 'lb' },
+                { item: 'Rice', amount: '1', unit: 'cup' }
+            ]
         }
-    ]
+    ],
+    instructions: [
+        'Make sauce',
+        'Cook chicken',
+        'Serve'
+    ],
+    stepIngredients: [
+        [0, 1],
+        [2],
+        [3]
+    ],
+    difficulty: 'Medium',
+    tags: ['Sectioned']
+};
+
+// Mock recipeService — avoids Firestore entirely
+vi.mock('../../services/recipeService', () => ({
+    getRecipeBySlug: vi.fn(),
 }));
+
+// Mock firebase config
+vi.mock('../../config/firebase', () => ({ db: {}, auth: {} }));
+
+import { getRecipeBySlug } from '../../services/recipeService';
+
 
 describe('Recipe Page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Default: return test recipe
+        getRecipeBySlug.mockImplementation(async (slug) => {
+            if (slug === 'test-recipe') return mockTestRecipe;
+            if (slug === 'sectioned-recipe') return mockSectionedRecipe;
+            return null;
+        });
     });
 
     // Helper to render component with router context
-    const renderRecipe = (id = 'test-recipe') => {
-        window.scrollTo = vi.fn(); // Mock scrollTo
-
-        return render(
-            <ShoppingListProvider>
-                <MemoryRouter initialEntries={[`/recipe/${id}`]}>
-                    <Routes>
-                        <Route path="/recipe/:id" element={<Recipe />} />
-                    </Routes>
-                </MemoryRouter>
-            </ShoppingListProvider>
-        );
+    const renderRecipe = async (id = 'test-recipe') => {
+        window.scrollTo = vi.fn();
+        let result;
+        await act(async () => {
+            result = render(
+                <ShoppingListProvider>
+                    <MemoryRouter initialEntries={[`/recipe/${id}`]}>
+                        <Routes>
+                            <Route path="/recipe/:id" element={<Recipe />} />
+                        </Routes>
+                    </MemoryRouter>
+                </ShoppingListProvider>
+            );
+        });
+        return result;
     };
 
-    it('renders popup correctly for sectioned ingredients', () => {
-        renderRecipe('sectioned-recipe');
+    it('renders popup correctly for sectioned ingredients', async () => {
+        await renderRecipe('sectioned-recipe');
 
         // Hover over Step 1 ("Make sauce")
         const step1 = screen.getByText('Make sauce').closest('li');
@@ -127,14 +165,14 @@ describe('Recipe Page', () => {
         expect(within(popup).getByText('1 tsp')).toBeInTheDocument();
     });
 
-    it('renders recipe details successfully', () => {
-        renderRecipe();
+    it('renders recipe details successfully', async () => {
+        await renderRecipe();
         expect(screen.getByText('Test Recipe')).toBeInTheDocument();
         expect(screen.getByText('Test Description')).toBeInTheDocument();
     });
 
-    it('renders ingredient popup on hover', () => {
-        renderRecipe();
+    it('renders ingredient popup on hover', async () => {
+        await renderRecipe();
 
         // Hover over Step 1 ("Mix ingredients")
         const step1 = screen.getByText('Mix ingredients').closest('li');
@@ -159,8 +197,8 @@ describe('Recipe Page', () => {
         expect(screen.queryByText('Step 1 Ingredients')).not.toBeInTheDocument();
     });
 
-    it('renders split ingredient amounts correctly', () => {
-        renderRecipe();
+    it('renders split ingredient amounts correctly', async () => {
+        await renderRecipe();
 
         // Hover over Step 2 ("Add sugar carefully")
         const step2 = screen.getByText('Add sugar carefully').closest('li');
@@ -176,8 +214,8 @@ describe('Recipe Page', () => {
         expect(within(popup).queryByText('1 cup')).not.toBeInTheDocument(); // Original amount shouldn't be in popup
     });
 
-    it('does NOT render popup for empty steps', () => {
-        renderRecipe();
+    it('does NOT render popup for empty steps', async () => {
+        await renderRecipe();
 
         // Hover over Step 3 ("Rest for 10 mins")
         const step3 = screen.getByText('Rest for 10 mins').closest('li');
@@ -187,8 +225,8 @@ describe('Recipe Page', () => {
         expect(screen.queryByText('Step 3 Ingredients')).not.toBeInTheDocument();
     });
 
-    it('toggles ingredient checkboxes', () => {
-        renderRecipe();
+    it('toggles ingredient checkboxes', async () => {
+        await renderRecipe();
 
         const flourItem = screen.getByText(/Flour/).closest('li');
         expect(flourItem).not.toHaveClass('checked');
@@ -197,8 +235,8 @@ describe('Recipe Page', () => {
         expect(flourItem).toHaveClass('checked');
     });
 
-    it('toggles instruction steps completion when checkbox is clicked', () => {
-        renderRecipe();
+    it('toggles instruction steps completion when checkbox is clicked', async () => {
+        await renderRecipe();
 
         const step1 = screen.getByText('Mix ingredients').closest('li');
         const checkbox = step1.querySelector('.instruction-checkbox-wrapper');
@@ -209,8 +247,8 @@ describe('Recipe Page', () => {
         expect(step1).toHaveClass('checked');
     });
 
-    it('toggles step expansion and shows inline ingredients when step is clicked', () => {
-        renderRecipe();
+    it('toggles step expansion and shows inline ingredients when step is clicked', async () => {
+        await renderRecipe();
 
         const step1 = screen.getByText('Mix ingredients').closest('li');
 
@@ -232,8 +270,8 @@ describe('Recipe Page', () => {
         expect(screen.queryByText('2 cups', { selector: '.step-ingredient-text strong' })).not.toBeInTheDocument();
     });
 
-    it('renders Jump to Recipe button which scrolls to instructions', () => {
-        renderRecipe();
+    it('renders Jump to Recipe button which scrolls to instructions', async () => {
+        await renderRecipe();
 
         const jumpButton = screen.getByText(/Jump to Recipe/i);
         expect(jumpButton).toBeInTheDocument();

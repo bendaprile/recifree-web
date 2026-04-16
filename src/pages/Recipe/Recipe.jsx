@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import recipes from '../../data/recipes';
+import { getRecipeBySlug } from '../../services/recipeService';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import InstructionItem from '../../components/InstructionItem/InstructionItem';
@@ -9,21 +9,25 @@ import './Recipe.css';
 function Recipe() {
     const { id } = useParams();
     const [recipe, setRecipe] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [checkedIngredients, setCheckedIngredients] = useState([]);
     const [checkedSteps, setCheckedSteps] = useState([]);
-    const [expandedSteps, setExpandedSteps] = useState([]); // New state for expanded steps
+    const [expandedSteps, setExpandedSteps] = useState([]);
     const [hoveredStep, setHoveredStep] = useState(null);
     const [hoveredStepY, setHoveredStepY] = useState(0);
     const [adjustedPopupY, setAdjustedPopupY] = useState(0);
     const popupRef = useRef(null);
 
     useEffect(() => {
-        const foundRecipe = recipes.find(r => r.id === id);
-        setRecipe(foundRecipe);
-        setCheckedIngredients([]);
+        setLoading(true);
+        setRecipe(null);
         setCheckedIngredients([]);
         setCheckedSteps([]);
         setExpandedSteps([]);
+
+        getRecipeBySlug(id)
+            .then(setRecipe)
+            .finally(() => setLoading(false));
 
         // Scroll to top when recipe loads
         window.scrollTo(0, 0);
@@ -93,6 +97,16 @@ function Recipe() {
             }
         }
     }, [hoveredStep, hoveredStepY]);
+
+    if (loading) {
+        return (
+            <div className="recipe-not-found">
+                <div className="container">
+                    <div className="recipe-loading-skeleton" role="status" aria-label="Loading recipe" />
+                </div>
+            </div>
+        );
+    }
 
     if (!recipe) {
         return (

@@ -28,11 +28,14 @@ cd recifree
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (boots Vite + Firebase Emulators concurrently)
 npm run dev
+
+# Open a second terminal to seed the local database with existing recipes
+npm run migrate:local
 ```
 
-The site will be available at `http://localhost:5173`
+The site will be available at `http://localhost:5173`. You can view the local Firestore emulator at `http://127.0.0.1:4000`.
 
 ### Build for Production
 
@@ -69,6 +72,7 @@ recifree/
 │   ├── components/      # Reusable UI components
 │   ├── pages/           # Page components
 │   ├── data/            # Recipe data (JSON)
+│   ├── services/        # Service layer (Firebase/Firestore)
 │   └── styles/          # Global styles
 ├── public/              # Static assets
 └── .github/workflows/   # CI/CD configuration
@@ -76,7 +80,7 @@ recifree/
 
 ## 🍽️ Adding Recipes
 
-Recipes are stored in `src/data/recipes.json`. Each recipe follows this schema:
+Recipes are accessed exclusively through `src/services/recipeService.js`. Raw schemas are stored in `src/data/recipes/[slug].json`. Each recipe follows this schema:
 
 ```json
 {
@@ -102,6 +106,15 @@ Recipes are stored in `src/data/recipes.json`. Each recipe follows this schema:
     "url": "https://example.com/recipe"
   }
 }
+```
+
+Whenever you add a new recipe JSON file locally, you should push it to the database:
+```bash
+# Push to production
+npm run migrate
+
+# Push to your local emulator for testing
+npm run migrate:local
 ```
 
 ## ⚖️ Legal Notice

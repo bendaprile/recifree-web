@@ -12,8 +12,8 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - ✅ **Silent Auth Error Handling:** Intercept and silently dismiss `auth/popup-closed-by-user` errors so users don't see harsh red UI if they cancel a Google OAuth flow.
 
 ### 1b. Database & Routing Pipeline
-- **Database Migration for Recipes:** Migrate the static JSON recipe data layer to a cloud database (e.g., Firestore) to handle dynamic user-generated content.
-- **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:id`) instead of static local files.
+- ✅ **Database Migration for Recipes:** Migrate the static JSON recipe data layer to a cloud database (e.g., Firestore) to handle dynamic user-generated content.
+- ✅ **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:slug`) instead of static local files.
 - **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.
 - **User Saved Recipes:** Implement a system for users to save recipes to their profile and create different lists for different types of recipes.
 - **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
@@ -37,6 +37,7 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 ## Phase 4: Culinary UX & Functional Polish
 *Transforming the site from a simple reader into a powerful kitchen utility.*
 - **Advanced Search & Filtering:** Granular filters for aspects like "Total Time", "Difficulty", and "Main Ingredient" querying the new database.
+- **Infinite Scrolling & Pagination:** Implement asynchronous batch rendering (e.g., loading 15 recipes at a time via `IntersectionObserver`) to ensure ultra-fast front-end performance as the recipe count scales. This will be integrated directly with the overarching search overhaul.
 - **Shopping List 2.0:** Improve the shopping list with smart aisle categorization and bulk actions.
 - **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons.
 - **Dynamic Portion Scaling & Computation:** AI-powered serving size recalculation and automatic metric/imperial unit conversions.

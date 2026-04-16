@@ -257,6 +257,39 @@
     }
 }
 
+/* Loading Skeleton */
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+
+.recipe-grid-loading {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+}
+
+@media (min-width: 640px) {
+    .recipe-grid-loading { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+    .recipe-grid-loading { grid-template-columns: repeat(3, 1fr); }
+}
+
+.recipe-card-skeleton {
+    height: 320px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(
+        90deg,
+        var(--color-surface) 25%,
+        var(--color-border) 37%,
+        var(--color-surface) 63%
+    );
+    background-size: 400px 100%;
+    animation: shimmer 1.4s ease infinite;
+}
+
 /* No Recipes State */
 .no-recipes {
     text-align: center;

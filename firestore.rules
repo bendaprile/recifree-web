@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Recipes: public read, write locked until Phase 2 user submission
+    match /recipes/{recipeId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
