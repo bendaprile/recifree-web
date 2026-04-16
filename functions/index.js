@@ -103,4 +103,6 @@ app.get('/recipe/:slug', async (req, res) => {
     }
 });
 
-exports.ssrRecipe = functions.https.onRequest(app);
+exports.ssrRecipe = functions
+    .runWith({ maxInstances: 1 })
+    .https.onRequest(app);
