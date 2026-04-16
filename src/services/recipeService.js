@@ -33,6 +33,20 @@ export async function getAllRecipes() {
  * @returns {Promise<Object|null>} The recipe object or null if not found
  */
 export async function getRecipeBySlug(slug) {
+  // Check for hydration data from the Cloud Function SSR
+  if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
+    const hydratedData = window.__INITIAL_RECIPE__;
+    const isMatch = hydratedData.slug === slug || hydratedData.id === slug;
+    
+    // Clear the global to prevent stale reuse on subsequent navigations
+    window.__INITIAL_RECIPE__ = null;
+
+    if (isMatch) {
+      console.info('[recipeService] Using hydrated recipe data for:', slug);
+      return hydratedData;
+    }
+  }
+
   try {
     const q = query(collection(db, 'recipes'), where('slug', '==', slug));
     const snapshot = await getDocs(q);
