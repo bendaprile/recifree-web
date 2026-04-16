@@ -12,9 +12,14 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = initializeFirestore(app, {
+  ignoreUndefinedProperties: true,
+  cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+});
 
 // Only connect to emulators if:
 // 1. We are NOT in production (safety guard)

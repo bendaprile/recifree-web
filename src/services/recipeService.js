@@ -14,15 +14,25 @@ import staticRecipes from '../data/recipes';
 
 /** @returns {Promise<Object[]>} All recipes, sorted by title */
 export async function getAllRecipes() {
+  const start = performance.now();
+  console.info('[recipeService] Starting getAllRecipes fetch...');
   try {
-    const snapshot = await getDocs(collection(db, 'recipes'));
-    if (snapshot.empty) return staticRecipes;
-    // Map Firestore docs → plain objects, keeping `id` as the slug for compatibility
+    const recipesRef = collection(db, 'recipes');
+    const snapshot = await getDocs(recipesRef);
+    const end = performance.now();
+    console.info(`[recipeService] getAllRecipes took ${Math.round(end - start)}ms for ${snapshot.size} docs.`);
+
+    if (snapshot.empty) {
+      console.warn('[recipeService] Firestore recipes collection is empty, using fallback.');
+      return staticRecipes;
+    }
+
     return snapshot.docs
       .map(doc => mapRecipeFromFirestore(doc))
       .sort((a, b) => a.title.localeCompare(b.title));
   } catch (err) {
-    console.warn('[recipeService] Firestore unavailable, falling back to local data:', err.message);
+    const end = performance.now();
+    console.warn(`[recipeService] Firestore fetch failed after ${Math.round(end - start)}ms:`, err.message);
     return staticRecipes;
   }
 }
@@ -32,7 +42,6 @@ export async function getAllRecipes() {
  * @param {string} slug - The kebab-case slug (e.g. "hot-honey-feta-chicken")
  * @returns {Promise<Object|null>} The recipe object or null if not found
  */
-export async function getRecipeBySlug(slug) {
   // Check for hydration data from the Cloud Function SSR
   if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
     const hydratedData = window.__INITIAL_RECIPE__;
@@ -42,9 +51,8 @@ export async function getRecipeBySlug(slug) {
     window.__INITIAL_RECIPE__ = null;
 
     if (isMatch) {
-      console.info('[recipeService] Using hydrated recipe data for:', slug);
+      console.info(`[recipeService] Found hydrated data for ${slug} in ${Math.round(performance.now() - start)}ms`);
       // Ensure the hydrated data goes through the same mapping logic as Firestore docs
-      // (e.g. parsing stepIngredients JSON)
       return mapRecipeFromHydration(hydratedData);
     }
   }
@@ -52,11 +60,15 @@ export async function getRecipeBySlug(slug) {
   try {
     const q = query(collection(db, 'recipes'), where('slug', '==', slug));
     const snapshot = await getDocs(q);
+    const end = performance.now();
+    console.info(`[recipeService] getRecipeBySlug took ${Math.round(end - start)}ms`);
+
     if (snapshot.empty) return null;
     const doc = snapshot.docs[0];
     return mapRecipeFromFirestore(doc);
   } catch (err) {
-    console.warn('[recipeService] Firestore unavailable, falling back to local data:', err.message);
+    const end = performance.now();
+    console.warn(`[recipeService] getRecipeBySlug failed after ${Math.round(end - start)}ms:`, err.message);
     return staticRecipes.find(r => r.id === slug) ?? null;
   }
 }
