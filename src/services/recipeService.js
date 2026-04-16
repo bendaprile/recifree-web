@@ -129,15 +129,27 @@ export async function addRecipe(recipeData) {
   const baseSlug = recipeData.id || recipeData.slug;
   const uniqueSlug = await generateUniqueSlug(baseSlug);
 
-  const docRef = await addDoc(collection(db, 'recipes'), {
-    ...recipeData,
-    id: uniqueSlug,     // keep id === slug for JSON compatibility
-    slug: uniqueSlug,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  // Firestore does not support nested arrays.
+  // We centralize the stringification here to ensure consistency.
+  const payload = { ...recipeData };
+  if (Array.isArray(payload.stepIngredients)) {
+    payload.stepIngredients = JSON.stringify(payload.stepIngredients);
+  }
 
-  return { docId: docRef.id, slug: uniqueSlug };
+  try {
+    const docRef = await addDoc(collection(db, 'recipes'), {
+      ...payload,
+      id: uniqueSlug,     // keep id === slug for JSON compatibility
+      slug: uniqueSlug,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    return { docId: docRef.id, slug: uniqueSlug };
+  } catch (err) {
+    console.error(`[recipeService] Failed to add recipe: ${err.message}`);
+    throw err; // Re-throw to let the caller handle UI feedback
+  }
 }
 
 /**

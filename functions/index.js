@@ -100,8 +100,8 @@ app.get('/recipe/:slug', async (req, res) => {
             </script>
         `;
 
-        // Inject into HTML <head>
-        html = html.replace('<title>Recifree | Recipes Without the Clutter</title>', `<title>${recipe.title} | Recifree</title>`);
+        // Inject into HTML <head> using regex for robustness
+        html = html.replace(/<title>.*?<\/title>/, `<title>${recipe.title} | Recifree</title>`);
         html = html.replace('</head>', `${metaTags}\n</head>`);
 
         // Send modified HTML (Bots read the tags, React hydrates inside #root as normal)
