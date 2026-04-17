@@ -1,0 +1,57 @@
+{
+  "id": "pesto-chicken-pasta-bake",
+  "title": "Pesto Chicken Pasta Bake",
+  "description": "A restaurant-worthy pasta bake with juicy seasoned chicken, roasted tomatoes, and fresh baby spinach in a luscious, creamy pesto sauce.",
+  "image": "/images/recipes/pesto-chicken-pasta-bake.png",
+  "prepTime": "10 mins",
+  "cookTime": "25 mins",
+  "totalTime": "35 mins",
+  "servings": 6,
+  "difficulty": "Easy",
+  "tags": ["Italian", "Dinner", "Chicken", "Pasta"],
+  "ingredients": [
+    { "amount": "12", "unit": "oz", "item": "pasta of choice (such as rigatoni or tortiglioni)" },
+    { "amount": "1", "unit": "lb", "item": "boneless, skinless chicken breasts, cubed" },
+    { "amount": "1", "unit": "tbsp", "item": "Italian seasoning" },
+    { "amount": "1", "unit": "tsp", "item": "paprika" },
+    { "amount": "1 1/4", "unit": "tsp", "item": "kosher salt, divided" },
+    { "amount": "1/2", "unit": "tsp", "item": "black pepper" },
+    { "amount": "1-2", "unit": "tbsp", "item": "extra-virgin olive oil" },
+    { "amount": "3/4", "unit": "cup", "item": "shallots, minced" },
+    { "amount": "4", "unit": "cloves", "item": "garlic, minced" },
+    { "amount": "1", "unit": "pinch", "item": "crushed red pepper flakes" },
+    { "amount": "1", "unit": "cup", "item": "jarred roasted tomatoes, thinly sliced" },
+    { "amount": "2-3", "unit": "handfuls", "item": "fresh baby spinach" },
+    { "amount": "1/2", "unit": "cup", "item": "pesto" },
+    { "amount": "1/2", "unit": "cup", "item": "heavy cream" },
+    { "amount": "1/2", "unit": "cup", "item": "Parmigiano-Reggiano cheese, freshly grated and divided" },
+    { "amount": "3-4", "unit": "oz", "item": "fresh mozzarella cheese, torn" },
+    { "amount": "", "unit": "", "item": "fresh basil, chopped for garnish" }
+  ],
+  "instructions": [
+    "Boil pasta in salted water until just shy of al dente; reserve 1 cup of cooking water before draining.",
+    "Toss chicken with 1 tbsp oil, Italian seasoning, paprika, 3/4 tsp salt, and black pepper. Sauté in a large oven-safe skillet over medium heat for 8 minutes until cooked, then set aside.",
+    "Sauté shallots in the same skillet for 3 minutes. Add garlic and red pepper flakes for 1 minute, then stir in roasted tomatoes and spinach until wilted. Season with remaining salt.",
+    "Stir in pesto and heavy cream. Add pasta and 1/2 cup reserved water, stirring until the sauce thickens and clings to the pasta.",
+    "Stir in the cooked chicken and 1/3 cup of the Parmigiano-Reggiano. Scatter mozzarella and remaining Parmigiano-Reggiano over the top.",
+    "Broil on high for 3-4 minutes until cheese is melted and bubbly. Garnish with fresh basil and serve."
+  ],
+  "stepIngredients": [
+    [0],
+    [1, 6, 2, 3, { "id": 4, "amount": "3/4", "unit": "tsp" }, 5],
+    [7, 8, 9, 10, 11, { "id": 4, "amount": "1/2", "unit": "tsp" }],
+    [12, 13, 0],
+    [1, 14, 15],
+    [16]
+  ],
+  "source": {
+    "name": "Dishing Out Health",
+    "url": "https://dishingouthealth.com/pesto-chicken-pasta-bake/#wprm-recipe-container-36905"
+  },
+  "nutrition": {
+    "calories": 567,
+    "protein": "35g",
+    "carbs": "45g",
+    "fat": "25g"
+  }
+}
