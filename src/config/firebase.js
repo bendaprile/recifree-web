@@ -30,7 +30,7 @@ if (!import.meta.env.PROD) {
 }
 
 // 2. Enable offline persistence AFTER emulator connection
-if (typeof window !== 'undefined' && import.meta.env.MODE !== 'test') {
+if (typeof window !== 'undefined' && (import.meta.env.MODE !== 'test' || window.__FIREBASE_TEST_PERSISTENCE__)) {
   enableMultiTabIndexedDbPersistence(db).catch((err) => {
     if (err.code === 'failed-precondition') {
       console.warn('[Firebase] Persistence failed: Multiple tabs open');

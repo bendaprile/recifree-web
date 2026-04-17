@@ -81,7 +81,11 @@ function Navbar() {
 
               {loadingAuth ? (
                 <li>
-                  <div className="nav-link skeleton-text" style={{width: '60px', height: '24px', display: 'inline-block', padding: '0'}} />
+                  <div 
+                    className="nav-link skeleton-text" 
+                    style={{width: '60px', height: '24px', display: 'inline-block', padding: '0'}} 
+                    data-testid="navbar-skeleton"
+                  />
                 </li>
               ) : currentUser ? (
                 <>
@@ -101,7 +105,7 @@ function Navbar() {
             </ul>
           </div>
 
-          {isMenuOpen && <div className="navbar-overlay" onClick={closeMenu}></div>}
+          {isMenuOpen && <div className="navbar-overlay" onClick={closeMenu} data-testid="navbar-overlay"></div>}
           <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
         </nav>
       </div>
