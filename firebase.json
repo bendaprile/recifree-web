@@ -21,12 +21,16 @@
         "functions": {
             "port": 5001
         },
+        "hosting": {
+            "port": 5005
+        },
         "ui": {
             "enabled": true
         },
         "singleProjectMode": true
     },
     "hosting": {
+        "site": "recifree-web-4731f",
         "public": "dist",
         "ignore": [
             "firebase.json",

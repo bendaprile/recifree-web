@@ -12,36 +12,77 @@ import { collection, getDocs, query, where, addDoc, serverTimestamp } from 'fire
 import { db } from '../config/firebase';
 import staticRecipes from '../data/recipes';
 
+/**
+ * Helper to wrap a promise with a timeout.
+ * @param {Promise} promise - The promise to wrap
+ * @param {number} timeoutMs - Timeout in milliseconds
+ * @param {string} errorMessage - Error message if timed out
+ */
+function withTimeout(promise, timeoutMs, errorMessage) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error(errorMessage)), timeoutMs)
+    )
+  ]);
+}
+
+const FIRESTORE_TIMEOUT = 3000; // 3 seconds is plenty for healthy Firestore
+
 /** @returns {Promise<Object[]>} All recipes, sorted by title */
 export async function getAllRecipes() {
   try {
-    const snapshot = await getDocs(collection(db, 'recipes'));
-    if (snapshot.empty) return staticRecipes;
-    // Map Firestore docs → plain objects, keeping `id` as the slug for compatibility
+    const recipesRef = collection(db, 'recipes');
+    const snapshot = await withTimeout(
+      getDocs(recipesRef),
+      FIRESTORE_TIMEOUT,
+      'Firestore connection timed out'
+    );
+
+    if (snapshot.empty) {
+      return staticRecipes;
+    }
+
     return snapshot.docs
       .map(doc => mapRecipeFromFirestore(doc))
       .sort((a, b) => a.title.localeCompare(b.title));
   } catch (err) {
-    console.warn('[recipeService] Firestore unavailable, falling back to local data:', err.message);
     return staticRecipes;
   }
 }
 
-/**
- * Fetch a single recipe by its URL slug.
- * @param {string} slug - The kebab-case slug (e.g. "hot-honey-feta-chicken")
- * @returns {Promise<Object|null>} The recipe object or null if not found
- */
 export async function getRecipeBySlug(slug) {
+  // Check for hydration data from the Cloud Function SSR
+  if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
+    const hydratedData = window.__INITIAL_RECIPE__;
+    const isMatch = hydratedData.slug === slug || hydratedData.id === slug;
+    
+    // Clear the global to prevent stale reuse on subsequent navigations
+    window.__INITIAL_RECIPE__ = null;
+
+    if (isMatch) {
+      // Ensure the hydrated data goes through the same mapping logic as Firestore docs
+      return mapRecipeFromHydration(hydratedData);
+    }
+  }
+
   try {
     const q = query(collection(db, 'recipes'), where('slug', '==', slug));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
+    const snapshot = await withTimeout(
+      getDocs(q),
+      FIRESTORE_TIMEOUT,
+      'Firestore connection timed out'
+    );
+
+    if (snapshot.empty) {
+      // Fallback to static recipes if not found in DB (essential for local dev/emulator)
+      return staticRecipes.find(r => r.id === slug || r.slug === slug) ?? null;
+    }
+
     const doc = snapshot.docs[0];
     return mapRecipeFromFirestore(doc);
   } catch (err) {
-    console.warn('[recipeService] Firestore unavailable, falling back to local data:', err.message);
-    return staticRecipes.find(r => r.id === slug) ?? null;
+    return staticRecipes.find(r => r.id === slug || r.slug === slug) ?? null;
   }
 }
 
@@ -88,15 +129,27 @@ export async function addRecipe(recipeData) {
   const baseSlug = recipeData.id || recipeData.slug;
   const uniqueSlug = await generateUniqueSlug(baseSlug);
 
-  const docRef = await addDoc(collection(db, 'recipes'), {
-    ...recipeData,
-    id: uniqueSlug,     // keep id === slug for JSON compatibility
-    slug: uniqueSlug,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  // Firestore does not support nested arrays.
+  // We centralize the stringification here to ensure consistency.
+  const payload = { ...recipeData };
+  if (Array.isArray(payload.stepIngredients)) {
+    payload.stepIngredients = JSON.stringify(payload.stepIngredients);
+  }
 
-  return { docId: docRef.id, slug: uniqueSlug };
+  try {
+    const docRef = await addDoc(collection(db, 'recipes'), {
+      ...payload,
+      id: uniqueSlug,     // keep id === slug for JSON compatibility
+      slug: uniqueSlug,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    return { docId: docRef.id, slug: uniqueSlug };
+  } catch (err) {
+    console.error(`[recipeService] Failed to add recipe: ${err.message}`);
+    throw err; // Re-throw to let the caller handle UI feedback
+  }
 }
 
 /**
@@ -105,6 +158,23 @@ export async function addRecipe(recipeData) {
  */
 function mapRecipeFromFirestore(doc) {
   const data = doc.data();
+  return {
+    ...mapRecipeData(data),
+    _docId: doc.id
+  };
+}
+
+/**
+ * Maps hydrated data (already a plain object) to a recipe object.
+ */
+function mapRecipeFromHydration(data) {
+  return mapRecipeData(data);
+}
+
+/**
+ * Shared mapping logic for recipe data (handles stepIngredients parsing).
+ */
+function mapRecipeData(data) {
   if (data.stepIngredients && typeof data.stepIngredients === 'string') {
     try {
       data.stepIngredients = JSON.parse(data.stepIngredients);
@@ -112,5 +182,5 @@ function mapRecipeFromFirestore(doc) {
       // Keep it as a string or fallback if parsing fails
     }
   }
-  return { ...data, _docId: doc.id };
+  return data;
 }

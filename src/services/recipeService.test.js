@@ -13,7 +13,7 @@ vi.mock('firebase/firestore', () => ({
 vi.mock('../config/firebase', () => ({ db: {} }));
 
 import * as firestoreModule from 'firebase/firestore';
-import { getAllRecipes, getRecipeBySlug, isSlugTaken, generateUniqueSlug } from './recipeService';
+import { getAllRecipes, getRecipeBySlug, isSlugTaken, generateUniqueSlug, addRecipe } from './recipeService';
 
 const mockRecipeA = {
   id: 'test-pasta',
@@ -100,6 +100,38 @@ describe('getRecipeBySlug', () => {
   });
 });
 
+// ─── getRecipeBySlug - SSR Hydration ─────────────────────────────────────────
+describe('getRecipeBySlug - SSR Hydration', () => {
+  it('returns data from window.__INITIAL_RECIPE__ if it matches slug', async () => {
+    const mockHydrated = { ...mockRecipeA, id: 'hydrated-id', slug: 'hydrated-slug' };
+    global.window.__INITIAL_RECIPE__ = mockHydrated;
+
+    const result = await getRecipeBySlug('hydrated-slug');
+    expect(result.id).toBe('hydrated-id');
+    expect(global.window.__INITIAL_RECIPE__).toBeNull(); // Should be cleared
+  });
+
+  it('returns data from window.__INITIAL_RECIPE__ if it matches id', async () => {
+    const mockHydrated = { ...mockRecipeA, id: 'hydrated-id', slug: 'hydrated-slug' };
+    global.window.__INITIAL_RECIPE__ = mockHydrated;
+
+    const result = await getRecipeBySlug('hydrated-id');
+    expect(result.slug).toBe('hydrated-slug');
+    expect(global.window.__INITIAL_RECIPE__).toBeNull();
+  });
+
+  it('proceeds to Firestore if window.__INITIAL_RECIPE__ does not match', async () => {
+    const mockHydrated = { id: 'other-id', slug: 'other-slug' };
+    global.window.__INITIAL_RECIPE__ = mockHydrated;
+    
+    firestoreModule.getDocs.mockResolvedValue(makeSnapshot([mockRecipeA]));
+    
+    const result = await getRecipeBySlug('test-pasta');
+    expect(result.slug).toBe('test-pasta');
+    expect(global.window.__INITIAL_RECIPE__).toBeNull(); // Should still be cleared
+  });
+});
+
 // ─── isSlugTaken ─────────────────────────────────────────────────────────────
 describe('isSlugTaken', () => {
   it('returns true when a matching doc exists', async () => {
@@ -141,6 +173,60 @@ describe('generateUniqueSlug', () => {
       .mockResolvedValueOnce(makeSnapshot([]));            // free
     const result = await generateUniqueSlug('chicken-soup');
     expect(result).toBe('chicken-soup-3');
+  });
+});
+
+// ─── addRecipe ───────────────────────────────────────────────────────────────
+describe('addRecipe', () => {
+  it('successfully adds a recipe and returns the Firestore doc ID', async () => {
+    const mockDocRef = { id: 'new-doc-id' };
+    firestoreModule.addDoc.mockResolvedValue(mockDocRef);
+    firestoreModule.getDocs.mockResolvedValue(makeSnapshot([])); // Slug is not taken
+
+    const recipeData = { title: 'New Recipe', id: 'new-recipe' };
+    const result = await addRecipe(recipeData);
+
+    expect(result.docId).toBe('new-doc-id');
+    expect(result.slug).toBe('new-recipe');
+    expect(firestoreModule.addDoc).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      title: 'New Recipe',
+      slug: 'new-recipe',
+      createdAt: 'MOCK_TIMESTAMP',
+    }));
+  });
+
+  it('stringifies stepIngredients if they are an array', async () => {
+    firestoreModule.addDoc.mockResolvedValue({ id: 'doc-id' });
+    firestoreModule.getDocs.mockResolvedValue(makeSnapshot([]));
+
+    const recipeData = { 
+      title: 'Pasta', 
+      id: 'pasta',
+      stepIngredients: [['water', 'salt']] 
+    };
+    await addRecipe(recipeData);
+
+    expect(firestoreModule.addDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        stepIngredients: JSON.stringify([['water', 'salt']])
+      })
+    );
+  });
+
+  it('throws an error if Firestore addition fails', async () => {
+    firestoreModule.addDoc.mockRejectedValue(new Error('Firestore error'));
+    firestoreModule.getDocs.mockResolvedValue(makeSnapshot([]));
+
+    const recipeData = { title: 'Fail Recipe', id: 'fail' };
+    
+    // Silence console.error for this test
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    await expect(addRecipe(recipeData)).rejects.toThrow('Firestore error');
+    expect(consoleSpy).toHaveBeenCalled();
+    
+    consoleSpy.mockRestore();
   });
 });
 

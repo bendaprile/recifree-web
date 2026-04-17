@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"npm run emulators\"",
+    "predev": "node scripts/cleanup-ports.js",
     "dev:ui": "vite",
     "emulators": "firebase emulators:start --import=./emulator-data --export-on-exit",
     "migrate": "node scripts/migrate-to-firestore.js",

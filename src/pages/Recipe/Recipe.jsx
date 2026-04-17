@@ -9,8 +9,17 @@ import './Recipe.css';
 
 function Recipe() {
     const { id } = useParams();
-    const [recipe, setRecipe] = useState(null);
-    const [loading, setLoading] = useState(true);
+    
+    // Initialize state from window.__INITIAL_RECIPE__ if it exists (SSR Hydration)
+    const [recipe, setRecipe] = useState(() => {
+        if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
+            const data = window.__INITIAL_RECIPE__;
+            if (data.slug === id || data.id === id) return data;
+        }
+        return null;
+    });
+    
+    const [loading, setLoading] = useState(() => !recipe);
     const [checkedIngredients, setCheckedIngredients] = useState([]);
     const [checkedSteps, setCheckedSteps] = useState([]);
     const [expandedSteps, setExpandedSteps] = useState([]);
@@ -20,15 +29,20 @@ function Recipe() {
     const popupRef = useRef(null);
 
     useEffect(() => {
-        setLoading(true);
-        setRecipe(null);
-        setCheckedIngredients([]);
-        setCheckedSteps([]);
-        setExpandedSteps([]);
+        // If we already have the recipe from hydration, skip the fetch
+        if (recipe && (recipe.slug === id || recipe.id === id)) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+            setRecipe(null);
+            setCheckedIngredients([]);
+            setCheckedSteps([]);
+            setExpandedSteps([]);
 
-        getRecipeBySlug(id)
-            .then(setRecipe)
-            .finally(() => setLoading(false));
+            getRecipeBySlug(id)
+                .then(setRecipe)
+                .finally(() => setLoading(false));
+        }
 
         // Scroll to top when recipe loads
         window.scrollTo(0, 0);

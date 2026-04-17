@@ -114,4 +114,124 @@ describe('LoginModal Component', () => {
         // Confirm no error text visible
         expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
     });
+
+    it('toggles password visibility', () => {
+        renderModal(true);
+        const passwordInput = screen.getByLabelText('Password');
+        const toggleBtn = screen.getByLabelText('Show password');
+
+        expect(passwordInput.type).toBe('password');
+        
+        fireEvent.click(toggleBtn);
+        expect(passwordInput.type).toBe('text');
+        expect(screen.getByLabelText('Hide password')).toBeInTheDocument();
+
+        fireEvent.click(toggleBtn);
+        expect(passwordInput.type).toBe('password');
+    });
+
+    it('triggers validation on blur', async () => {
+        renderModal(true);
+        const emailInput = screen.getByLabelText('Email');
+        const passwordInput = screen.getByLabelText('Password');
+
+        fireEvent.blur(emailInput);
+        expect(await screen.findByText('Email is required.')).toBeInTheDocument();
+
+        fireEvent.blur(passwordInput);
+        expect(await screen.findByText('Password is required.')).toBeInTheDocument();
+    });
+
+    it('handles successful login', async () => {
+        mockLogin.mockResolvedValueOnce({});
+        const onClose = vi.fn();
+        render(
+            <BrowserRouter>
+                <LoginModal isOpen={true} onClose={onClose} />
+            </BrowserRouter>
+        );
+
+        fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Log In' }));
+
+        await vi.waitFor(() => expect(mockLogin).toHaveBeenCalledWith('test@example.com', 'password123'));
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    it('handles login failure', async () => {
+        mockLogin.mockRejectedValueOnce({ code: 'auth/wrong-password' });
+        renderModal(true);
+
+        fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'wrongpass' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Log In' }));
+
+        expect(await screen.findByText('Incorrect email or password. Please try again.')).toBeInTheDocument();
+    });
+
+    it('handles successful google login', async () => {
+        mockLoginWithGoogle.mockResolvedValueOnce({});
+        const onClose = vi.fn();
+        render(
+            <BrowserRouter>
+                <LoginModal isOpen={true} onClose={onClose} />
+            </BrowserRouter>
+        );
+
+        fireEvent.click(screen.getByRole('button', { name: /log in with google/i }));
+
+        await vi.waitFor(() => expect(mockLoginWithGoogle).toHaveBeenCalled());
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    it('handles google login error (non-popup-closed)', async () => {
+        mockLoginWithGoogle.mockRejectedValueOnce({ code: 'auth/network-request-failed' });
+        renderModal(true);
+
+        fireEvent.click(screen.getByRole('button', { name: /log in with google/i }));
+
+        expect(await screen.findByText('Network error. Please check your internet connection.')).toBeInTheDocument();
+    });
+
+    it('shows error when resetting password without email', async () => {
+        renderModal(true);
+        fireEvent.click(screen.getByRole('button', { name: 'Forgot?' }));
+        expect(await screen.findByText('Please enter your email address to reset your password.')).toBeInTheDocument();
+    });
+
+    it('shows error when resetting password with invalid email', async () => {
+        renderModal(true);
+        fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'invalid-email' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Forgot?' }));
+        expect(await screen.findByText('Please enter a valid email to reset your password.')).toBeInTheDocument();
+    });
+
+    it('handles password reset failure', async () => {
+        mockResetPassword.mockRejectedValueOnce({ code: 'auth/user-not-found' });
+        renderModal(true);
+
+        fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'unknown@example.com' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Forgot?' }));
+
+        expect(await screen.findByText(/No account found with this email/)).toBeInTheDocument();
+    });
+
+    it('traps focus within the modal', () => {
+        renderModal(true);
+        const modal = screen.getByRole('heading', { name: /welcome back/i }).closest('.modal-content');
+        const focusableElements = modal.querySelectorAll('button, input, a');
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        // Shift + Tab on first element
+        firstElement.focus();
+        fireEvent.keyDown(firstElement, { key: 'Tab', shiftKey: true });
+        expect(document.activeElement).toBe(lastElement);
+
+        // Tab on last element
+        lastElement.focus();
+        fireEvent.keyDown(lastElement, { key: 'Tab', shiftKey: false });
+        expect(document.activeElement).toBe(firstElement);
+    });
 });

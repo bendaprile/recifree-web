@@ -116,7 +116,7 @@ export function PrivacyPolicyPage() {
       <div className="container">
         <div className="legal-content">
           <h1>Privacy Policy</h1>
-          <p className="legal-updated">Last Updated: January 25, 2026</p>
+          <p className="legal-updated">Last Updated: April 16, 2026</p>
 
           <p className="lead">
             Recifree is committed to protecting your privacy. This policy explains what information
@@ -130,11 +130,16 @@ export function PrivacyPolicyPage() {
           </p>
 
           <h2>2. Information We Collect</h2>
+          <h3>Information We Collect</h3>
+          <ul>
+            <li><strong>Account Information:</strong> When you sign up, we collect your email address to provide access to your saved recipes and shopping lists across devices.</li>
+            <li><strong>Saved Content:</strong> We store the recipes you save and the items on your shopping list in our secure database.</li>
+          </ul>
+
           <h3>Information We Do NOT Collect</h3>
           <ul>
-            <li><strong>No Account Data:</strong> We do not require user registration or login. We do not collect names, email addresses, passwords, or any personal identifiers.</li>
             <li><strong>No Payment Information:</strong> We do not process payments or collect financial data.</li>
-            <li><strong>No User-Generated Content:</strong> We do not accept user submissions that would require collecting personal information.</li>
+            <li><strong>No Third-Party Sharing:</strong> We do not sell your personal data or share it with advertisers.</li>
           </ul>
 
           <h3>Information Automatically Collected</h3>

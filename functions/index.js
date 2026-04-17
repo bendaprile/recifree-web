@@ -17,12 +17,15 @@ function getFlatIngredients(recipe) {
     return recipe.ingredients;
 }
 
-// Ensure the crawler receives the HTML file
+// Cache the HTML template in memory to avoid disk I/O on every request
+let htmlTemplate = null;
 function getHtmlTemplate() {
+    if (htmlTemplate) return htmlTemplate;
     try {
-        return fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf8');
+        htmlTemplate = fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf8');
+        return htmlTemplate;
     } catch (e) {
-        // Fallback simple HTML if index.html isn't properly copied during build
+        console.warn('Could not find index.html, using fallback template');
         return `<!doctype html>
 <html lang="en">
 <head>
@@ -39,9 +42,12 @@ function getHtmlTemplate() {
 
 app.get('/recipe/:slug', async (req, res) => {
     const slug = req.params.slug;
+    console.time(`fetch-recipe-${slug}`);
     try {
         // Fetch recipe from Firestore
         const snapshot = await db.collection('recipes').where('slug', '==', slug).limit(1).get();
+        console.timeEnd(`fetch-recipe-${slug}`);
+
         if (snapshot.empty) {
             return res.status(404).send(getHtmlTemplate());
         }
@@ -77,7 +83,9 @@ app.get('/recipe/:slug', async (req, res) => {
             "recipeInstructions": instructionStrings,
         };
 
-        // Prepare Meta Tags
+        // Prepare Meta Tags & Hydration Script
+        // We inject the recipe data into window..__INITIAL_RECIPE__ so the client
+        // can pick it up immediately without a second Firestore fetch.
         const metaTags = `
             <meta property="og:title" content="${recipe.title} | Recifree" />
             <meta property="og:description" content="${recipe.description || 'View this recipe on Recifree.'}" />
@@ -87,10 +95,13 @@ app.get('/recipe/:slug', async (req, res) => {
             <script type="application/ld+json">
                 ${JSON.stringify(jsonLd)}
             </script>
+            <script id="hydration-data">
+                window.__INITIAL_RECIPE__ = ${JSON.stringify(recipe).replace(/</g, '\\u003c')};
+            </script>
         `;
 
-        // Inject into HTML <head>
-        html = html.replace('<title>Recifree | Recipes Without the Clutter</title>', `<title>${recipe.title} | Recifree</title>`);
+        // Inject into HTML <head> using regex for robustness
+        html = html.replace(/<title>.*?<\/title>/, `<title>${recipe.title} | Recifree</title>`);
         html = html.replace('</head>', `${metaTags}\n</head>`);
 
         // Send modified HTML (Bots read the tags, React hydrates inside #root as normal)
@@ -104,5 +115,5 @@ app.get('/recipe/:slug', async (req, res) => {
 });
 
 exports.ssrRecipe = functions
-    .runWith({ maxInstances: 1 })
+    .runWith({ maxInstances: 3 })
     .https.onRequest(app);
