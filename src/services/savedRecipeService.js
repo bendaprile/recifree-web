@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, deleteDoc, getDocs, getDoc, query, where, serverTimestamp, arrayUnion, arrayRemove, writeBatch } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, getDocs, getDoc, query, where, serverTimestamp, arrayUnion, arrayRemove, writeBatch, deleteField } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 /**
@@ -50,7 +50,8 @@ export async function updateRecipeListsInFirestore(uid, recipeId, newListNames) 
                 });
             } else {
                 await setDoc(docRef, {
-                    listNames: newListNames
+                    listNames: newListNames,
+                    listName: deleteField() // Clean up legacy field
                 }, { merge: true });
             }
         }

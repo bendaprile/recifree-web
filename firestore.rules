@@ -6,5 +6,16 @@ service cloud.firestore {
       allow read: if true;
       allow create, update: if request.auth != null;
     }
+
+    // User-specific data (Custom Lists and Saved Recipes)
+    // Only the authenticated owner can access their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      match /savedRecipes/{recipeId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
   }
 }
+

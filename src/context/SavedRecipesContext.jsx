@@ -9,7 +9,7 @@ export function useSavedRecipes() {
 }
 
 export function SavedRecipesProvider({ children }) {
-    const { currentUser } = useAuth();
+    const { currentUser, loadingAuth } = useAuth();
     const [savedRecipes, setSavedRecipes] = useState([]); // [{recipeId, listName, savedAt}]
     const [explicitLists, setExplicitLists] = useState([]);
     const [lists, setLists] = useState(['Saved']); 
@@ -74,12 +74,13 @@ export function SavedRecipesProvider({ children }) {
             }
         }
 
+        if (loadingAuth) return;
         loadSavedRecipes();
 
         return () => {
             isMounted = false;
         };
-    }, [currentUser]);
+    }, [currentUser, loadingAuth]);
 
     // Extract unique lists
     useEffect(() => {
@@ -250,7 +251,10 @@ export function SavedRecipesProvider({ children }) {
         setSavedRecipes(prev => {
             const filtered = prev.filter(r => r.recipeId !== recipeId);
             if (newLists.length === 0) return filtered;
-            return [...filtered, newSave];
+            
+            // Explicitly ensure no legacy 'listName' in state
+            const { listName, ...rest } = newSave;
+            return [...filtered, rest];
         });
 
         try {
