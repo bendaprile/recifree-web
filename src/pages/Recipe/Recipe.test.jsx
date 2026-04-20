@@ -3,6 +3,8 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Recipe from './Recipe';
 import { ShoppingListProvider } from '../../context/ShoppingListContext';
+import { AuthProvider } from '../../context/AuthContext';
+import { SavedRecipesProvider } from '../../context/SavedRecipesContext';
 
 // Prevent any real Firebase/Firestore SDK initialization
 vi.mock('../../config/firebase', () => ({ db: {}, auth: {} }));
@@ -135,13 +137,17 @@ describe('Recipe Page', () => {
         let result;
         await act(async () => {
             result = render(
-                <ShoppingListProvider>
-                    <MemoryRouter initialEntries={[`/recipe/${id}`]}>
-                        <Routes>
-                            <Route path="/recipe/:id" element={<Recipe />} />
-                        </Routes>
-                    </MemoryRouter>
-                </ShoppingListProvider>
+                <AuthProvider>
+                    <SavedRecipesProvider>
+                        <ShoppingListProvider>
+                            <MemoryRouter initialEntries={[`/recipe/${id}`]}>
+                                <Routes>
+                                    <Route path="/recipe/:id" element={<Recipe />} />
+                                </Routes>
+                            </MemoryRouter>
+                        </ShoppingListProvider>
+                    </SavedRecipesProvider>
+                </AuthProvider>
             );
         });
         return result;
