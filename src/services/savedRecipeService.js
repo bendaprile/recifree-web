@@ -33,30 +33,39 @@ export async function getUserSavedRecipes(uid) {
     }
 }
 
-// Add or Remove a recipe from lists
+// Update which custom lists a recipe belongs to.
+// An empty newListNames array is valid — it means the recipe is saved but
+// in no custom list. Use unsaveRecipeFromFirestore to fully remove it.
 export async function updateRecipeListsInFirestore(uid, recipeId, newListNames) {
     if (!uid) throw new Error('User must be authenticated to save to Firestore');
     try {
         const docRef = doc(db, `users/${uid}/savedRecipes`, recipeId);
-        
-        if (newListNames.length === 0) {
-            await deleteDoc(docRef);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            await setDoc(docRef, {
+                listNames: newListNames,
+                savedAt: serverTimestamp()
+            });
         } else {
-            const docSnap = await getDoc(docRef);
-            if (!docSnap.exists()) {
-                await setDoc(docRef, {
-                    listNames: newListNames,
-                    savedAt: serverTimestamp()
-                });
-            } else {
-                await setDoc(docRef, {
-                    listNames: newListNames,
-                    listName: deleteField() // Clean up legacy field
-                }, { merge: true });
-            }
+            await setDoc(docRef, {
+                listNames: newListNames,
+                listName: deleteField() // Clean up legacy field
+            }, { merge: true });
         }
     } catch (error) {
         console.error('Error updating recipe lists:', error);
+        throw error;
+    }
+}
+
+// Fully unsave a recipe — deletes the Firestore document.
+export async function unsaveRecipeFromFirestore(uid, recipeId) {
+    if (!uid) throw new Error('User must be authenticated to unsave a recipe');
+    try {
+        const docRef = doc(db, `users/${uid}/savedRecipes`, recipeId);
+        await deleteDoc(docRef);
+    } catch (error) {
+        console.error('Error unsaving recipe:', error);
         throw error;
     }
 }
@@ -154,14 +163,14 @@ export async function deleteCustomListFromFirestore(uid, listName, recipeAction 
             if (recipeAction === 'delete') {
                 const updated = recipeDoc.data().listNames.filter(l => l !== listName);
                 if (updated.length === 0) {
+                    // Recipe was only in this list — fully unsave
                     batch.delete(recipeDoc.ref);
                 } else {
                     batch.update(recipeDoc.ref, { listNames: updated });
                 }
             } else {
-                // Move action
+                // Keep saved — just remove from this list (recipe stays saved, possibly uncategorised)
                 const updated = recipeDoc.data().listNames.filter(l => l !== listName);
-                if (!updated.includes('Saved')) updated.push('Saved');
                 batch.update(recipeDoc.ref, { listNames: updated });
             }
         });

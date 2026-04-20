@@ -6,7 +6,7 @@ import SignupPromptModal from '../SignupPromptModal/SignupPromptModal';
 import './SaveRecipeButton.css';
 
 function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
-    const { savedRecipes, isRecipeSaved, toggleListForRecipe, lists } = useSavedRecipes();
+    const { savedRecipes, toggleSaved, toggleListForRecipe, lists } = useSavedRecipes();
     const { currentUser } = useAuth();
     const [showSignupPrompt, setShowSignupPrompt] = useState(false);
     const [showListMenu, setShowListMenu] = useState(false);
@@ -14,7 +14,8 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
 
     const savedRecord = savedRecipes.find(r => r.recipeId === recipe.id);
     const isSaved = !!savedRecord;
-    const currentLists = savedRecord ? (savedRecord.listNames || (savedRecord.listName ? [savedRecord.listName] : ['Saved'])) : [];
+    // currentLists only ever contains custom list names — never 'Saved'
+    const currentLists = savedRecord ? (savedRecord.listNames || []) : [];
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -28,57 +29,69 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
     }, []);
 
     const handleClick = async (e) => {
-        e.preventDefault(); // Prevent navigating if wrapped in a Link
+        e.preventDefault();
         e.stopPropagation();
 
-        if (lists.length <= 1) {
-            // Just toggle 'Saved'
-            await toggleListForRecipe(recipe.id, 'Saved');
-            if (!isSaved && !currentUser) setShowSignupPrompt(true);
+        if (!isSaved) {
+            // Not saved — save immediately (goes into "All Saved", no specific list)
+            await toggleSaved(recipe.id);
+            if (!currentUser) setShowSignupPrompt(true);
             return;
         }
 
-        // Multiple lists - always show menu to let them manage lists
-        setShowListMenu(!showListMenu);
+        if (lists.length === 0) {
+            // Saved, but user has no custom lists — clicking again unsaves
+            await toggleSaved(recipe.id);
+            return;
+        }
+
+        // Saved and user has custom lists — show the list management menu
+        setShowListMenu(prev => !prev);
     };
 
     const handleSaveToList = async (e, listName) => {
         e.preventDefault();
         e.stopPropagation();
         await toggleListForRecipe(recipe.id, listName);
+        if (!currentUser) setShowSignupPrompt(true);
+    };
 
-        // Show prompt if user is unauthenticated
-        if (!currentUser) {
-            setShowSignupPrompt(true);
-        }
+    const handleUnsave = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setShowListMenu(false);
+        await toggleSaved(recipe.id);
     };
 
     const buttonClass = `btn save-btn ${variant === 'icon-only' ? 'btn-icon' : 'btn-outline'} ${isSaved ? 'is-saved' : ''} ${className}`;
 
     return (
         <div className="save-button-wrapper" ref={menuRef}>
-            <button 
+            <button
                 className={buttonClass}
                 onClick={handleClick}
-                aria-label={isSaved ? "Remove from saved recipes" : "Save recipe"}
-                title={isSaved ? "Remove from saved recipes" : "Save recipe"}
+                aria-label={isSaved ? 'Remove from saved recipes' : 'Save recipe'}
+                title={isSaved ? 'Remove from saved recipes' : 'Save recipe'}
             >
-                {isSaved ? <BookmarkSolidIcon size={variant === 'icon-only' ? 20 : 18} /> : <BookmarkIcon size={variant === 'icon-only' ? 20 : 18} />}
+                {isSaved
+                    ? <BookmarkSolidIcon size={variant === 'icon-only' ? 20 : 18} />
+                    : <BookmarkIcon size={variant === 'icon-only' ? 20 : 18} />
+                }
                 {variant !== 'icon-only' && (
                     <span>{isSaved ? 'Saved' : 'Save'}</span>
                 )}
             </button>
 
-            {/* List Selection Dropdown */}
+            {/* Custom-list management dropdown */}
             {showListMenu && (
                 <div className="save-list-menu">
-                    <div className="menu-header">Save to...</div>
+                    <div className="menu-header">Add to list</div>
                     <ul className="menu-lists">
                         {lists.map(listName => {
                             const inList = currentLists.includes(listName);
                             return (
                                 <li key={listName}>
-                                    <button 
+                                    <button
                                         className={`list-option-btn ${inList ? 'active-list' : ''}`}
                                         onClick={(e) => handleSaveToList(e, listName)}
                                     >
@@ -89,13 +102,19 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
                             );
                         })}
                     </ul>
+                    {/* Divider + destructive action */}
+                    <div className="menu-divider">
+                        <button className="list-option-btn remove-btn" onClick={handleUnsave}>
+                            Remove from library
+                        </button>
+                    </div>
                 </div>
             )}
 
-            {/* Unauthenticated Prompt */}
-            <SignupPromptModal 
-                isOpen={showSignupPrompt} 
-                onClose={() => setShowSignupPrompt(false)} 
+            {/* Unauthenticated prompt */}
+            <SignupPromptModal
+                isOpen={showSignupPrompt}
+                onClose={() => setShowSignupPrompt(false)}
             />
         </div>
     );

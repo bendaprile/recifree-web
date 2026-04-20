@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useSavedRecipes } from '../../context/SavedRecipesContext';
 import { getRecipeBySlug } from '../../services/recipeService';
@@ -8,11 +8,11 @@ import './SavedRecipes.css';
 
 function SavedRecipes() {
     const { savedRecipes, lists, loading: contextLoading, createCustomList, renameCustomList, deleteCustomList } = useSavedRecipes();
-    const [activeList, setActiveList] = useState('Saved');
-    // Ensure activeList is valid, fallback to first available if it was deleted
+    const [activeList, setActiveList] = useState('all');
+    // Keep activeList valid — 'all' is always valid; custom lists check membership
     useEffect(() => {
-        if (!lists.includes(activeList) && lists.length > 0) {
-            setActiveList(lists[0]);
+        if (activeList !== 'all' && !lists.includes(activeList) && lists.length > 0) {
+            setActiveList('all');
         }
     }, [lists, activeList]);
 
@@ -23,6 +23,10 @@ function SavedRecipes() {
     const [isRenamingList, setIsRenamingList] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [listToDelete, setListToDelete] = useState(null);
+
+    const uniqueRecipeIdKey = useMemo(() =>
+        [...new Set(savedRecipes.map(r => r.recipeId))].sort().join(','),
+    [savedRecipes]);
 
     const handleCreateListSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
@@ -57,45 +61,54 @@ function SavedRecipes() {
         setListToDelete(null);
     };
 
-    // Fetch full recipe details for all saved recipes
+    // Fetch full recipe details — only when the actual SET of saved IDs changes.
     useEffect(() => {
+        if (contextLoading) return;
+
         let isMounted = true;
-        
+
         async function fetchFullRecipes() {
-            setLoadingRecipes(true);
+            // Only show the skeleton on the very first load (no cached data yet)
+            if (fullRecipes.length === 0) setLoadingRecipes(true);
+            
             try {
-                // Fetch all unique saved recipes
-                const uniqueIds = [...new Set(savedRecipes.map(r => r.recipeId))];
-                const fetches = uniqueIds.map(id => getRecipeBySlug(id));
+                const ids = uniqueRecipeIdKey ? uniqueRecipeIdKey.split(',') : [];
+                
+                if (ids.length === 0) {
+                    setFullRecipes([]);
+                    return;
+                }
+
+                const fetches = ids.map(id => getRecipeBySlug(id));
                 const results = await Promise.all(fetches);
                 
-                // Filter out nulls if a recipe was deleted
                 if (isMounted) {
                     setFullRecipes(results.filter(Boolean));
                 }
             } catch (err) {
-                console.error("Error fetching full recipes", err);
+                console.error('Error fetching full recipes', err);
             } finally {
-                if (isMounted) setLoadingRecipes(false);
+                if (isMounted) {
+                    setLoadingRecipes(false);
+                }
             }
         }
 
-        if (!contextLoading) {
-            fetchFullRecipes();
-        }
-
+        fetchFullRecipes();
         return () => { isMounted = false; };
-    }, [savedRecipes, contextLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [uniqueRecipeIdKey, contextLoading]);
 
-    // Filter to the active list
+    // 'all' shows the entire library; any other value filters by custom list membership
     const visibleRecipes = useMemo(() => {
-        // Find saved records for the active list
-        const recordsInList = savedRecipes.filter(r => (r.listName || 'Saved') === activeList);
+        if (activeList === 'all') return fullRecipes;
+        const recordsInList = savedRecipes.filter(r => (r.listNames || []).includes(activeList));
         const idsInList = new Set(recordsInList.map(r => r.recipeId));
         return fullRecipes.filter(recipe => idsInList.has(recipe.id));
     }, [fullRecipes, savedRecipes, activeList]);
 
     if (contextLoading || loadingRecipes) {
+
         return (
             <div className="saved-recipes-page section">
                 <div className="container">
@@ -114,7 +127,7 @@ function SavedRecipes() {
         <div className="saved-recipes-page section">
             <div className="container">
                 <div className="saved-header">
-                    {isRenamingList && activeList !== 'Saved' ? (
+                    {isRenamingList && activeList !== 'all' ? (
                         <form onSubmit={handleRenameSubmit} className="rename-list-form">
                             <input 
                                 type="text"
@@ -127,9 +140,9 @@ function SavedRecipes() {
                             />
                         </form>
                     ) : (
-                        <div className="header-title-row">
-                            <h1>{activeList === 'Saved' ? 'Your Kitchen' : activeList}</h1>
-                            {activeList !== 'Saved' && (
+                    <div className="header-title-row">
+                            <h1>{activeList === 'all' ? 'Your Kitchen' : activeList}</h1>
+                            {activeList !== 'all' && (
                                 <div className="list-actions">
                                     <button className="icon-btn" onClick={startRenaming} title="Rename list">
                                         <EditIcon size={20} />
@@ -142,7 +155,9 @@ function SavedRecipes() {
                         </div>
                     )}
                     <p className="lead">
-                        {activeList === 'Saved' ? 'Your personal collection, free from the noise.' : `Manage your ${activeList} recipes.`}
+                        {activeList === 'all'
+                            ? 'Your personal collection, free from the noise.'
+                            : `Manage your ${activeList} recipes.`}
                     </p>
                 </div>
 
@@ -160,6 +175,14 @@ function SavedRecipes() {
                         {/* List Tabs */}
                         <div className="list-tabs-container">
                             <div className="list-tabs">
+                                {/* 'All Saved' aggregate tab — always first */}
+                                <button
+                                    className={`list-tab-btn ${activeList === 'all' ? 'active' : ''}`}
+                                    onClick={() => setActiveList('all')}
+                                >
+                                    All Saved
+                                </button>
+                                {/* Custom list tabs */}
                                 {lists.map(listName => (
                                     <button
                                         key={listName}
@@ -197,7 +220,8 @@ function SavedRecipes() {
                         {/* Recipes Grid */}
                         <div className="saved-recipes-content">
                             <p className="recipe-count">
-                                Showing {visibleRecipes.length} {visibleRecipes.length === 1 ? 'recipe' : 'recipes'} in "{activeList}"
+                                Showing {visibleRecipes.length} {visibleRecipes.length === 1 ? 'recipe' : 'recipes'}
+                                {activeList !== 'all' && ` in "${activeList}"`}
                             </p>
 
                             {visibleRecipes.length > 0 ? (
@@ -224,7 +248,7 @@ function SavedRecipes() {
                         <p>What would you like to do with the recipes currently inside this list?</p>
                         <div className="delete-modal-actions">
                             <button className="btn btn-primary" onClick={() => handleDeleteList('move')}>
-                                Move them to "Saved"
+                                Keep them saved
                             </button>
                             <button className="btn btn-outline danger" onClick={() => handleDeleteList('delete')}>
                                 Unsave them completely
