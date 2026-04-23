@@ -28,19 +28,21 @@ dist-ssr
 .npm-cache
 .eslintcache
 .stylelintcache
-.npm-cache/_cacache/index-v5/12/e6/adcab1be7b7fc14da117a64bb8a260f85ebe31592aac409bef55659ce4f9
 
 # Testing
-coverage
 coverage/
 
 # Functions
 functions/index.html
 
-# Firebase
+# Firebase & Environment
+.env
+.env.*
+!.env.example
 .firebase/
 emulator-data/
 firebase-export-*
+*-debug.log
 firestore-debug.log
 ui-debug.log
 

@@ -1,0 +1,134 @@
+.save-button-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-base);
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.save-btn:hover {
+    background-color: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.save-btn.is-saved {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    border-color: var(--color-primary) !important;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Variant: Icon Only (for smaller spaces like cards) */
+.save-btn.btn-icon {
+    padding: var(--space-2);
+    border-radius: var(--radius-full);
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+}
+
+
+/* Floating List Menu */
+.save-list-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    z-index: 50;
+    overflow: hidden;
+    animation: fadeInDown 0.2s ease;
+}
+
+.menu-header {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-background-alt);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.menu-lists {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.menu-lists li {
+    margin: 0;
+}
+
+.list-option-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-text);
+    transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-option-btn:hover {
+    background-color: var(--color-background-hover);
+    color: var(--color-primary);
+}
+
+.list-option-btn.active-list {
+    color: var(--color-primary);
+    font-weight: var(--font-medium);
+}
+
+.menu-divider {
+    border-top: 1px solid var(--color-border);
+}
+
+.list-option-btn.remove-btn {
+    color: var(--color-error);
+    font-weight: 500;
+}
+
+.list-option-btn.remove-btn:hover {
+    background-color: rgba(220, 38, 38, 0.05); /* subtle red hover */
+    color: var(--color-error);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

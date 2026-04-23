@@ -5,11 +5,13 @@ import Home from './pages/Home/Home';
 import Recipe from './pages/Recipe/Recipe';
 import ShoppingList from './pages/ShoppingList/ShoppingList';
 import SignupPage from './pages/Signup/Signup';
+import SavedRecipes from './pages/SavedRecipes/SavedRecipes';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import VerificationBanner from './components/VerificationBanner/VerificationBanner';
 import { ShoppingListProvider } from './context/ShoppingListContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import { SavedRecipesProvider } from './context/SavedRecipesContext';
 import { SkilletIcon } from './components/Icons/Icons';
 import './styles/global.css';
 import './App.css';
@@ -17,16 +19,20 @@ import './App.css';
 function App() {
   return (
     <AuthProvider>
-      <ShoppingListProvider>
-        <ThemeProvider>
+      <SavedRecipesProvider>
+        <ShoppingListProvider>
+          <ThemeProvider>
           <Router>
             <div className="app">
-              <Navbar />
-              <VerificationBanner />
+              <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
+                <VerificationBanner />
+                <Navbar />
+              </div>
               <main className="main-content">
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/recipe/:id" element={<Recipe />} />
+                  <Route path="/saved" element={<ProtectedRoute><SavedRecipes /></ProtectedRoute>} />
                   <Route path="/shopping-list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
                   <Route path="/signup" element={<SignupPage />} />
                   <Route path="/about" element={<AboutPage />} />
@@ -38,8 +44,9 @@ function App() {
               <Footer />
             </div>
           </Router>
-        </ThemeProvider>
-      </ShoppingListProvider>
+          </ThemeProvider>
+        </ShoppingListProvider>
+      </SavedRecipesProvider>
     </AuthProvider>
   );
 }

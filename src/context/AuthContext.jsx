@@ -48,7 +48,35 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    let autoLoginAttempted = false;
+
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      // Auto-login utility for local emulator development
+      if (
+        !user &&
+        import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' &&
+        import.meta.env.MODE !== 'test' &&
+        !autoLoginAttempted
+      ) {
+        autoLoginAttempted = true;
+        const testEmail = 'dev@recifree.local';
+        const testPassword = 'password123';
+        
+        try {
+          await signInWithEmailAndPassword(auth, testEmail, testPassword);
+          // Assuming successful, onAuthStateChanged re-triggers with real user.
+          return;
+        } catch (error) {
+          // If the test user isn't in Auth DB yet, gracefully build them.
+          try {
+            await createUserWithEmailAndPassword(auth, testEmail, testPassword);
+            return;
+          } catch (e) {
+            console.warn("Local Dev: Auto-login failed:", e);
+          }
+        }
+      }
+
       setCurrentUser(user);
       setLoading(false);
     });

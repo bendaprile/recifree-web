@@ -3,6 +3,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import RecipeCard from './RecipeCard';
 import { ShoppingListProvider } from '../../context/ShoppingListContext';
+import { AuthProvider } from '../../context/AuthContext';
+import { SavedRecipesProvider } from '../../context/SavedRecipesContext';
 
 // Mock localStorage
 const localStorageMock = (function () {
@@ -44,11 +46,15 @@ describe('RecipeCard Component', () => {
 
     const renderCard = (recipe = mockRecipe) => {
         return render(
-            <ShoppingListProvider>
-                <BrowserRouter>
-                    <RecipeCard recipe={recipe} />
-                </BrowserRouter>
-            </ShoppingListProvider>
+            <AuthProvider>
+                <SavedRecipesProvider>
+                    <ShoppingListProvider>
+                        <BrowserRouter>
+                            <RecipeCard recipe={recipe} />
+                        </BrowserRouter>
+                    </ShoppingListProvider>
+                </SavedRecipesProvider>
+            </AuthProvider>
         );
     };
 

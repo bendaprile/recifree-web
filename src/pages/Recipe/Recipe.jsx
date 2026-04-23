@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
+import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
 import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import InstructionItem from '../../components/InstructionItem/InstructionItem';
 import './Recipe.css';
@@ -185,6 +186,7 @@ function Recipe() {
                             <button onClick={scrollToRecipe} className="btn btn-primary jump-btn">
                                 Jump to Recipe ↓
                             </button>
+                            <SaveRecipeButton recipe={recipe} variant="large" className="hero-add-btn" />
                             <AddToShoppingListButton recipe={recipe} variant="large" className="hero-add-btn" />
                         </div>
                     </div>
