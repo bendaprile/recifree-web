@@ -213,7 +213,7 @@ function Home() {
                         <div className="feature-card">
                             <span className="feature-icon">🔒</span>
                             <h3>Privacy First</h3>
-                            <p>No tracking, no accounts, no data selling. Your cooking journey stays perfectly private.</p>
+                            <p>No tracking, no ads, no data selling. Your data is yours, with optional accounts to save and sync your collection.</p>
                         </div>
                     </div>
                 </div>

@@ -194,15 +194,16 @@ export function PrivacyPolicyPage() {
             <li><strong>Right to Portability:</strong> Receive your data in a portable format.</li>
           </ul>
           <p>
-            Since we collect minimal data and do not maintain user accounts, these rights may have
-            limited applicability. To exercise any rights, contact us via our GitHub repository.
+            Since we collect minimal data and maintain privacy-focused user accounts, these rights 
+            are fully supported. To exercise any rights, including data deletion or export, 
+            contact us via our GitHub repository.
           </p>
 
           <h2>8. Children's Privacy</h2>
           <p>
             Recifree is a general-audience website about cooking. We do not knowingly collect personal
-            information from children under 13 years of age. Since we do not require registration or
-            collect personal data, there is no mechanism through which children's data would be collected.
+            information from children under 13 years of age. While we offer account registration, 
+            we do not target or solicit information from children.
           </p>
 
           <h2>9. International Users</h2>

@@ -4,6 +4,7 @@
 Recifree is the **"Culinary Ad-Blocker."** It is an open-source, populist rebellion against the bloated, ad-ridden recipe industry.
 - **The Vibe:** It's an incredibly satisfying, frictionless utility.
 - **The "Tried & True" Promise:** Recifree is a compilation of the *very tastiest* recipes, not a data-dump of untested meals. We champion the philosophy that every recipe on the site must be taste-tested and actively loved by the person adding it. 
+- **Accounts for Utility:** We offer accounts solely to help you save and sync your kitchen collection. No newsletters, no cross-site tracking, no selling your data. We maintain a privacy-first ethos where an account is a tool for you, not a product for us.
 - **Voice & Tone:** Witty, highly practical, and deeply respectful of the user's time. The tone should be slightly irreverent toward the "fluff" of traditional food blogs, but always stay appetizing, warm, and helpful when focusing on the actual food.
 
 ## 2. Copywriting & Slogans

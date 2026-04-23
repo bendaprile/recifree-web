@@ -1,0 +1,63 @@
+{
+  "id": "tiktok-sweet-potato-beef-bowl",
+  "title": "Viral TikTok Sweet Potato Beef Bowl",
+  "description": "A flavorful and high-protein bowl featuring roasted sweet potatoes, seasoned ground beef, and creamy warmed cottage cheese, all finished with a signature hot honey drizzle.",
+  "image": "/images/recipes/tiktok-sweet-potato-beef-bowl.png",
+  "prepTime": "10 mins",
+  "cookTime": "20 mins",
+  "totalTime": "30 mins",
+  "servings": 2,
+  "difficulty": "Easy",
+  "tags": [
+    "Beef",
+    "Dinner",
+    "Healthy",
+    "High-Protein",
+    "Quick"
+  ],
+  "ingredients": [
+    { "amount": "2", "unit": "medium", "item": "sweet potatoes, cubed" },
+    { "amount": "1", "unit": "lb", "item": "ground beef (80/20)" },
+    { "amount": "1/2", "unit": "cup", "item": "cottage cheese" },
+    { "amount": "2", "unit": "tbsp", "item": "hot honey" },
+    { "amount": "1", "unit": "tbsp", "item": "olive oil" },
+    { "amount": "", "unit": "to taste", "item": "salt" },
+    { "amount": "", "unit": "to taste", "item": "black pepper" },
+    { "amount": "1", "unit": "tsp", "item": "garlic powder" },
+    { "amount": "1", "unit": "tsp", "item": "onion powder" },
+    { "amount": "1/2", "unit": "tsp", "item": "smoked paprika" },
+    { "amount": "1/2", "unit": "tsp", "item": "cumin" },
+    { "amount": "", "unit": "optional", "item": "fresh chives or green onion" },
+    { "amount": "", "unit": "optional", "item": "red pepper flakes" },
+    { "amount": "", "unit": "optional", "item": "everything bagel seasoning" },
+    { "amount": "1", "unit": "squeeze", "item": "fresh lime" }
+  ],
+  "instructions": [
+    "Preheat your air fryer to 400°F (or oven to 425°F). Toss cubed sweet potatoes with olive oil, salt, and pepper.",
+    "Air fry for 15–18 minutes (or roast for 25 minutes), shaking halfway, until tender and slightly caramelized.",
+    "Heat a skillet over medium-high heat and brown the ground beef, breaking it apart as it cooks.",
+    "Season the beef with garlic powder, onion powder, smoked paprika, cumin, salt, and pepper. Cook for 8–10 minutes until slightly crispy, then drain excess fat.",
+    "Gently warm the cottage cheese in a small saucepan over low heat for 2–3 minutes until silky.",
+    "Assemble the bowls by layering sweet potatoes and seasoned beef, then add a dollop of warm cottage cheese.",
+    "Drizzle generously with hot honey and finish with optional toppings like chives, red pepper flakes, or everything bagel seasoning."
+  ],
+  "stepIngredients": [
+    [0, 4, 5, 6],
+    [0],
+    [1],
+    [1, 7, 8, 9, 10, 5, 6],
+    [2],
+    [0, 1, 2],
+    [3, 11, 12, 13]
+  ],
+  "source": {
+    "name": "shakshukarecipe.com",
+    "url": "https://www.shakshukarecipe.com/2026/03/the-viral-tiktok-sweet-potato-beef-bowl-thats-breaking-the-internet-hot-honey-cottage-cheese/"
+  },
+  "nutrition": {
+    "calories": 650,
+    "protein": "45g",
+    "carbs": "38g",
+    "fat": "32g"
+  }
+}

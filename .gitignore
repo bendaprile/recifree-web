@@ -36,3 +36,13 @@ coverage/
 
 # Functions
 functions/index.html
+
+# Firebase
+.firebase/
+emulator-data/
+firebase-export-*
+firestore-debug.log
+ui-debug.log
+
+# Local/Temp files
+test-output.txt
