@@ -25,6 +25,11 @@ vi.mock('firebase/auth', () => ({
   getAuth: vi.fn(() => ({ currentUser: null }))
 }));
 
+// Mock the userService
+vi.mock('../services/userService', () => ({
+  getUserProfile: vi.fn(() => Promise.resolve(null))
+}));
+
 // Mock the firebase config
 vi.mock('../config/firebase', () => ({
   auth: { currentUser: null }
@@ -153,8 +158,9 @@ describe('AuthContext', () => {
   });
 
   it('handles logout', async () => {
+    let authCallback;
     onAuthStateChanged.mockImplementation((auth, callback) => {
-      callback({ email: 'test@test.com' });
+      authCallback = callback;
       return vi.fn();
     });
 
@@ -163,6 +169,11 @@ describe('AuthContext', () => {
         <TestComponent />
       </AuthProvider>
     );
+
+    // Initial auth state resolving
+    await act(async () => {
+      authCallback({ email: 'test@test.com', uid: 'user123' });
+    });
 
     signOut.mockResolvedValue();
 
@@ -195,11 +206,11 @@ describe('AuthContext', () => {
   });
 
   it('handles email verification when user is logged in', async () => {
-    const mockUser = { email: 'test@test.com' };
+    const mockUser = { email: 'test@test.com', uid: 'user123' };
     
-    // Setup initial auth state
+    let authCallback;
     onAuthStateChanged.mockImplementation((auth, callback) => {
-        callback(mockUser);
+        authCallback = callback;
         return vi.fn();
     });
 
@@ -212,6 +223,10 @@ describe('AuthContext', () => {
         <TestComponent />
       </AuthProvider>
     );
+
+    await act(async () => {
+      authCallback(mockUser);
+    });
 
     sendEmailVerification.mockResolvedValue();
 
