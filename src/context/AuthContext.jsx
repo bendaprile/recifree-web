@@ -10,6 +10,7 @@ import {
   sendEmailVerification
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { getUserProfile } from '../services/userService';
 
 const AuthContext = createContext();
 
@@ -19,6 +20,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   function signup(email, password) {
@@ -78,6 +80,16 @@ export function AuthProvider({ children }) {
       }
 
       setCurrentUser(user);
+      if (user) {
+        try {
+          const profile = await getUserProfile(user.uid);
+          setUserProfile(profile);
+        } catch (e) {
+          console.error("Failed to fetch user profile:", e);
+        }
+      } else {
+        setUserProfile(null);
+      }
       setLoading(false);
     });
 
@@ -86,6 +98,8 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    userProfile,
+    setUserProfile,
     isEmailVerified: currentUser?.emailVerified ?? false,
     login,
     signup,

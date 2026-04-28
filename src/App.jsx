@@ -6,8 +6,10 @@ import Recipe from './pages/Recipe/Recipe';
 import ShoppingList from './pages/ShoppingList/ShoppingList';
 import SignupPage from './pages/Signup/Signup';
 import SavedRecipes from './pages/SavedRecipes/SavedRecipes';
+import Settings from './pages/Settings/Settings';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import VerificationBanner from './components/VerificationBanner/VerificationBanner';
+import OnboardingModal from './components/OnboardingModal/OnboardingModal';
 import { ShoppingListProvider } from './context/ShoppingListContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
@@ -26,6 +28,7 @@ function App() {
             <div className="app">
               <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
                 <VerificationBanner />
+                <OnboardingModal />
                 <Navbar />
               </div>
               <main className="main-content">
@@ -34,6 +37,7 @@ function App() {
                   <Route path="/recipe/:id" element={<Recipe />} />
                   <Route path="/saved" element={<ProtectedRoute><SavedRecipes /></ProtectedRoute>} />
                   <Route path="/shopping-list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
+                  <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                   <Route path="/signup" element={<SignupPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />

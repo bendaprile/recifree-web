@@ -110,6 +110,15 @@ function Navbar() {
               ) : currentUser ? (
                 <>
                   <li>
+                    <NavLink
+                      to="/settings"
+                      className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+                      onClick={closeMenu}
+                    >
+                      Settings
+                    </NavLink>
+                  </li>
+                  <li>
                     <button className="nav-link" onClick={() => { logout(); closeMenu(); }}>
                       Logout
                     </button>

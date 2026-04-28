@@ -43,8 +43,17 @@ describe('ProtectedRoute', () => {
     expect(screen.getByText('Home Page')).toBeInTheDocument();
   });
 
-  it('renders children when the user is authenticated', () => {
-    useAuth.mockReturnValue({ currentUser: { uid: '123' }, loadingAuth: false });
+  it('renders verification required screen when authenticated but email is not verified', () => {
+    useAuth.mockReturnValue({ currentUser: { uid: '123' }, isEmailVerified: false, loadingAuth: false });
+    renderProtected();
+    expect(screen.queryByText('Private Content')).not.toBeInTheDocument();
+    expect(screen.queryByText('Home Page')).not.toBeInTheDocument();
+    expect(screen.getByText('Verify Your Email')).toBeInTheDocument();
+    expect(screen.getByText(/You're almost there! We need to verify your email address/i)).toBeInTheDocument();
+  });
+
+  it('renders children when the user is authenticated and verified', () => {
+    useAuth.mockReturnValue({ currentUser: { uid: '123' }, isEmailVerified: true, loadingAuth: false });
     renderProtected();
     expect(screen.getByText('Private Content')).toBeInTheDocument();
   });
