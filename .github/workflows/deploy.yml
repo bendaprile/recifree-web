@@ -65,12 +65,18 @@ jobs:
           VITE_USE_FIRESTORE_EMULATOR: false
           VITE_ENABLE_SIGNUPS: true
       
-      # Step 5: Install Functions dependencies
+      # Step 5: Migrate recipes to Firestore
+      - name: Migrate recipes to Firestore
+        run: npm run migrate
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      
+      # Step 6: Install Functions dependencies
       - name: Install Functions dependencies
         working-directory: ./functions
         run: npm ci
 
-      # Step 6: Deploy Cloud Functions
+      # Step 7: Deploy Cloud Functions
       - name: Deploy Cloud Functions
         uses: w9jds/firebase-action@master
         with:
@@ -79,7 +85,7 @@ jobs:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           PROJECT_ID: recifree-web-4731f
       
-      # Step 7: Deploy to Firebase Hosting
+      # Step 8: Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

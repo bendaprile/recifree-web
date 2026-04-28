@@ -26,21 +26,32 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
 // ─── Load service account ───────────────────────────────────────────────────
-const secretDir = join(ROOT, '.secret');
-let serviceAccountPath;
-try {
-  const files = readdirSync(secretDir).filter(f => f.endsWith('.json'));
-  if (!files.length) {
-    console.error('❌  No service account JSON found in .secret/');
+let serviceAccount;
+
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (err) {
+    console.error('❌  Failed to parse FIREBASE_SERVICE_ACCOUNT from environment variables.');
     process.exit(1);
   }
-  serviceAccountPath = join(secretDir, files[0]);
-} catch {
-  console.error('❌  .secret/ directory not found. Did you place your service account key there?');
-  process.exit(1);
-}
+} else {
+  const secretDir = join(ROOT, '.secret');
+  let serviceAccountPath;
+  try {
+    const files = readdirSync(secretDir).filter(f => f.endsWith('.json'));
+    if (!files.length) {
+      console.error('❌  No service account JSON found in .secret/');
+      process.exit(1);
+    }
+    serviceAccountPath = join(secretDir, files[0]);
+  } catch {
+    console.error('❌  .secret/ directory not found. Did you place your service account key there?');
+    process.exit(1);
+  }
 
-const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf-8'));
+  serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf-8'));
+}
 
 // ─── Initialize Admin SDK ───────────────────────────────────────────────────
 admin.initializeApp({

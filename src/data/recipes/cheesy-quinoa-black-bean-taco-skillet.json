@@ -1,0 +1,63 @@
+{
+  "id": "cheesy-quinoa-black-bean-taco-skillet",
+  "title": "Cheesy Quinoa & Black Bean Taco Skillet",
+  "description": "A quick, healthy vegetarian dinner featuring fluffy quinoa, protein-packed black beans, and melted cheese with classic taco spices.",
+  "image": "/images/recipes/cheesy-quinoa-black-bean-taco-skillet.png",
+  "prepTime": "5 mins",
+  "cookTime": "20 mins",
+  "totalTime": "25 mins",
+  "servings": 6,
+  "difficulty": "Easy",
+  "tags": [
+    "Mexican",
+    "Dinner",
+    "Vegetarian",
+    "Quinoa",
+    "High Protein"
+  ],
+  "ingredients": [
+    { "amount": "1 1/4", "unit": "cup", "item": "dry quinoa" },
+    { "amount": "2", "unit": "cup", "item": "water" },
+    { "amount": "2", "unit": "tbsp", "item": "olive oil" },
+    { "amount": "1", "unit": "medium", "item": "yellow onion, diced" },
+    { "amount": "2", "unit": "medium", "item": "bell peppers (red and yellow), diced" },
+    { "amount": "1", "unit": "small", "item": "jalapeno, seeded and diced" },
+    { "amount": "3", "unit": "cloves", "item": "garlic, minced" },
+    { "amount": "14", "unit": "oz", "item": "canned diced tomatoes (with juices)" },
+    { "amount": "19", "unit": "oz", "item": "canned black beans, drained and rinsed" },
+    { "amount": "1/2", "unit": "tbsp", "item": "chili powder" },
+    { "amount": "1", "unit": "tsp", "item": "cumin" },
+    { "amount": "1", "unit": "tsp", "item": "garlic powder" },
+    { "amount": "1", "unit": "tsp", "item": "onion powder" },
+    { "amount": "1", "unit": "tsp", "item": "paprika" },
+    { "amount": "1/2", "unit": "tsp", "item": "salt" },
+    { "amount": "1/4", "unit": "tsp", "item": "black pepper" },
+    { "amount": "1", "unit": "cup", "item": "shredded cheese (cheddar or Tex-Mex)" }
+  ],
+  "instructions": [
+    "Boil water in a saucepan, add quinoa, then cover and simmer for 15 minutes until liquid is absorbed. Fluff with a fork.",
+    "Heat olive oil in a large skillet over medium heat. Sauté onion for 2-3 minutes until fragrant.",
+    "Add bell peppers, jalapeno, and garlic to the skillet and cook for another 3-4 minutes until softened.",
+    "Stir in diced tomatoes with their juices, black beans, and all spices. Cook for 2-3 minutes to blend flavors.",
+    "Reduce heat to low, mix in the cooked quinoa, and top with shredded cheese. Heat until the cheese is gooey and melted.",
+    "Serve immediately with optional toppings like avocado, cilantro, or a dollop of Greek yogurt."
+  ],
+  "stepIngredients": [
+    [0, 1],
+    [2, 3],
+    [4, 5, 6],
+    [7, 8, 9, 10, 11, 12, 13, 14, 15],
+    [0, 16],
+    []
+  ],
+  "source": {
+    "name": "Hannah Magee RD",
+    "url": "https://hannahmageerd.com/cheesy-quinoa-black-bean-taco-skillet-vegetarian/"
+  },
+  "nutrition": {
+    "calories": 380,
+    "protein": "14g",
+    "carbs": "55g",
+    "fat": "12g"
+  }
+}
