@@ -150,6 +150,13 @@
         "url": "https://therecipeshome.com/lemon-orzo-chickpea-soup-recipe/"
     },
     "nutrition": {
-        "calories": 260
+        "calories": 260,
+        "protein": "10g",
+        "carbs": "42g",
+        "fat": "6g",
+        "fiber": "7g",
+        "sugar": "5g",
+        "sodium": "780mg",
+        "cholesterol": "0mg"
     }
 }
