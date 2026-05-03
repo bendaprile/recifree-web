@@ -186,6 +186,11 @@
         "url": "https://garlicsaltandlime.com/pumpkin-chicken-curry/"
     },
     "nutrition": {
-        "calories": 450
+        "calories": 450,
+        "protein": "26g",
+        "carbs": "20g",
+        "fat": "28g",
+        "fiber": "5g",
+        "sugar": "8g"
     }
 }

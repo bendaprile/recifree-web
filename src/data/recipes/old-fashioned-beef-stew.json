@@ -196,6 +196,11 @@
         "url": "https://thestayathomechef.com/old-fashioned-beef-stew/#wprm-recipe-container-10502"
     },
     "nutrition": {
-        "calories": 450
+        "calories": 450,
+        "protein": "30g",
+        "carbs": "30g",
+        "fat": "23g",
+        "fiber": "4g",
+        "sugar": "5g"
     }
 }

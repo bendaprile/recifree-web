@@ -169,6 +169,11 @@
         "url": "https://savoringmoments.com/korean-beef-bibimbap-bowl/#recipe"
     },
     "nutrition": {
-        "calories": 560
+        "calories": 560,
+        "protein": "26g",
+        "carbs": "58g",
+        "fat": "22g",
+        "fiber": "4g",
+        "sugar": "7g"
     }
 }
