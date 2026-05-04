@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
       if (
         !user &&
         import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' &&
-        import.meta.env.MODE !== 'test' &&
+        (import.meta.env.MODE !== 'test' || import.meta.env.VITE_ALLOW_AUTO_LOGIN === 'true') &&
         !autoLoginAttempted
       ) {
         autoLoginAttempted = true;

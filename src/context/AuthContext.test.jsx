@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { AuthProvider, useAuth } from './AuthContext';
 import { 
   onAuthStateChanged, 
@@ -257,5 +257,113 @@ describe('AuthContext', () => {
     });
 
     expect(sendEmailVerification).not.toHaveBeenCalled();
+  });
+
+  it('handles error when fetching user profile', async () => {
+    const mockUser = { email: 'test@test.com', uid: 'user123' };
+    let authCallback;
+    onAuthStateChanged.mockImplementation((auth, callback) => {
+      authCallback = callback;
+      return vi.fn();
+    });
+
+    const { getUserProfile } = await import('../services/userService');
+    getUserProfile.mockRejectedValue(new Error('Profile fetch failed'));
+    
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    );
+
+    await act(async () => {
+      authCallback(mockUser);
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith("Failed to fetch user profile:", expect.any(Error));
+    consoleSpy.mockRestore();
+  });
+
+  describe('Auto-login logic', () => {
+    beforeEach(() => {
+      vi.stubEnv('VITE_USE_FIREBASE_EMULATOR', 'true');
+      vi.stubEnv('VITE_ALLOW_AUTO_LOGIN', 'true');
+    });
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('attempts auto-login in dev mode with emulator', async () => {
+      // This is tricky because we can't easily change import.meta.env at runtime in Vitest if it's already loaded
+      // But we can try to mock it.
+      
+      onAuthStateChanged.mockImplementation((auth, callback) => {
+        // First call triggers auto-login if no user
+        callback(null);
+        return vi.fn();
+      });
+
+      signInWithEmailAndPassword.mockResolvedValue({ user: { email: 'dev@recifree.local' } });
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      // Since we are in AuthContext.jsx:
+      // if (!user && import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' && import.meta.env.MODE !== 'test' && !autoLoginAttempted)
+      
+      // We expect it to call signInWithEmailAndPassword
+      expect(signInWithEmailAndPassword).toHaveBeenCalledWith(expect.anything(), 'dev@recifree.local', 'password123');
+    });
+
+    it('attempts to create dev user if auto-login fails', async () => {
+      onAuthStateChanged.mockImplementation((auth, callback) => {
+        callback(null);
+        return vi.fn();
+      });
+
+      signInWithEmailAndPassword.mockRejectedValue(new Error('User not found'));
+      createUserWithEmailAndPassword.mockResolvedValue({ user: { email: 'dev@recifree.local' } });
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      await waitFor(() => {
+        expect(signInWithEmailAndPassword).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(createUserWithEmailAndPassword).toHaveBeenCalledWith(expect.anything(), 'dev@recifree.local', 'password123');
+      });
+    });
+    
+    it('warns if auto-login and creation both fail', async () => {
+      onAuthStateChanged.mockImplementation((auth, callback) => {
+        callback(null);
+        return vi.fn();
+      });
+
+      signInWithEmailAndPassword.mockRejectedValue(new Error('Fail 1'));
+      createUserWithEmailAndPassword.mockRejectedValue(new Error('Fail 2'));
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      await waitFor(() => {
+        expect(consoleSpy).toHaveBeenCalledWith("Local Dev: Auto-login failed:", expect.any(Error));
+      });
+      consoleSpy.mockRestore();
+    });
   });
 });

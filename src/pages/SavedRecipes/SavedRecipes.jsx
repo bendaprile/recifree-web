@@ -11,7 +11,7 @@ function SavedRecipes() {
     const [activeList, setActiveList] = useState('all');
     // Keep activeList valid — 'all' is always valid; custom lists check membership
     useEffect(() => {
-        if (activeList !== 'all' && !lists.includes(activeList) && lists.length > 0) {
+        if (activeList !== 'all' && !lists.includes(activeList)) {
             setActiveList('all');
         }
     }, [lists, activeList]);

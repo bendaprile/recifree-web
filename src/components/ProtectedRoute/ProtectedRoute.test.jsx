@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProtectedRoute from './ProtectedRoute';
 
 vi.mock('../../context/AuthContext', () => ({
@@ -29,6 +29,24 @@ const renderProtected = () =>
   );
 
 describe('ProtectedRoute', () => {
+  const mockSendVerificationEmail = vi.fn();
+  const mockReload = vi.fn();
+  
+  // Mock window.location.reload
+  const originalLocation = window.location;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    
+    // We need to delete and re-add location because it's non-configurable in some environments
+    delete window.location;
+    window.location = { ...originalLocation, reload: vi.fn() };
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
   it('shows a loading spinner while auth is resolving', () => {
     useAuth.mockReturnValue({ currentUser: null, loadingAuth: true });
     renderProtected();
@@ -44,7 +62,11 @@ describe('ProtectedRoute', () => {
   });
 
   it('renders verification required screen when authenticated but email is not verified', () => {
-    useAuth.mockReturnValue({ currentUser: { uid: '123' }, isEmailVerified: false, loadingAuth: false });
+    useAuth.mockReturnValue({ 
+      currentUser: { uid: '123' }, 
+      isEmailVerified: false, 
+      loadingAuth: false 
+    });
     renderProtected();
     expect(screen.queryByText('Private Content')).not.toBeInTheDocument();
     expect(screen.queryByText('Home Page')).not.toBeInTheDocument();
@@ -53,8 +75,92 @@ describe('ProtectedRoute', () => {
   });
 
   it('renders children when the user is authenticated and verified', () => {
-    useAuth.mockReturnValue({ currentUser: { uid: '123' }, isEmailVerified: true, loadingAuth: false });
+    useAuth.mockReturnValue({ 
+      currentUser: { uid: '123' }, 
+      isEmailVerified: true, 
+      loadingAuth: false 
+    });
     renderProtected();
     expect(screen.getByText('Private Content')).toBeInTheDocument();
   });
+
+  describe('Email Verification Interactions', () => {
+    it('successfully resends verification email', async () => {
+      useAuth.mockReturnValue({ 
+        currentUser: { uid: '123' }, 
+        isEmailVerified: false, 
+        loadingAuth: false,
+        sendVerificationEmail: mockSendVerificationEmail.mockResolvedValueOnce()
+      });
+      
+      renderProtected();
+      
+      const resendBtn = screen.getByText('Resend Verification Email');
+      fireEvent.click(resendBtn);
+      
+      expect(mockSendVerificationEmail).toHaveBeenCalled();
+      
+      await waitFor(() => {
+        expect(screen.getByText(/Verification email sent!/i)).toBeInTheDocument();
+      });
+    });
+
+    it('handles too-many-requests error when resending email', async () => {
+      useAuth.mockReturnValue({ 
+        currentUser: { uid: '123' }, 
+        isEmailVerified: false, 
+        loadingAuth: false,
+        sendVerificationEmail: mockSendVerificationEmail.mockRejectedValueOnce({ 
+          code: 'auth/too-many-requests' 
+        })
+      });
+      
+      renderProtected();
+      
+      const resendBtn = screen.getByText('Resend Verification Email');
+      fireEvent.click(resendBtn);
+      
+      await waitFor(() => {
+        expect(screen.getByText(/Too many requests. Please wait a few minutes/i)).toBeInTheDocument();
+      });
+    });
+
+    it('handles generic error when resending email', async () => {
+      useAuth.mockReturnValue({ 
+        currentUser: { uid: '123' }, 
+        isEmailVerified: false, 
+        loadingAuth: false,
+        sendVerificationEmail: mockSendVerificationEmail.mockRejectedValueOnce(new Error('Generic error'))
+      });
+      
+      renderProtected();
+      
+      const resendBtn = screen.getByText('Resend Verification Email');
+      fireEvent.click(resendBtn);
+      
+      await waitFor(() => {
+        expect(screen.getByText(/Failed to resend verification email/i)).toBeInTheDocument();
+      });
+    });
+
+    it('handles status reload and refreshes page', async () => {
+      useAuth.mockReturnValue({ 
+        currentUser: { uid: '123', reload: mockReload.mockResolvedValueOnce() }, 
+        isEmailVerified: false, 
+        loadingAuth: false 
+      });
+      
+      renderProtected();
+      
+      const reloadBtn = screen.getByText("I've verified my email");
+      fireEvent.click(reloadBtn);
+      
+      expect(mockReload).toHaveBeenCalled();
+      
+      await waitFor(() => {
+        expect(window.location.reload).toHaveBeenCalled();
+      });
+    });
+  });
 });
+

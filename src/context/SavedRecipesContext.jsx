@@ -10,7 +10,7 @@ import {
     deleteCustomListFromFirestore
 } from '../services/savedRecipeService';
 
-const SavedRecipesContext = createContext();
+export const SavedRecipesContext = createContext();
 
 export function useSavedRecipes() {
     return useContext(SavedRecipesContext);
