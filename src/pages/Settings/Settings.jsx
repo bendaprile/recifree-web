@@ -86,9 +86,9 @@ function Settings() {
         <h1 className="mb-6">Account Settings</h1>
 
         {error && <div className="auth-error mb-4">{error}</div>}
-        {savingMsg && <div className="auth-message mb-4" style={{ backgroundColor: 'rgba(74, 93, 78, 0.1)', color: 'var(--color-primary)', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)', textAlign: 'center' }}>{savingMsg}</div>}
+        {savingMsg && <div className="auth-message mb-4">{savingMsg}</div>}
 
-        <div className="card mb-6">
+        <div className="card mb-6 p-6 sm:p-8">
           <h2 className="text-xl mb-4">Profile Details</h2>
           <form onSubmit={handleSaveProfile}>
             <div className="form-group mb-4">
@@ -153,7 +153,7 @@ function Settings() {
           </form>
         </div>
 
-        <div className="card mb-6">
+        <div className="card mb-6 p-6 sm:p-8">
           <h2 className="text-xl mb-4">Security</h2>
           <p className="text-secondary mb-4">
             If you need to change your password, we can send a dedicated reset link to your registered email address.

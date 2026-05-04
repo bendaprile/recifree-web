@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
@@ -9,6 +9,7 @@ import './Recipe.css';
 
 function Recipe() {
     const { id } = useParams();
+    const navigate = useNavigate();
     
     // Initialize state from window.__INITIAL_RECIPE__ if it exists (SSR Hydration)
     const [recipe, setRecipe] = useState(() => {
@@ -77,6 +78,16 @@ function Recipe() {
 
     const scrollToRecipe = () => {
         document.getElementById('instructions')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleBack = (e) => {
+        e.preventDefault();
+        // If there's history in the app, go back, otherwise go home
+        if (window.history.state && window.history.state.idx > 0) {
+            navigate(-1);
+        } else {
+            navigate('/');
+        }
     };
 
     // Helper to get flat list of ingredients for indexed lookup
@@ -153,7 +164,7 @@ function Recipe() {
 
                 <div className="container">
                     <div className="recipe-hero-content">
-                        <Link to="/" className="back-link">
+                        <Link to="/" className="back-link" onClick={handleBack}>
                             ← Back to recipes
                         </Link>
 

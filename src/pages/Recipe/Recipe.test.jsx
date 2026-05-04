@@ -293,4 +293,11 @@ describe('Recipe Page', () => {
         expect(document.getElementById).toHaveBeenCalledWith('instructions');
         expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
     });
+
+    it('renders "Back to recipes" link that points to home', async () => {
+        await renderRecipe();
+        const backLink = screen.getByText(/Back to recipes/i);
+        expect(backLink).toBeInTheDocument();
+        expect(backLink.closest('a')).toHaveAttribute('href', '/');
+    });
 });

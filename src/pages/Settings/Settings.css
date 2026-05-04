@@ -3,6 +3,15 @@
   padding-bottom: var(--space-8);
 }
 
+.auth-message {
+  background-color: rgba(74, 93, 78, 0.1);
+  color: var(--color-primary);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
 .settings-page .measurement-toggle,
 .settings-page .dietary-grid {
   margin-top: var(--space-2);
@@ -15,7 +24,7 @@
 
 .settings-page .toggle-btn {
   flex: 1;
-  padding: var(--space-2);
+  padding: var(--space-3);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   border-radius: var(--radius-md);
@@ -55,7 +64,7 @@
   cursor: pointer;
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  padding: var(--space-2);
+  padding: var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);

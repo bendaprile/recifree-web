@@ -29,7 +29,8 @@ function VerificationBanner() {
       <div className="verification-banner__content">
         <span className="verification-banner__icon" aria-hidden="true">✉️</span>
         <p className="verification-banner__message">
-          Check your inbox — please verify your email to unlock all features.
+          Check your inbox — please verify your email to unlock all features. 
+          <span className="text-sm" style={{ opacity: 0.8, marginLeft: '8px' }}>(Check your spam folder if you don't see it)</span>
         </p>
         <div className="verification-banner__actions">
           {resendStatus === 'idle' && (
