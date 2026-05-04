@@ -15,7 +15,8 @@ function LoginModal({ isOpen, onClose }) {
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false });
   const modalRef = useRef(null);
-  const signupsEnabled = import.meta.env.VITE_ENABLE_SIGNUPS === 'true';
+  // No longer needed as we are in production
+  // const signupsEnabled = import.meta.env.VITE_ENABLE_SIGNUPS === 'true';
 
   const emailErrorMsg = (() => {
     if (!touched.email) return '';
@@ -211,16 +212,14 @@ function LoginModal({ isOpen, onClose }) {
           {loading ? <span className="spinner"></span> : 'Log in with Google'}
         </button>
 
-        {signupsEnabled && (
-          <div className="login-footer text-center mt-6">
-            <p className="text-sm">
-              Need an account?{' '}
-              <Link to="/signup" className="text-primary font-medium" onClick={onClose}>
-                Sign up
-              </Link>
-            </p>
-          </div>
-        )}
+        <div className="login-footer text-center mt-6">
+          <p className="text-sm">
+            Need an account?{' '}
+            <Link to="/signup" className="text-primary font-medium" onClick={onClose}>
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

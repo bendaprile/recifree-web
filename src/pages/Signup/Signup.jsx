@@ -16,7 +16,8 @@ function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false, confirmPassword: false });
   const navigate = useNavigate();
-  const signupsEnabled = import.meta.env.VITE_ENABLE_SIGNUPS === 'true';
+  // No longer needed as we are in production
+  // const signupsEnabled = import.meta.env.VITE_ENABLE_SIGNUPS === 'true';
 
   const emailErrorMsg = (() => {
     if (!touched.email) return '';
@@ -78,24 +79,6 @@ function SignupPage() {
     } finally {
       setLoading(false);
     }
-  }
-
-  if (!signupsEnabled) {
-    return (
-      <div className="signup-page section">
-        <div className="container">
-          <div className="signup-card card text-center">
-            <div className="signup-header" style={{ marginBottom: 0 }}>
-              <h1>Invite Only</h1>
-              <p className="text-secondary mt-4">We are currently in closed beta and are not accepting new registrations at this time.</p>
-            </div>
-            <Link to="/" className="btn btn-primary full-width" style={{ marginTop: 'var(--space-6)' }}>
-              Return Home
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (

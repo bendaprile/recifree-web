@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import SignupPage from './Signup';
 
 const mockSignup = vi.fn();
@@ -16,17 +16,8 @@ vi.mock('../../context/AuthContext', () => ({
 }));
 
 describe('SignupPage Component', () => {
-    let originalEnv;
-
     beforeEach(() => {
         vi.clearAllMocks();
-        // Backup original env
-        originalEnv = import.meta.env.VITE_ENABLE_SIGNUPS;
-    });
-
-    afterEach(() => {
-        // Restore
-        import.meta.env.VITE_ENABLE_SIGNUPS = originalEnv;
     });
 
     const renderSignup = () => {
@@ -37,17 +28,7 @@ describe('SignupPage Component', () => {
         );
     };
 
-    it('renders closed beta lockscreen when feature flag is falsy', () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'false';
-        renderSignup();
-        
-        expect(screen.getByText('Invite Only')).toBeInTheDocument();
-        expect(screen.getByText('We are currently in closed beta and are not accepting new registrations at this time.')).toBeInTheDocument();
-        expect(screen.queryByLabelText('Email')).not.toBeInTheDocument();
-    });
-
-    it('renders signup form when feature flag is strictly true', () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
+    it('renders signup form', () => {
         renderSignup();
         
         expect(screen.getByText('Join Recifree')).toBeInTheDocument();
@@ -57,7 +38,6 @@ describe('SignupPage Component', () => {
     });
 
     it('shows field level error tracking naturally on blur', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         renderSignup();
         
         const emailInput = screen.getByLabelText('Email Address');
@@ -95,7 +75,6 @@ describe('SignupPage Component', () => {
     });
 
     it('toggles password visibility when eye icon clicked', () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         renderSignup();
         
         const passwordInput = screen.getByLabelText('Password');
@@ -118,7 +97,6 @@ describe('SignupPage Component', () => {
     });
 
     it('stops submission and shows error if form is invalid', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         renderSignup();
         
         const submitBtn = screen.getByRole('button', { name: /^sign up$/i });
@@ -129,7 +107,6 @@ describe('SignupPage Component', () => {
     });
 
     it('successfully signs up user and navigates home', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         mockSignup.mockResolvedValue({ user: { email: 'test@example.com' } });
         mockSendVerificationEmail.mockResolvedValue();
         
@@ -147,7 +124,6 @@ describe('SignupPage Component', () => {
     });
 
     it('displays error message when signup fails', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         mockSignup.mockRejectedValue({ code: 'auth/email-already-in-use' });
         
         renderSignup();
@@ -162,7 +138,6 @@ describe('SignupPage Component', () => {
     });
 
     it('handles Google signup success', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         mockLoginWithGoogle.mockResolvedValue();
         renderSignup();
 
@@ -174,7 +149,6 @@ describe('SignupPage Component', () => {
     });
 
     it('handles Google signup failure', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         mockLoginWithGoogle.mockRejectedValue({ code: 'auth/network-request-failed' });
         renderSignup();
 
@@ -185,7 +159,6 @@ describe('SignupPage Component', () => {
     });
 
     it('does not show an error when Google signup popup is cancelled by user', async () => {
-        import.meta.env.VITE_ENABLE_SIGNUPS = 'true';
         mockLoginWithGoogle.mockRejectedValue({ code: 'auth/popup-closed-by-user' });
         renderSignup();
 

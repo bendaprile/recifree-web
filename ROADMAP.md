@@ -11,13 +11,13 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - ✅ **Modal & Form Polish:** Implement keyboard trapping, `Escape` key close support, and auto-focusing on the first input out-of-the-box for `LoginModal`.
 - ✅ **Silent Auth Error Handling:** Intercept and silently dismiss `auth/popup-closed-by-user` errors so users don't see harsh red UI if they cancel a Google OAuth flow.
 
-### 1b. Database & Routing Pipeline
+### 1b. Database & Routing Pipeline ✅ Complete
 - ✅ **Database Migration for Recipes:** Migrate the static JSON recipe data layer to a cloud database (e.g., Firestore) to handle dynamic user-generated content.
 - ✅ **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:slug`) instead of static local files.
 - ✅ **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.
 - ✅ **User Saved Recipes:** Implement a system for users to save recipes to their profile and create different lists for different types of recipes.
-- **Custom Domain & Email Deliverability:** Register a production domain and configure custom DNS records (SPF/DKIM/DMARC) in Firebase Authentication to ensure verification emails reliably land in users' primary inboxes instead of spam.
-- **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
+- ✅ **Custom Domain & Email Deliverability:** Register a production domain and configure custom DNS records (SPF/DKIM/DMARC) in Firebase Authentication to ensure verification emails reliably land in users' primary inboxes instead of spam.
+- ✅ **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
 
 ## Phase 2: The Extraction Engine (MVP)
 *Building the legal and functional core for ad-free recipe aggregation.*
