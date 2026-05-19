@@ -99,6 +99,26 @@ function Navbar() {
                 )}
               </li>
 
+              <li>
+                {currentUser ? (
+                  <NavLink
+                    to="/add"
+                    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+                    onClick={closeMenu}
+                  >
+                    + Add Recipe
+                  </NavLink>
+                ) : (
+                  <button
+                    className="nav-link"
+                    onClick={() => { setShowLoginModal(true); closeMenu(); }}
+                    aria-label="Add Recipe — log in required"
+                  >
+                    + Add Recipe
+                  </button>
+                )}
+              </li>
+
               {loadingAuth ? (
                 <li>
                   <div 

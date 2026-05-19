@@ -5,6 +5,7 @@ import AddToShoppingListButton from '../../components/AddToShoppingListButton/Ad
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
 import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import InstructionItem from '../../components/InstructionItem/InstructionItem';
+import SourceAttribution from '../../components/SourceAttribution/SourceAttribution';
 import './Recipe.css';
 
 function Recipe() {
@@ -168,7 +169,14 @@ function Recipe() {
                             ← Back to recipes
                         </Link>
 
-                        <h1 className="recipe-title">{recipe.title}</h1>
+                        <h1 className="recipe-title">
+                            {recipe.title}
+                            {recipe.triedAndTrue && (
+                                <span className="tried-true-badge" title="Tried & True: Kitchen-tested & verified tasty!">
+                                    ✓ Tried & True
+                                </span>
+                            )}
+                        </h1>
 
                         {recipe.description && (
                             <p className="recipe-description">{recipe.description}</p>
@@ -355,21 +363,7 @@ function Recipe() {
                             )}
 
                             {/* Source Attribution */}
-                            {recipe.source && (
-                                <div className="recipe-source">
-                                    <p>
-                                        Recipe adapted from{' '}
-                                        <a
-                                            href={recipe.source.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="source-link"
-                                        >
-                                            {recipe.source.name}
-                                        </a>
-                                    </p>
-                                </div>
-                            )}
+                            <SourceAttribution source={recipe.source} />
                         </div>
 
                         {/* Sidebar */}
