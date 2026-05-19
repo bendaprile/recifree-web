@@ -117,3 +117,10 @@ app.get('/recipe/:slug', async (req, res) => {
 exports.ssrRecipe = functions
     .runWith({ maxInstances: 3 })
     .https.onRequest(app);
+
+const { extractRecipeOrchestrator } = require('./extractRecipe');
+
+exports.extractRecipe = functions
+    .runWith({ maxInstances: 3, secrets: ['GEMINI_API_KEY'] })
+    .https.onRequest(extractRecipeOrchestrator);
+
