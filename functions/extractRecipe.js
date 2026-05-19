@@ -5,6 +5,10 @@ const { parseMicrodata } = require('./parsers/microdataParser');
 const { parseHeuristics } = require('./parsers/heuristicParser');
 const { sanitizeHtmlForLlm, extractWithLlm } = require('./parsers/llmParser');
 const { mapToRecifreeSchema } = require('./parsers/schemaMapper');
+const { buildImagenPrompt, generateAiFoodPhoto, uploadImageToStorage } = require('./imageGen/imagenService');
+const { normalizeUrl, hashUrl, checkCache, saveToCache } = require('./cache/extractionCache');
+const { verifyAdminAllowlist } = require('./security/adminGate');
+const { checkRateLimit } = require('./security/rateLimiter');
 
 /**
  * Verifies if the incoming request is authorized (Admin-Only).
@@ -33,21 +37,14 @@ async function verifyAdminAuth(req) {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const email = decodedToken.email;
 
-    // Rigid check: only Benjamin's email is allowed in Phase 2 Task 1
-    const allowedAdmins = ['benjamin.daprile@gmail.com'];
-    if (isEmulator) {
-      // Allow general testing in local emulator
-      allowedAdmins.push('admin-emulator-test@recifree.com');
-    }
-
-    if (!email || !allowedAdmins.includes(email)) {
-      throw new Error(`FORBIDDEN: User ${email} is not authorized to extract recipes.`);
-    }
+    // Use dynamic lookup via adminGate
+    await verifyAdminAllowlist(email);
 
     return email;
   } catch (error) {
     console.error('Auth verification failed:', error.message);
-    throw new Error(`UNAUTHORIZED: ${error.message}`);
+    // Preserving status code checking: make sure error retains FORBIDDEN if thrown from adminGate
+    throw new Error(error.message.includes('FORBIDDEN') ? error.message : `UNAUTHORIZED: ${error.message}`);
   }
 }
 
@@ -111,6 +108,14 @@ async function extractRecipeOrchestrator(req, res) {
       return;
     }
 
+    // 2b. Gatekeeper Rate Limiting (10/hour)
+    try {
+      await checkRateLimit(userEmail);
+    } catch (rateError) {
+      res.status(429).json({ error: rateError.message });
+      return;
+    }
+
     // 3. Extract inputs
     const { url } = req.body || {};
     try {
@@ -121,6 +126,30 @@ async function extractRecipeOrchestrator(req, res) {
     }
 
     console.log(`Starting recipe extraction for: ${url} initiated by ${userEmail}`);
+
+    // Normalize URL and hash it
+    let normalizedUrl;
+    let urlHash;
+    try {
+      normalizedUrl = normalizeUrl(url);
+      urlHash = hashUrl(normalizedUrl);
+    } catch (normError) {
+      res.status(400).json({ error: `URL normalization failed: ${normError.message}` });
+      return;
+    }
+
+    // Check extraction cache
+    try {
+      const cachedRecipe = await checkCache(urlHash);
+      if (cachedRecipe) {
+        console.log(`Cache HIT for ${url} (hash: ${urlHash})`);
+        res.status(200).json(cachedRecipe);
+        return;
+      }
+      console.log(`Cache MISS for ${url} (hash: ${urlHash})`);
+    } catch (cacheError) {
+      console.error('Failed to read from extraction cache:', cacheError);
+    }
 
     // 4. Fetch HTML using native global fetch (Node 22)
     const response = await fetch(url, {
@@ -206,12 +235,37 @@ async function extractRecipeOrchestrator(req, res) {
 
     const normalizedRecipe = mapToRecifreeSchema(rawRecipeData);
 
+    // Trigger AI food photo generation to ensure copyright-free unique image
+    try {
+      if (!normalizedRecipe.image || !normalizedRecipe.image.includes('firebasestorage.googleapis.com')) {
+        console.log(`Generating unique AI food photo for "${normalizedRecipe.title}" to avoid copyright scraping...`);
+        const prompt = buildImagenPrompt(normalizedRecipe.title, normalizedRecipe.tags);
+        const base64Image = await generateAiFoodPhoto(prompt);
+        if (base64Image) {
+          const storageUrl = await uploadImageToStorage(base64Image, normalizedRecipe.id);
+          if (storageUrl) {
+            normalizedRecipe.image = storageUrl;
+            console.log(`Successfully uploaded AI food photo: ${storageUrl}`);
+          }
+        }
+      }
+    } catch (imageError) {
+      console.error('Graceful fallback: AI image generation failed:', imageError);
+    }
+
     // Attach debugging/monitoring metadata
     normalizedRecipe._extractionMeta = {
       method: methodUsed,
       parsedAt: new Date().toISOString(),
       extractedBy: userEmail
     };
+
+    // Save to extraction cache
+    try {
+      await saveToCache(urlHash, normalizedRecipe);
+    } catch (cacheSaveError) {
+      console.error('Failed to save to extraction cache:', cacheSaveError);
+    }
 
     console.log(`Successfully completed extraction via method: ${methodUsed}`);
     res.status(200).json(normalizedRecipe);

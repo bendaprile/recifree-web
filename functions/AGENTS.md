@@ -6,6 +6,10 @@ This directory contains Firebase Cloud Functions designated for server-side logi
 Currently, our primary use-cases are:
 1. **Dynamic SEO Metadata Injection (Pre-rendering)** for recipe pages via the `ssrRecipe` function.
 2. **Hybrid Recipe Extraction Engine** via the `extractRecipe` function, which fetches external recipe URLs, runs our layered parsers (LD+JSON ➔ Microdata ➔ CSS Heuristics ➔ Gemini LLM fallback), normalizes ingredients into quantities and units, maps steps, and returns valid Recifree schemas.
+3. **Global Extraction Cache** via the `extractionCache` module (`functions/cache/extractionCache.js`), which normalizes URLs (lowercase hostname, no trailing slash/hash/anchor, no marketing parameters, sorted query arguments), computes a SHA-256 hex hash document ID, and saves/checks the cache against Firestore `extraction_cache` collection.
+4. **Dynamic Admin Allowlist Gatekeeping** via the `adminGate` module (`functions/security/adminGate.js`), which queries `/app_config/admin_users` to dynamically manage authorized emails.
+5. **Extraction Rate Limiting** via the `rateLimiter` module (`functions/security/rateLimiter.js`), which enforces a rolling sliding-window limit of 10 extractions per hour per user using the Firestore `rate_limits` collection.
+6. **Prompt Injection Defense** via instruction isolation (sandwich defense) in the Gemini parser (`functions/parsers/llmParser.js`), ensuring third-party recipe markup cannot hijack LLM formatting rules.
 
 ## Core Directives for Agents
 
