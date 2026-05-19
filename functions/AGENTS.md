@@ -10,6 +10,7 @@ Currently, our primary use-cases are:
 4. **Dynamic Admin Allowlist Gatekeeping** via the `adminGate` module (`functions/security/adminGate.js`), which queries `/app_config/admin_users` to dynamically manage authorized emails.
 5. **Extraction Rate Limiting** via the `rateLimiter` module (`functions/security/rateLimiter.js`), which enforces a rolling sliding-window limit of 10 extractions per hour per user using the Firestore `rate_limits` collection.
 6. **Prompt Injection Defense** via instruction isolation (sandwich defense) in the Gemini parser (`functions/parsers/llmParser.js`), ensuring third-party recipe markup cannot hijack LLM formatting rules.
+7. **AI Imagen 3 Food Photo Generation** via the `imagenService` module (`functions/imageGen/imagenService.js`), which constructs professional food photography prompts from the recipe title and tags, generates a copyright-free visual representation using `imagen-3.0-generate-002:predict`, and uploads the binary buffer to Firebase Storage under `recipes/{recipeId}/image.png`.
 
 ## Core Directives for Agents
 
