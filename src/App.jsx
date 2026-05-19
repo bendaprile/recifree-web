@@ -8,6 +8,7 @@ import SignupPage from './pages/Signup/Signup';
 import SavedRecipes from './pages/SavedRecipes/SavedRecipes';
 import Settings from './pages/Settings/Settings';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import AddRecipe from './pages/AddRecipe/AddRecipe';
 import VerificationBanner from './components/VerificationBanner/VerificationBanner';
 import OnboardingModal from './components/OnboardingModal/OnboardingModal';
 import { ShoppingListProvider } from './context/ShoppingListContext';
@@ -38,6 +39,7 @@ function App() {
                   <Route path="/saved" element={<ProtectedRoute><SavedRecipes /></ProtectedRoute>} />
                   <Route path="/shopping-list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
                   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                  <Route path="/add" element={<ProtectedRoute><AddRecipe /></ProtectedRoute>} />
                   <Route path="/signup" element={<SignupPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />

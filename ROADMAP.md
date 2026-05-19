@@ -19,16 +19,16 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - ✅ **Custom Domain & Email Deliverability:** Register a production domain and configure custom DNS records (SPF/DKIM/DMARC) in Firebase Authentication to ensure verification emails reliably land in users' primary inboxes instead of spam.
 - ✅ **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
 
-## Phase 2: The Extraction Engine (MVP)
+## Phase 2: The Extraction Engine (MVP) ✅ Complete
 *Building the legal and functional core for ad-free recipe aggregation.*
-- **User-Initiated URL Extraction:** An input field for users to paste a recipe URL, initiating extraction on a per-user basis to minimize web-scraping liability.
+- ✅ **User-Initiated URL Extraction:** An input field for users to paste a recipe URL, initiating extraction on a per-user basis to minimize web-scraping liability.
 - ✅ **Prompt Security & Injection Defense:** Security protocols to ensure malicious URLs or hidden text cannot hijack the LLM prompt or leak backend system instructions (SSRF prevention, HTML sanitization, strict JSON mapping, and input character limits implemented in backend).
 - ✅ **Hybrid Recipe Parsing Pipeline:** A layered approach: Layer 1 extracts hidden `ld+json` and `microdata` structures. Layer 2 applies HTML heuristic selectors. Layer 3 falls back to Google Gemini LLM text extraction.
-- **AI Image Generation Engine:** Automatically generate a unique visual representation for each extracted recipe to completely avoid scraping copyrighted photography.
-- **Manual Entry Fallback Form:** A clean manual input form to gracefully handle extraction failures or heavily bot-protected websites.
-- **The "Tried & True" Sign-Off:** A mandatory UX step during URL extraction or manual entry where the uploading user must click a checkbox formally verifying: "I have actually cooked this, and it is delicious."
+- ✅ **AI Image Generation Engine:** Automatically generate a unique visual representation for each extracted recipe to completely avoid scraping copyrighted photography (Google Gemini Imagen 3 REST API and Firebase Storage upload integrated).
+- ✅ **Manual Entry Fallback Form:** A clean manual input form to gracefully handle extraction failures or heavily bot-protected websites.
+- ✅ **The "Tried & True" Sign-Off:** A mandatory UX step during URL extraction or manual entry where the uploading user must click a checkbox formally verifying: "I have actually cooked this, and it is delicious."
 - ✅ **Global Extraction Cache:** Store parsed text and AI images in the database so subsequent visits to the same recipe URL require zero AI API consumption.
-- **Source Attribution Component:** UI elements that prominently link and credit the original publisher.
+- ✅ **Source Attribution Component:** UI elements that prominently link and credit the original publisher.
 
 ## Phase 3: SEO Dominance & Core Performance
 *Maximizing organic acquisition by satisfying algorithmic requirements.*
