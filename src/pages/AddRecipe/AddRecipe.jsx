@@ -86,7 +86,7 @@ function AddRecipe() {
 
   return (
     <div className="add-recipe-page section">
-      <div className="container add-recipe-container">
+      <div className={`container add-recipe-container view-${viewState.toLowerCase()}`}>
         {viewState === 'INPUT' && (
           <div className="extraction-layout">
             <h1 className="page-title">Add a Recipe</h1>

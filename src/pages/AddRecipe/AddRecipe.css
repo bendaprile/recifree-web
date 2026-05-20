@@ -9,6 +9,11 @@
 .add-recipe-container {
   max-width: 680px;
   margin: 0 auto;
+  transition: max-width var(--transition-base);
+}
+
+.add-recipe-container.view-edit {
+  max-width: 800px;
 }
 
 .page-title {
