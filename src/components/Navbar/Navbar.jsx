@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../LoginModal/LoginModal';
@@ -10,12 +10,34 @@ function Navbar() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { currentUser, logout, loadingAuth } = useAuth();
 
+  useEffect(() => {
+    // Dynamically load polyfills for invokers and popover if missing
+    if (typeof window !== 'undefined') {
+      if (!('commandForElement' in HTMLButtonElement.prototype)) {
+        import('https://esm.run/invokers-polyfill').catch(e => console.error("Failed to load invokers polyfill", e));
+      }
+      if (!('popover' in HTMLElement.prototype)) {
+        import('https://unpkg.com/@oddbird/popover-polyfill@latest/dist/popover-fn.js')
+          .then(({ apply }) => apply())
+          .catch(e => console.error("Failed to load popover polyfill", e));
+      }
+    }
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const closeUserMenu = () => {
+    const popover = document.getElementById('user-menu-popover');
+    if (popover && typeof popover.hidePopover === 'function') {
+      popover.hidePopover();
+    }
+    closeMenu();
   };
 
   return (
@@ -40,116 +62,42 @@ function Navbar() {
           <div className={`navbar-menu ${isMenuOpen ? 'open' : ''}`}>
             <ul className="navbar-links">
               <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                  onClick={closeMenu}
-                >
-                  Home
-                </NavLink>
+                <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={closeMenu}>Home</NavLink>
               </li>
-
               <li>
-                <NavLink
-                  to="/about"
-                  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                  onClick={closeMenu}
-                >
-                  About
-                </NavLink>
+                <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={closeMenu}>About</NavLink>
               </li>
-
-              <li>
-                {currentUser ? (
-                  <NavLink
-                    to="/saved"
-                    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    onClick={closeMenu}
-                  >
-                    Saved
-                  </NavLink>
-                ) : (
-                  <button
-                    className="nav-link"
-                    onClick={() => { setShowLoginModal(true); closeMenu(); }}
-                    aria-label="Saved Recipes — log in required"
-                  >
-                    Saved
-                  </button>
-                )}
-              </li>
-
-              <li>
-                {currentUser ? (
-                  <NavLink
-                    to="/shopping-list"
-                    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    onClick={closeMenu}
-                  >
-                    Shopping List
-                  </NavLink>
-                ) : (
-                  <button
-                    className="nav-link"
-                    onClick={() => { setShowLoginModal(true); closeMenu(); }}
-                    aria-label="Shopping List — log in required"
-                  >
-                    Shopping List
-                  </button>
-                )}
-              </li>
-
-              <li>
-                {currentUser ? (
-                  <NavLink
-                    to="/add"
-                    className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    onClick={closeMenu}
-                  >
-                    + Add Recipe
-                  </NavLink>
-                ) : (
-                  <button
-                    className="nav-link"
-                    onClick={() => { setShowLoginModal(true); closeMenu(); }}
-                    aria-label="Add Recipe — log in required"
-                  >
-                    + Add Recipe
-                  </button>
-                )}
-              </li>
-
+              
               {loadingAuth ? (
                 <li>
-                  <div 
-                    className="nav-link skeleton-text" 
-                    style={{width: '60px', height: '24px', display: 'inline-block', padding: '0'}} 
-                    data-testid="navbar-skeleton"
-                  />
+                  <div className="nav-link skeleton-text" style={{width: '60px', height: '24px', display: 'inline-block', padding: '0'}} data-testid="navbar-skeleton" />
                 </li>
               ) : currentUser ? (
                 <>
                   <li>
-                    <NavLink
-                      to="/settings"
-                      className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                      onClick={closeMenu}
-                    >
-                      Settings
-                    </NavLink>
+                    <NavLink to="/add" className={({ isActive }) => isActive ? 'nav-link active add-recipe-btn' : 'nav-link add-recipe-btn'} onClick={closeMenu}>+ Add Recipe</NavLink>
                   </li>
-                  <li>
-                    <button className="nav-link" onClick={() => { logout(); closeMenu(); }}>
-                      Logout
+                  <li className="user-menu-container">
+                    <button className="nav-link user-menu-btn" commandfor="user-menu-popover" command="toggle-popover">
+                      My Kitchen ▾
                     </button>
+                    <div id="user-menu-popover" popover="auto" className="user-dropdown">
+                      <NavLink to="/saved" className="dropdown-link" onClick={closeUserMenu}>Saved Recipes</NavLink>
+                      <NavLink to="/shopping-list" className="dropdown-link" onClick={closeUserMenu}>Shopping List</NavLink>
+                      <NavLink to="/settings" className="dropdown-link" onClick={closeUserMenu}>Settings</NavLink>
+                      <button className="dropdown-link text-left" onClick={() => { logout(); closeUserMenu(); }}>Logout</button>
+                    </div>
                   </li>
                 </>
               ) : (
-                <li>
-                  <button className="nav-link" onClick={() => { setShowLoginModal(true); closeMenu(); }}>
-                    Login
-                  </button>
-                </li>
+                <>
+                  <li>
+                    <button className="nav-link add-recipe-btn" onClick={() => { setShowLoginModal(true); closeMenu(); }}>+ Add Recipe</button>
+                  </li>
+                  <li>
+                    <button className="nav-link" onClick={() => { setShowLoginModal(true); closeMenu(); }}>Login</button>
+                  </li>
+                </>
               )}
             </ul>
           </div>
