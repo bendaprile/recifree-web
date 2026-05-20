@@ -78,7 +78,7 @@ function Navbar() {
                     <NavLink to="/add" className={({ isActive }) => isActive ? 'nav-link active add-recipe-btn' : 'nav-link add-recipe-btn'} onClick={closeMenu}>+ Add Recipe</NavLink>
                   </li>
                   <li className="user-menu-container">
-                    <button className="nav-link user-menu-btn" popovertarget="user-menu-popover">
+                    <button className="nav-link user-menu-btn" popoverTarget="user-menu-popover">
                       My Kitchen ▾
                     </button>
                     <div id="user-menu-popover" popover="auto" className="user-dropdown">
