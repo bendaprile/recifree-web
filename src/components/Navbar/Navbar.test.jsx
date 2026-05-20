@@ -140,28 +140,21 @@ describe('Navbar Component', () => {
         expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('Shopping List shows as a button and opens LoginModal when user is NOT logged in', () => {
+    it('Shopping List does NOT show when user is NOT logged in', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: null }));
         renderNavbar();
 
-        // Should be a button, not a link
-        const listButton = screen.getByRole('button', { name: /shopping list/i });
-        expect(listButton).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /shopping list/i })).not.toBeInTheDocument();
         expect(screen.queryByRole('link', { name: /shopping list/i })).not.toBeInTheDocument();
-
-        // Clicking it should open the login modal
-        fireEvent.click(listButton);
-        expect(screen.getByText('Welcome Back')).toBeInTheDocument();
     });
 
-    it('Shopping List shows as a /shopping-list link when user IS logged in', () => {
+    it('Shopping List shows as a /shopping-list link inside popover when user IS logged in', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
         renderNavbar();
 
-        const listLink = screen.getByRole('link', { name: /shopping list/i });
+        const listLink = screen.getByRole('link', { name: /shopping list/i, hidden: true });
         expect(listLink).toBeInTheDocument();
         expect(listLink).toHaveAttribute('href', '/shopping-list');
-        expect(screen.queryByRole('button', { name: /shopping list/i })).not.toBeInTheDocument();
     });
     it('renders a loading skeleton when loadingAuth is true', () => {
         useAuth.mockReturnValue(makeAuth({ loadingAuth: true }));
@@ -197,7 +190,7 @@ describe('Navbar Component', () => {
         const toggleButton = screen.getByLabelText('Toggle navigation menu');
         fireEvent.click(toggleButton); // Open menu
 
-        const logoutButton = screen.getByRole('button', { name: /logout/i });
+        const logoutButton = screen.getByRole('button', { name: /logout/i, hidden: true });
         fireEvent.click(logoutButton);
 
         expect(mockLogout).toHaveBeenCalledTimes(1);
