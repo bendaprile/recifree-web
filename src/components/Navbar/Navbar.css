@@ -215,7 +215,7 @@
 }
 
 .user-dropdown {
-    /* Popover defaults */
+    display: none;
     margin: 0;
     padding: var(--space-2) 0;
     border: 1px solid var(--color-border);
@@ -237,7 +237,9 @@
     z-index: 1000;
 }
 
-.user-dropdown:is(:popover-open, .\:popover-open) {
+.user-dropdown.open,
+.user-menu-container:hover .user-dropdown,
+.user-menu-container:focus-within .user-dropdown {
     display: flex;
     flex-direction: column;
 }
