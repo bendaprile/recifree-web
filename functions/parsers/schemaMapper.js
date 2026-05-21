@@ -42,11 +42,158 @@ function normalizeTime(timeStr, defaultTime) {
 }
 
 /**
+ * Common named HTML entities to their decoded characters.
+ * Case-sensitive mappings.
+ */
+const NAMED_ENTITIES = {
+  // Markup & Quotes
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&apos;': "'",
+  '&#39;': "'",
+  '&nbsp;': ' ',
+  
+  // Punctuation & Layout
+  '&ndash;': '\u2013',
+  '&mdash;': '\u2014',
+  '&lsquo;': '\u2018',
+  '&rsquo;': '\u2019',
+  '&ldquo;': '\u201C',
+  '&rdquo;': '\u201D',
+  '&bull;': '\u2022',
+  '&hellip;': '\u2026',
+  
+  // Kitchen/Recipe Units & Math
+  '&deg;': '\u00B0',
+  '&frac12;': '\u00BD',
+  '&frac14;': '\u00BC',
+  '&frac34;': '\u00BE',
+  '&times;': '\u00D7', // × (multiplication/dimensions)
+  '&divide;': '\u00F7', // ÷
+  
+  // Common Accented Culinary Characters (Lowercase)
+  '&aacute;': 'á',
+  '&agrave;': 'à',
+  '&acirc;': 'â',
+  '&auml;': 'ä',
+  '&ccedil;': 'ç',
+  '&eacute;': 'é',
+  '&egrave;': 'è',
+  '&ecirc;': 'ê',
+  '&euml;': 'ë',
+  '&iacute;': 'í',
+  '&igrave;': 'ì',
+  '&icirc;': 'î',
+  '&iuml;': 'ï',
+  '&ntilde;': 'ñ',
+  '&oacute;': 'ó',
+  '&ograve;': 'ò',
+  '&ocirc;': 'ô',
+  '&ouml;': 'ö',
+  '&uacute;': 'ú',
+  '&ugrave;': 'ù',
+  '&ucirc;': 'û',
+  '&uuml;': 'ü',
+  
+  // Common Accented Culinary Characters (Uppercase)
+  '&Aacute;': 'Á',
+  '&Agrave;': 'À',
+  '&Acirc;': 'Â',
+  '&Auml;': 'Ä',
+  '&Ccedil;': 'Ç',
+  '&Eacute;': 'É',
+  '&Egrave;': 'È',
+  '&Ecirc;': 'Ê',
+  '&Euml;': 'Ë',
+  '&Iacute;': 'Í',
+  '&Igrave;': 'Ì',
+  '&Icirc;': 'Î',
+  '&Iuml;': 'Ï',
+  '&Ntilde;': 'Ñ',
+  '&Oacute;': 'Ó',
+  '&Ograve;': 'Ò',
+  '&Ocirc;': 'Ô',
+  '&Ouml;': 'Ö',
+  '&Uacute;': 'Ú',
+  '&Ugrave;': 'Ù',
+  '&Ucirc;': 'Û',
+  '&Uuml;': 'Ü'
+};
+
+/**
+ * Decodes HTML entities in a string:
+ *  - Numeric decimal (&#8211;)
+ *  - Numeric hex (&#x2013;)
+ *  - Common named entities (&amp;, &ndash;, etc.)
+ */
+function decodeHtmlEntities(str) {
+  if (!str || typeof str !== 'string') return str;
+
+  // 1. Replace numeric decimal entities: &#NNN;
+  let decoded = str.replace(/&#(\d+);/g, (match, code) => {
+    try {
+      return String.fromCodePoint(parseInt(code, 10));
+    } catch (e) {
+      return match;
+    }
+  });
+
+  // 2. Replace numeric hex entities: &#xHHH;
+  decoded = decoded.replace(/&#[xX]([0-9a-fA-F]+);/g, (match, hex) => {
+    try {
+      return String.fromCodePoint(parseInt(hex, 16));
+    } catch (e) {
+      return match;
+    }
+  });
+
+  // 3. Replace common named entities (case-sensitive)
+  for (const [entity, char] of Object.entries(NAMED_ENTITIES)) {
+    decoded = decoded.replace(new RegExp(entity.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), char);
+  }
+
+  return decoded;
+}
+
+/**
+ * Recursively decodes HTML entities in an object, array, or string.
+ */
+function deepCleanHtmlEntities(obj) {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  
+  if (typeof obj === 'string') {
+    return decodeHtmlEntities(obj);
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepCleanHtmlEntities(item));
+  }
+  
+  if (typeof obj === 'object') {
+    if (Object.prototype.toString.call(obj) === '[object Object]') {
+      const cleaned = {};
+      for (const [key, value] of Object.entries(obj)) {
+        cleaned[key] = deepCleanHtmlEntities(value);
+      }
+      return cleaned;
+    }
+    return obj;
+  }
+  
+  return obj;
+}
+
+/**
  * Maps raw parsed intermediate recipe data to the strict Recifree JSON Schema.
  * @param {object} rawData 
  * @returns {object} Final Recifree-schema compliant recipe object
  */
 function mapToRecifreeSchema(rawData) {
+  rawData = deepCleanHtmlEntities(rawData);
   const title = rawData.title ? rawData.title.trim() : 'Extracted Recipe';
   const id = slugify(title);
   
@@ -136,5 +283,7 @@ function mapToRecifreeSchema(rawData) {
 
 module.exports = {
   mapToRecifreeSchema,
-  slugify
+  slugify,
+  decodeHtmlEntities,
+  deepCleanHtmlEntities
 };

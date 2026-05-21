@@ -14,10 +14,14 @@ Welcome to the **Recifree** repository! This document provides an onboarding gui
 ## 📂 Repository Structure
 ```text
 recifree/
-├── .agent/              # Agent workflows (such as new recipes)
+├── .agent/              # Agent workflows
+│   └── workflows/
+│       ├── recipe.md    # Workflow: adding new recipes
+│       └── security.md  # Workflow: scheduled security audit agent
 ├── .github/             # GitHub configuration & workflows
 ├── docs/                # Planning and branding documentation
 │   ├── BRANDING.md      # Brand identity & UI/UX philosophy
+│   ├── SECURITY_REGISTRY.md # Living security vulnerability registry (machine-updated)
 │   └── market_research_verdict.md # Market feasibility and legal strategy
 ├── functions/           # Cloud Functions (serverless logic & SEO generation)
 ├── public/              # Static assets and images
@@ -62,8 +66,18 @@ When editing code in this repository, you **MUST** follow these rules:
 ## 🧑‍🍳 Adding a New Recipe
 If a user asks you to add a new recipe, you should utilize the recipe generation workflow located at `.agent/workflows/recipe.md` (which users may refer to conversationally as `recipes.md`). Also reference `RECIPE_GENERATION.md` for specific formatting instructions and expectations.
 
+## 🔐 Security Audit Agent
+Recifree uses a scheduled security audit agent to continuously find and fix vulnerabilities.
+
+- **Workflow**: `.agent/workflows/security.md` — the canonical instructions the security agent follows each run.
+- **Registry**: `docs/SECURITY_REGISTRY.md` — the living vulnerability document. Updated by the agent each run; never manually edit vulnerability status unless dismissing a false positive.
+- **Schedule**: Run using Antigravity's `/schedule` command. See the bottom of `security.md` for the recommended cron expressions.
+- **PR Safety Rule**: The agent **never opens a PR unless `npm run test` passes.** Security fixes are always minimal and targeted.
+- **Escalation**: Critical-severity vulnerabilities open a GitHub Issue immediately without waiting for the next fix cycle.
+
 ## 📚 Core Strategic Documentation
 If you are asked to design a new UI element, plan a new architecture feature, or understand the overall goal of the platform, you **MUST** consult these files before executing:
 1. **`ROADMAP.md`**: Contains the strict, logical 8-phase feature pipeline. Do not build features outside of the current authorized phase without user permission.
 2. **`docs/BRANDING.md`**: Contains the core persona, copywriting voice, and visual identity (Minimalist Editorial) guidelines.
 3. **`docs/market_research_verdict.md`**: Contains the deep legal and commercial rationale behind the platform's architecture (e.g., why we use client-side extraction, why we avoid scraping images).
+4. **`docs/SECURITY_REGISTRY.md`**: The current state of all known security vulnerabilities. Consult this before making any changes to `firestore.rules`, `firebase.json` headers, or npm dependencies to avoid reopening fixed issues.

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../LoginModal/LoginModal';
@@ -8,21 +8,8 @@ import './Navbar.css';
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { currentUser, logout, loadingAuth } = useAuth();
-
-  useEffect(() => {
-    // Dynamically load polyfills for invokers and popover if missing
-    if (typeof window !== 'undefined') {
-      if (!('commandForElement' in HTMLButtonElement.prototype)) {
-        import('https://esm.run/invokers-polyfill').catch(e => console.error("Failed to load invokers polyfill", e));
-      }
-      if (!('popover' in HTMLElement.prototype)) {
-        import('https://unpkg.com/@oddbird/popover-polyfill@latest/dist/popover-fn.js')
-          .then(({ apply }) => apply())
-          .catch(e => console.error("Failed to load popover polyfill", e));
-      }
-    }
-  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,10 +20,7 @@ function Navbar() {
   };
 
   const closeUserMenu = () => {
-    const popover = document.getElementById('user-menu-popover');
-    if (popover && typeof popover.hidePopover === 'function') {
-      popover.hidePopover();
-    }
+    setIsDropdownOpen(false);
     closeMenu();
   };
 
@@ -77,11 +61,26 @@ function Navbar() {
                   <li>
                     <NavLink to="/add" className={({ isActive }) => isActive ? 'nav-link active add-recipe-btn' : 'nav-link add-recipe-btn'} onClick={closeMenu}>+ Add Recipe</NavLink>
                   </li>
-                  <li className="user-menu-container">
-                    <button className="nav-link user-menu-btn" popoverTarget="user-menu-popover">
+                  <li 
+                    className="user-menu-container"
+                    onMouseEnter={() => setIsDropdownOpen(true)}
+                    onMouseLeave={() => setIsDropdownOpen(false)}
+                    onFocus={() => setIsDropdownOpen(true)}
+                    onBlur={(e) => {
+                      if (!e.currentTarget.contains(e.relatedTarget)) {
+                        setIsDropdownOpen(false);
+                      }
+                    }}
+                  >
+                    <button 
+                      className="nav-link user-menu-btn" 
+                      aria-expanded={isDropdownOpen}
+                      aria-haspopup="true"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
                       My Kitchen ▾
                     </button>
-                    <div id="user-menu-popover" popover="auto" className="user-dropdown">
+                    <div id="user-menu-popover" className={`user-dropdown ${isDropdownOpen ? 'open' : ''}`}>
                       <NavLink to="/saved" className="dropdown-link" onClick={closeUserMenu}>Saved Recipes</NavLink>
                       <NavLink to="/shopping-list" className="dropdown-link" onClick={closeUserMenu}>Shopping List</NavLink>
                       <NavLink to="/settings" className="dropdown-link" onClick={closeUserMenu}>Settings</NavLink>

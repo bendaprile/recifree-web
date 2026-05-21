@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useBlocker } from 'react-router-dom';
 import ExtractionCard from './components/ExtractionCard';
 import ManualRecipeForm from './components/ManualRecipeForm';
 import MascotLoader from '../../components/MascotLoader/MascotLoader';
@@ -12,6 +12,27 @@ function AddRecipe() {
   const [viewState, setViewState] = useState('INPUT'); // 'INPUT' | 'LOADING' | 'EDIT'
   const [error, setError] = useState('');
   const [extractedData, setExtractedData] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Block in-app navigation when the user is editing and not mid-save
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      viewState === 'EDIT' && !isSaving && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  // Block browser-level unloads (refresh, close tab, external URL) while editing
+  useEffect(() => {
+    if (viewState !== 'EDIT' || isSaving) return;
+
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      // Modern browsers show a generic message; returnValue is required for Chrome
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [viewState, isSaving]);
 
   const getTitleFromUrl = (urlStr) => {
     try {
@@ -67,15 +88,21 @@ function AddRecipe() {
 
   const handleSave = async (recipePayload) => {
     try {
+      setIsSaving(true);
       const result = await addRecipe(recipePayload);
       navigate(`/recipe/${result.slug}`);
     } catch (err) {
+      setIsSaving(false);
       alert(`Failed to save recipe: ${err.message}`);
     }
   };
 
   const handleCancel = () => {
     if (viewState === 'EDIT') {
+      const confirmed = window.confirm(
+        'Are you sure you want to abandon this recipe? Any unsaved changes will be lost.'
+      );
+      if (!confirmed) return;
       setViewState('INPUT');
       setExtractedData(null);
       setError('');
@@ -175,6 +202,33 @@ function AddRecipe() {
           </div>
         )}
       </div>
+
+      {/* Navigation Blocker Confirmation Modal */}
+      {blocker.state === 'blocked' && (
+        <div className="modal-overlay" onClick={() => blocker.reset()} role="dialog" aria-modal="true">
+          <div className="modal-content nav-block-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="nav-block-icon">⚠️</div>
+            <h2 className="nav-block-title">Unsaved Recipe</h2>
+            <p className="nav-block-message">
+              You're in the middle of editing a recipe. If you leave now, all your progress will be lost.
+            </p>
+            <div className="nav-block-actions">
+              <button
+                className="btn btn-primary"
+                onClick={() => blocker.reset()}
+              >
+                Keep Editing
+              </button>
+              <button
+                className="btn btn-outline nav-block-leave-btn"
+                onClick={() => blocker.proceed()}
+              >
+                Leave Page
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

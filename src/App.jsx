@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Home from './pages/Home/Home';
@@ -19,37 +19,52 @@ import { SkilletIcon } from './components/Icons/Icons';
 import './styles/global.css';
 import './App.css';
 
+/**
+ * Root layout wrapping all routes with the shared shell:
+ * sticky header (banner + onboarding + navbar), main content, and footer.
+ */
+function RootLayout() {
+  return (
+    <div className="app">
+      <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
+        <VerificationBanner />
+        <OnboardingModal />
+        <Navbar />
+      </div>
+      <main className="main-content">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
+      { path: '/', element: <Home /> },
+      { path: '/recipe/:id', element: <Recipe /> },
+      { path: '/saved', element: <ProtectedRoute><SavedRecipes /></ProtectedRoute> },
+      { path: '/shopping-list', element: <ProtectedRoute><ShoppingList /></ProtectedRoute> },
+      { path: '/settings', element: <ProtectedRoute><Settings /></ProtectedRoute> },
+      { path: '/add', element: <ProtectedRoute><AddRecipe /></ProtectedRoute> },
+      { path: '/signup', element: <SignupPage /> },
+      { path: '/about', element: <AboutPage /> },
+      { path: '/privacy', element: <PrivacyPolicyPage /> },
+      { path: '/dmca', element: <DMCAPolicyPage /> },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+]);
+
 function App() {
   return (
     <AuthProvider>
       <SavedRecipesProvider>
         <ShoppingListProvider>
           <ThemeProvider>
-          <Router>
-            <div className="app">
-              <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
-                <VerificationBanner />
-                <OnboardingModal />
-                <Navbar />
-              </div>
-              <main className="main-content">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/recipe/:id" element={<Recipe />} />
-                  <Route path="/saved" element={<ProtectedRoute><SavedRecipes /></ProtectedRoute>} />
-                  <Route path="/shopping-list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
-                  <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-                  <Route path="/add" element={<ProtectedRoute><AddRecipe /></ProtectedRoute>} />
-                  <Route path="/signup" element={<SignupPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                  <Route path="/dmca" element={<DMCAPolicyPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
-          </Router>
+            <RouterProvider router={router} />
           </ThemeProvider>
         </ShoppingListProvider>
       </SavedRecipesProvider>

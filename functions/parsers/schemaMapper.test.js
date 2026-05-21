@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mapToRecifreeSchema, slugify } from './schemaMapper';
+import { mapToRecifreeSchema, slugify, decodeHtmlEntities, deepCleanHtmlEntities } from './schemaMapper';
 
 describe('schemaMapper', () => {
   describe('slugify', () => {
@@ -10,6 +10,85 @@ describe('schemaMapper', () => {
 
     it('handles empty titles gracefully', () => {
       expect(slugify('')).toBe('extracted-recipe');
+    });
+  });
+
+  describe('decodeHtmlEntities', () => {
+    it('decodes decimal numeric entities like &#8211; (en-dash)', () => {
+      expect(decodeHtmlEntities('6&#8211;12 minutes')).toBe('6\u201312 minutes');
+    });
+
+    it('decodes hex numeric entities like &#x2013;', () => {
+      expect(decodeHtmlEntities('6&#x2013;12 minutes')).toBe('6\u201312 minutes');
+    });
+
+    it('decodes common named entities (&amp;, &quot;, &apos;)', () => {
+      expect(decodeHtmlEntities('Salt &amp; Pepper')).toBe('Salt & Pepper');
+      expect(decodeHtmlEntities('&quot;Hello&quot;')).toBe('"Hello"');
+    });
+
+    it('decodes &ndash; and &mdash; named entities', () => {
+      expect(decodeHtmlEntities('6&ndash;12 minutes')).toBe('6\u201312 minutes');
+      expect(decodeHtmlEntities('Wait&mdash;really?')).toBe('Wait\u2014really?');
+    });
+
+    it('decodes &#39; (single quote) entities', () => {
+      expect(decodeHtmlEntities("it&#39;s great")).toBe("it's great");
+    });
+
+    it('decodes accented culinary characters and math symbols', () => {
+      expect(decodeHtmlEntities('saut&eacute;')).toBe('sauté');
+      expect(decodeHtmlEntities('flamb&Eacute;')).toBe('flambÉ');
+      expect(decodeHtmlEntities('caf&egrave;')).toBe('cafè');
+      expect(decodeHtmlEntities('8 &times; 8 pan')).toBe('8 × 8 pan');
+      expect(decodeHtmlEntities('1 &divide; 2')).toBe('1 ÷ 2');
+    });
+
+    it('is case-sensitive for named entities', () => {
+      expect(decodeHtmlEntities('&Eacute;')).toBe('É');
+      expect(decodeHtmlEntities('&eacute;')).toBe('é');
+      // Should not map an uppercase entity to a lowercase variant due to case-insensitivity
+      expect(decodeHtmlEntities('&EACUTE;')).toBe('&EACUTE;'); // Invalid/unmapped entity remains untouched
+    });
+
+    it('handles strings with no entities unchanged', () => {
+      expect(decodeHtmlEntities('plain text')).toBe('plain text');
+    });
+
+    it('returns non-string inputs as-is', () => {
+      expect(decodeHtmlEntities(null)).toBe(null);
+      expect(decodeHtmlEntities(undefined)).toBe(undefined);
+      expect(decodeHtmlEntities(42)).toBe(42);
+    });
+
+    it('handles multiple entities in one string', () => {
+      expect(decodeHtmlEntities('6&#8211;12 mins &amp; &#39;crispy&#39;'))
+        .toBe("6\u201312 mins & 'crispy'");
+    });
+  });
+
+  describe('deepCleanHtmlEntities', () => {
+    it('recursively decodes strings inside nested objects', () => {
+      const input = {
+        title: 'Mac &#8211; Cheese',
+        instructions: ['Step 1 &amp; 2', 'Bake at 350&#176;F'],
+        nested: { desc: 'It&#39;s great' }
+      };
+      const result = deepCleanHtmlEntities(input);
+      expect(result.title).toBe('Mac \u2013 Cheese');
+      expect(result.instructions[0]).toBe('Step 1 & 2');
+      expect(result.instructions[1]).toBe('Bake at 350\u00B0F');
+      expect(result.nested.desc).toBe("It's great");
+    });
+
+    it('handles null and undefined gracefully', () => {
+      expect(deepCleanHtmlEntities(null)).toBe(null);
+      expect(deepCleanHtmlEntities(undefined)).toBe(undefined);
+    });
+
+    it('passes numbers and booleans through unchanged', () => {
+      expect(deepCleanHtmlEntities(42)).toBe(42);
+      expect(deepCleanHtmlEntities(true)).toBe(true);
     });
   });
 
@@ -86,6 +165,33 @@ describe('schemaMapper', () => {
       expect(result.stepIngredients[1]).toEqual([0]);
       // Step 3: "...season with salt." -> salt (index 3)
       expect(result.stepIngredients[2]).toEqual([3]);
+    });
+
+    it('decodes HTML entities in raw data during schema mapping', () => {
+      const rawData = {
+        title: 'Coconut Curry Salmon',
+        description: 'A delicious &#8211; and healthy &#8211; salmon recipe.',
+        ingredients: [
+          '1 tbsp olive oil',
+          '2 tsp curry powder'
+        ],
+        instructions: [
+          'Bake for 6&#8211;12 minutes (depends on thickness &#8211; I opt for 8&#8211;10 minutes).',
+          'Season with salt &amp; pepper.'
+        ],
+        source: {
+          name: 'pinchofyum.com',
+          url: 'https://pinchofyum.com/coconut-curry-salmon'
+        }
+      };
+
+      const result = mapToRecifreeSchema(rawData);
+
+      expect(result.description).toBe('A delicious \u2013 and healthy \u2013 salmon recipe.');
+      expect(result.instructions[0]).toBe(
+        'Bake for 6\u201312 minutes (depends on thickness \u2013 I opt for 8\u201310 minutes).'
+      );
+      expect(result.instructions[1]).toBe('Season with salt & pepper.');
     });
   });
 });
