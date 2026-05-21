@@ -36,6 +36,21 @@ describe('schemaMapper', () => {
       expect(decodeHtmlEntities("it&#39;s great")).toBe("it's great");
     });
 
+    it('decodes accented culinary characters and math symbols', () => {
+      expect(decodeHtmlEntities('saut&eacute;')).toBe('sauté');
+      expect(decodeHtmlEntities('flamb&Eacute;')).toBe('flambÉ');
+      expect(decodeHtmlEntities('caf&egrave;')).toBe('cafè');
+      expect(decodeHtmlEntities('8 &times; 8 pan')).toBe('8 × 8 pan');
+      expect(decodeHtmlEntities('1 &divide; 2')).toBe('1 ÷ 2');
+    });
+
+    it('is case-sensitive for named entities', () => {
+      expect(decodeHtmlEntities('&Eacute;')).toBe('É');
+      expect(decodeHtmlEntities('&eacute;')).toBe('é');
+      // Should not map an uppercase entity to a lowercase variant due to case-insensitivity
+      expect(decodeHtmlEntities('&EACUTE;')).toBe('&EACUTE;'); // Invalid/unmapped entity remains untouched
+    });
+
     it('handles strings with no entities unchanged', () => {
       expect(decodeHtmlEntities('plain text')).toBe('plain text');
     });

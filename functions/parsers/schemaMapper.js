@@ -43,8 +43,10 @@ function normalizeTime(timeStr, defaultTime) {
 
 /**
  * Common named HTML entities to their decoded characters.
+ * Case-sensitive mappings.
  */
 const NAMED_ENTITIES = {
+  // Markup & Quotes
   '&amp;': '&',
   '&lt;': '<',
   '&gt;': '>',
@@ -52,6 +54,8 @@ const NAMED_ENTITIES = {
   '&apos;': "'",
   '&#39;': "'",
   '&nbsp;': ' ',
+  
+  // Punctuation & Layout
   '&ndash;': '\u2013',
   '&mdash;': '\u2014',
   '&lsquo;': '\u2018',
@@ -60,10 +64,62 @@ const NAMED_ENTITIES = {
   '&rdquo;': '\u201D',
   '&bull;': '\u2022',
   '&hellip;': '\u2026',
+  
+  // Kitchen/Recipe Units & Math
   '&deg;': '\u00B0',
   '&frac12;': '\u00BD',
   '&frac14;': '\u00BC',
   '&frac34;': '\u00BE',
+  '&times;': '\u00D7', // × (multiplication/dimensions)
+  '&divide;': '\u00F7', // ÷
+  
+  // Common Accented Culinary Characters (Lowercase)
+  '&aacute;': 'á',
+  '&agrave;': 'à',
+  '&acirc;': 'â',
+  '&auml;': 'ä',
+  '&ccedil;': 'ç',
+  '&eacute;': 'é',
+  '&egrave;': 'è',
+  '&ecirc;': 'ê',
+  '&euml;': 'ë',
+  '&iacute;': 'í',
+  '&igrave;': 'ì',
+  '&icirc;': 'î',
+  '&iuml;': 'ï',
+  '&ntilde;': 'ñ',
+  '&oacute;': 'ó',
+  '&ograve;': 'ò',
+  '&ocirc;': 'ô',
+  '&ouml;': 'ö',
+  '&uacute;': 'ú',
+  '&ugrave;': 'ù',
+  '&ucirc;': 'û',
+  '&uuml;': 'ü',
+  
+  // Common Accented Culinary Characters (Uppercase)
+  '&Aacute;': 'Á',
+  '&Agrave;': 'À',
+  '&Acirc;': 'Â',
+  '&Auml;': 'Ä',
+  '&Ccedil;': 'Ç',
+  '&Eacute;': 'É',
+  '&Egrave;': 'È',
+  '&Ecirc;': 'Ê',
+  '&Euml;': 'Ë',
+  '&Iacute;': 'Í',
+  '&Igrave;': 'Ì',
+  '&Icirc;': 'Î',
+  '&Iuml;': 'Ï',
+  '&Ntilde;': 'Ñ',
+  '&Oacute;': 'Ó',
+  '&Ograve;': 'Ò',
+  '&Ocirc;': 'Ô',
+  '&Ouml;': 'Ö',
+  '&Uacute;': 'Ú',
+  '&Ugrave;': 'Ù',
+  '&Ucirc;': 'Û',
+  '&Uuml;': 'Ü'
 };
 
 /**
@@ -93,9 +149,9 @@ function decodeHtmlEntities(str) {
     }
   });
 
-  // 3. Replace common named entities
+  // 3. Replace common named entities (case-sensitive)
   for (const [entity, char] of Object.entries(NAMED_ENTITIES)) {
-    decoded = decoded.replace(new RegExp(entity.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), char);
+    decoded = decoded.replace(new RegExp(entity.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), char);
   }
 
   return decoded;
