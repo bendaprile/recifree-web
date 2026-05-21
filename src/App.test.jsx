@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 import App, { AboutPage, NotFoundPage, PrivacyPolicyPage, DMCAPolicyPage } from './App';
 import { describe, it, expect, vi } from 'vitest';
 
