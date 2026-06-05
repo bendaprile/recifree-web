@@ -1,10 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Recipes: public read, authenticated writes
+    // Recipes: public read, authenticated admin-only writes, delete explicitly disabled
     match /recipes/{recipeId} {
       allow read: if true;
-      allow create, update: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.token.admin == true;
+      allow delete: if false;
     }
 
     // User-specific data (Custom Lists and Saved Recipes)
