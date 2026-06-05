@@ -1,0 +1,119 @@
+/* ExtractionCard.css */
+
+.extraction-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-md);
+  max-width: 600px;
+  margin: 0 auto;
+  transition: all var(--transition-base);
+}
+
+.extraction-card-header {
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.extraction-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.extraction-subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.extraction-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.url-input {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--text-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+  transition: all var(--transition-fast);
+}
+
+.url-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 255, 122, 0), 0.15);
+}
+
+.url-input.input-error {
+  border-color: var(--color-error);
+}
+
+.url-input.input-error:focus {
+  box-shadow: 0 0 0 3px rgba(var(--color-error-rgb, 239, 68, 68), 0.15);
+}
+
+.error-message-box {
+  display: flex;
+  gap: var(--space-2);
+  background-color: rgba(var(--color-error-rgb, 239, 68, 68), 0.05);
+  border: 1px solid rgba(var(--color-error-rgb, 239, 68, 68), 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  align-items: flex-start;
+  text-align: left;
+}
+
+.error-icon {
+  color: var(--color-error);
+  font-weight: var(--font-bold);
+  font-size: var(--text-base);
+  margin-top: 1px;
+}
+
+.error-text {
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  margin: 0;
+  line-height: 1.4;
+  font-weight: var(--font-medium);
+}
+
+.extraction-submit-btn {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  border: none;
+  color: var(--color-surface);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.extraction-submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.extraction-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.extraction-submit-btn:disabled {
+  background-color: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}

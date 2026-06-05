@@ -1,0 +1,193 @@
+/* AddRecipe.css */
+
+.add-recipe-page {
+  min-height: 80vh;
+  padding: var(--space-8) 0 var(--space-16);
+  background-color: var(--color-background);
+}
+
+.add-recipe-container {
+  max-width: 680px;
+  margin: 0 auto;
+  transition: max-width var(--transition-base);
+}
+
+.add-recipe-container.view-edit {
+  max-width: 800px;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+  text-align: center;
+}
+
+.page-subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Extraction View Layout */
+.extraction-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Fallback Pre-fill Suggestion Box */
+.error-fallback-action {
+  margin-top: var(--space-4);
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.fallback-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-4);
+}
+
+.fallback-btn {
+  font-size: var(--text-sm);
+  height: 36px;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.fallback-btn:hover {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+/* Beautiful Monospaced Divider */
+.manual-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--space-10) 0;
+  width: 100%;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.divider-text {
+  padding: 0 var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+}
+
+/* Manual CTA Box */
+.manual-cta-box {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+.manual-cta-box:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border);
+}
+
+.cta-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.cta-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto var(--space-6);
+}
+
+.manual-btn {
+  font-size: var(--text-base);
+  height: 42px;
+  padding: 0 var(--space-8);
+}
+
+/* Loading Layout */
+.loading-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+/* Edit View Layout */
+.edit-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-header {
+  margin-bottom: var(--space-8);
+  text-align: left;
+}
+
+.edit-header .page-title,
+.edit-header .page-subtitle {
+  text-align: left;
+}
+
+.back-link-btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: var(--space-4);
+  transition: color var(--transition-fast);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.back-link-btn:hover {
+  color: var(--color-primary);
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .add-recipe-page {
+    padding: var(--space-4) 0 var(--space-12);
+  }
+
+  .manual-cta-box {
+    padding: var(--space-6);
+  }
+
+  .page-title {
+    font-size: var(--text-2xl);
+  }
+}
