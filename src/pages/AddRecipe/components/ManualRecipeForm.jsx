@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 import './ManualRecipeForm.css';
 
-const DEFAULT_GRADIENTS = [
-  { id: 'apron-green', label: 'Apron Green', value: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' },
-  { id: 'safety-orange', label: 'Safety Orange', value: 'linear-gradient(135deg, #ff7a00 0%, #c2410c 100%)' },
-  { id: 'citrus-yellow', label: 'Citrus Yellow', value: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)' },
-  { id: 'charcoal-slate', label: 'Charcoal Slate', value: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)' }
-];
+
 
 const COMMON_UNITS = ['', 'g', 'kg', 'ml', 'l', 'tbsp', 'tsp', 'cup', 'cups', 'pcs', 'pinch', 'slices', 'can', 'cans', 'pack', 'packs'];
 
@@ -29,12 +24,7 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
   // Instructions as dynamic array of strings
   const [instructions, setInstructions] = useState(['']);
 
-  // Selected graphic gradient theme
-  const [selectedGradient, setSelectedGradient] = useState('apron-green');
-  
-  // Custom image URL option
-  const [customImageUrl, setCustomImageUrl] = useState('');
-  const [useCustomImage, setUseCustomImage] = useState(false);
+
 
   // Tried & True Sign-off
   const [triedAndTrue, setTriedAndTrue] = useState(false);
@@ -80,16 +70,7 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
         setInstructions(initialData.instructions);
       }
 
-      if (initialData.image) {
-        if (initialData.image.startsWith('gradient-') || DEFAULT_GRADIENTS.some(g => g.id === initialData.image)) {
-          const matchedG = initialData.image.replace('gradient-', '');
-          setSelectedGradient(matchedG);
-          setUseCustomImage(false);
-        } else {
-          setCustomImageUrl(initialData.image);
-          setUseCustomImage(true);
-        }
-      }
+
     }
   }, [initialData]);
 
@@ -211,11 +192,7 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
       return;
     }
 
-    // Determine final image field value
-    let imageValue = useCustomImage ? customImageUrl.trim() : `gradient-${selectedGradient}`;
-    if (!imageValue) {
-      imageValue = `gradient-${selectedGradient}`;
-    }
+
 
     // Generate unique ID / slug base
     const slugBase = title
@@ -239,7 +216,7 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
       ingredients: formattedIngredients,
       instructions: formattedInstructions,
       stepIngredients: formattedInstructions.map(() => []), // empty links for manual entries
-      image: imageValue,
+      image: initialData?.image || '',
       triedAndTrue: true,
       source: initialData?.source || {
         name: "Recifree Community",
@@ -483,63 +460,7 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
         </button>
       </div>
 
-      {/* Visual Asset Settings */}
-      <div className="form-section-card">
-        <h3 className="section-title">Recipe Illustration</h3>
 
-        <div className="image-type-selector">
-          <label className="radio-label">
-            <input
-              type="radio"
-              checked={!useCustomImage}
-              onChange={() => setUseCustomImage(false)}
-            />
-            Use Minimalist Gradient Theme
-          </label>
-          <label className="radio-label">
-            <input
-              type="radio"
-              checked={useCustomImage}
-              onChange={() => setUseCustomImage(true)}
-            />
-            Paste Custom Image URL
-          </label>
-        </div>
-
-        {!useCustomImage ? (
-          <div className="gradient-theme-grid">
-            {DEFAULT_GRADIENTS.map(grad => (
-              <button
-                key={grad.id}
-                type="button"
-                className={`gradient-theme-btn ${selectedGradient === grad.id ? 'active' : ''}`}
-                onClick={() => setSelectedGradient(grad.id)}
-              >
-                <div className="gradient-theme-preview" style={{ background: grad.value }}></div>
-                <span className="gradient-theme-label">{grad.label}</span>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="form-group custom-image-field animate-fade-in">
-            <label htmlFor="custom-image-url">Custom Image URL</label>
-            <input
-              id="custom-image-url"
-              type="url"
-              className="text-input"
-              placeholder="e.g. https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
-              value={customImageUrl}
-              onChange={(e) => setCustomImageUrl(e.target.value)}
-            />
-            {customImageUrl && (
-              <div className="custom-image-preview-box">
-                <p className="preview-label">Image Preview:</p>
-                <img src={customImageUrl} alt="Recipe Preview" onError={(e) => {e.target.style.display='none';}} />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
 
       {/* Tried & True Sign-off & Submit block */}
       <div className={`form-section-card tried-true-card ${showSignoffShake ? 'card-shake' : ''}`}>

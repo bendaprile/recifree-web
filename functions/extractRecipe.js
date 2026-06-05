@@ -236,8 +236,14 @@ async function extractRecipeOrchestrator(req, res) {
     const normalizedRecipe = mapToRecifreeSchema(rawRecipeData);
 
     // Trigger AI food photo generation to ensure copyright-free unique image
+    // Clear the original scraped image first to prevent any accidental leakage of copyrighted images
+    const originalImageUrl = normalizedRecipe.image;
+    if (normalizedRecipe.image && !normalizedRecipe.image.includes('firebasestorage.googleapis.com')) {
+      normalizedRecipe.image = '';
+    }
+
     try {
-      if (!normalizedRecipe.image || !normalizedRecipe.image.includes('firebasestorage.googleapis.com')) {
+      if (!normalizedRecipe.image) {
         console.log(`Generating unique AI food photo for "${normalizedRecipe.title}" to avoid copyright scraping...`);
         const prompt = buildImagenPrompt(normalizedRecipe.title, normalizedRecipe.tags);
         const base64Image = await generateAiFoodPhoto(prompt);
@@ -251,6 +257,8 @@ async function extractRecipeOrchestrator(req, res) {
       }
     } catch (imageError) {
       console.error('Graceful fallback: AI image generation failed:', imageError);
+      // Ensure image is empty if generation failed, to avoid showing copyrighted images
+      normalizedRecipe.image = '';
     }
 
     // Attach debugging/monitoring metadata
