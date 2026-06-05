@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Firebase SDK mocks ──────────────────────────────────────────────────────
@@ -48,11 +48,11 @@ describe('AddRecipe Component', () => {
   });
 
   const renderAddRecipe = () => {
-    return render(
-      <BrowserRouter>
-        <AddRecipe />
-      </BrowserRouter>
+    const router = createMemoryRouter(
+      [{ path: '/add', element: <AddRecipe /> }],
+      { initialEntries: ['/add'] }
     );
+    return render(<RouterProvider router={router} />);
   };
 
   it('renders the initial state with ExtractionCard and Manual entry option', () => {
