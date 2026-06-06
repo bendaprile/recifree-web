@@ -65,7 +65,6 @@ function Navbar() {
                     className="user-menu-container"
                     onMouseEnter={() => setIsDropdownOpen(true)}
                     onMouseLeave={() => setIsDropdownOpen(false)}
-                    onFocus={() => setIsDropdownOpen(true)}
                     onBlur={(e) => {
                       if (!e.currentTarget.contains(e.relatedTarget)) {
                         setIsDropdownOpen(false);

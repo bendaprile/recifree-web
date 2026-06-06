@@ -223,11 +223,6 @@
     background-color: var(--color-surface);
     box-shadow: var(--shadow-lg);
     
-    /* Native popover positioning (fallback to fixed/absolute via polyfill if needed) */
-    inset: auto;
-    position-anchor: --user-menu-btn;
-    top: anchor(bottom);
-    right: anchor(right);
     /* Traditional fallback */
     position: absolute;
     top: calc(100% + var(--space-2));
@@ -235,6 +230,16 @@
     
     min-width: 180px;
     z-index: 1000;
+}
+
+@supports (anchor-name: --user-menu-btn) {
+    .user-dropdown {
+        /* Native popover positioning */
+        inset: auto;
+        position-anchor: --user-menu-btn;
+        top: anchor(bottom);
+        right: anchor(right);
+    }
 }
 
 .user-dropdown.open,

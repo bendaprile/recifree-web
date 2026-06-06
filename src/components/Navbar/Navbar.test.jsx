@@ -156,6 +156,38 @@ describe('Navbar Component', () => {
         expect(listLink).toBeInTheDocument();
         expect(listLink).toHaveAttribute('href', '/shopping-list');
     });
+
+    it('toggles dropdown when My Kitchen button is clicked', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
+        renderNavbar();
+
+        const dropdown = screen.getByText('Saved Recipes').closest('.user-dropdown');
+        expect(dropdown).not.toHaveClass('open');
+
+        const kitchenBtn = screen.getByRole('button', { name: /my kitchen/i });
+        fireEvent.click(kitchenBtn);
+        expect(dropdown).toHaveClass('open');
+
+        fireEvent.click(kitchenBtn);
+        expect(dropdown).not.toHaveClass('open');
+    });
+
+    it('toggles dropdown when My Kitchen container is hovered', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
+        renderNavbar();
+
+        const dropdown = screen.getByText('Saved Recipes').closest('.user-dropdown');
+        expect(dropdown).not.toHaveClass('open');
+
+        const container = dropdown.closest('.user-menu-container');
+        
+        fireEvent.mouseEnter(container);
+        expect(dropdown).toHaveClass('open');
+
+        fireEvent.mouseLeave(container);
+        expect(dropdown).not.toHaveClass('open');
+    });
+
     it('renders a loading skeleton when loadingAuth is true', () => {
         useAuth.mockReturnValue(makeAuth({ loadingAuth: true }));
         renderNavbar();

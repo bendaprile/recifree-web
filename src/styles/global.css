@@ -3,8 +3,7 @@
    Minimalist Cookbook Design
    ================================= */
 
-/* Google Fonts Import - Playfair Display for headings, Inter for body */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap');
+/* Google Fonts Import - Moved to index.html for Core Web Vitals optimization */
 
 /* =================================
    CSS Variables (Design Tokens)

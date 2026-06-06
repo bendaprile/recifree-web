@@ -29,11 +29,25 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage', 'firebase/functions']
+        }
+      }
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
     css: true,
+    pool: 'threads',
+    maxWorkers: 1,
+    fileParallelism: false,
+    testTimeout: 30000,
     coverage: {
       exclude: ['**/*.css', '**/*.json', 'src/setupTests.js']
     }

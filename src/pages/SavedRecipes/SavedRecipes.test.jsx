@@ -264,20 +264,14 @@ describe('SavedRecipes Component', () => {
   });
 
   it('resets activeList if it no longer exists', async () => {
-    const { rerender } = render(
-      <MemoryRouter>
-        <SavedRecipes />
-      </MemoryRouter>
-    );
-
-    // Initial state: custom list exists and is active
+    // Initial state: custom list exists in context
     useSavedRecipes.mockReturnValue({ 
       ...mockContext, 
       savedRecipes: [{ recipeId: 'r1', listNames: ['Deleted List'] }],
       lists: ['Deleted List']
     });
 
-    rerender(
+    const { rerender } = render(
       <MemoryRouter>
         <SavedRecipes />
       </MemoryRouter>
