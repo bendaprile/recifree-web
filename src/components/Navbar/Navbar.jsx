@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../LoginModal/LoginModal';
 
@@ -10,6 +10,29 @@ function Navbar() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { currentUser, logout, loadingAuth } = useAuth();
+  
+  const location = useLocation();
+  const dropdownRef = useRef(null);
+
+  // Close dropdown and mobile menu when navigating to another route
+  useEffect(() => {
+    setIsDropdownOpen(false);
+    setIsMenuOpen(false);
+  }, [location]);
+
+  // Close dropdown when clicking outside of the user menu container
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -62,6 +85,7 @@ function Navbar() {
                     <NavLink to="/add" className={({ isActive }) => isActive ? 'nav-link active add-recipe-btn' : 'nav-link add-recipe-btn'} onClick={closeMenu}>+ Add Recipe</NavLink>
                   </li>
                   <li 
+                    ref={dropdownRef}
                     className="user-menu-container"
                     onMouseEnter={() => setIsDropdownOpen(true)}
                     onMouseLeave={() => setIsDropdownOpen(false)}
