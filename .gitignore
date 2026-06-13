@@ -38,6 +38,7 @@ functions/index.html
 # Firebase & Environment
 .env
 .env.*
+.env 2.development
 !.env.example
 .firebase/
 emulator-data/
