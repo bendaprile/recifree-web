@@ -33,24 +33,24 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
   // Load initial data (e.g. from extraction)
   useEffect(() => {
     if (initialData) {
-      setTitle(initialData.title || '');
-      setDescription(initialData.description || '');
-      setPrepTime(initialData.prepTime || '');
-      setCookTime(initialData.cookTime || '');
-      setTotalTime(initialData.totalTime || '');
-      setServings(initialData.servings || '');
-      setDifficulty(initialData.difficulty || 'Medium');
+      setTitle(initialData.title ? String(initialData.title) : '');
+      setDescription(initialData.description ? String(initialData.description) : '');
+      setPrepTime(initialData.prepTime ? String(initialData.prepTime) : '');
+      setCookTime(initialData.cookTime ? String(initialData.cookTime) : '');
+      setTotalTime(initialData.totalTime ? String(initialData.totalTime) : '');
+      setServings(initialData.servings ? String(initialData.servings) : '');
+      setDifficulty(initialData.difficulty ? String(initialData.difficulty) : 'Medium');
       setTags(initialData.tags || []);
       
       if (initialData.ingredients && initialData.ingredients.length > 0) {
         // Map ingredients to sections
         if (initialData.ingredients[0].items) {
           setIngredientSections(initialData.ingredients.map(sec => ({
-            title: sec.title || '',
+            title: sec.title ? String(sec.title) : '',
             items: sec.items.map(item => ({
-              amount: item.amount || '',
-              unit: item.unit || '',
-              item: item.item || ''
+              amount: item.amount != null ? String(item.amount) : '',
+              unit: item.unit ? String(item.unit) : '',
+              item: item.item ? String(item.item) : ''
             }))
           })));
         } else {
@@ -58,16 +58,16 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
           setIngredientSections([{
             title: '',
             items: initialData.ingredients.map(item => ({
-              amount: item.amount || '',
-              unit: item.unit || '',
-              item: item.item || ''
+              amount: item.amount != null ? String(item.amount) : '',
+              unit: item.unit ? String(item.unit) : '',
+              item: item.item ? String(item.item) : ''
             }))
           }]);
         }
       }
 
       if (initialData.instructions && initialData.instructions.length > 0) {
-        setInstructions(initialData.instructions);
+        setInstructions(initialData.instructions.map(step => String(step)));
       }
 
 
