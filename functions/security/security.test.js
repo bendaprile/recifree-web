@@ -40,15 +40,17 @@ Object.defineProperty(admin, 'firestore', {
 
 const mockGenerateContent = vi.fn();
 
+const mockGetGenerativeModel = vi.fn(() => ({
+  generateContent: mockGenerateContent
+}));
+
 // Stub @google/generative-ai class
 generativeAi.GoogleGenerativeAI = class MockGoogleGenerativeAI {
   constructor(apiKey) {
     this.apiKey = apiKey;
   }
-  getGenerativeModel() {
-    return {
-      generateContent: mockGenerateContent
-    };
+  getGenerativeModel(args) {
+    return mockGetGenerativeModel(args);
   }
 };
 
@@ -232,8 +234,11 @@ describe('Prompt Injection Defense - extractWithLlm', () => {
     expect(mockGenerateContent).toHaveBeenCalled();
     const callArgs = mockGenerateContent.mock.calls[0][0];
     
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
+    const modelArgs = mockGetGenerativeModel.mock.calls[0][0];
+    
     // Inspect system instruction and user prompt
-    const systemInstruction = callArgs.systemInstruction;
+    const systemInstruction = modelArgs.systemInstruction;
     const prompt = callArgs.contents[0].parts[0].text;
 
     // Verify systemInstruction contains strict warning against prompt injection
