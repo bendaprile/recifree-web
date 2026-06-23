@@ -123,6 +123,19 @@ describe('extractionCache', () => {
         expect(result._extractionMeta.cacheHit).toBe(true);
       });
 
+      it('parses stringified stepIngredients on cache hit', async () => {
+        mockDocRef.get.mockResolvedValueOnce({
+          exists: true,
+          data: () => ({
+            ...mockRecipe,
+            stepIngredients: '[[0,1],[2]]'
+          })
+        });
+
+        const result = await checkCache('some-hash');
+        expect(result.stepIngredients).toEqual([[0, 1], [2]]);
+      });
+
       it('preserves existing _extractionMeta when adding cacheHit', async () => {
         mockDocRef.get.mockResolvedValueOnce({
           exists: true,
@@ -157,6 +170,20 @@ describe('extractionCache', () => {
 
         await saveToCache('some-hash', mockRecipe);
         expect(mockDocRef.set).toHaveBeenCalledWith(mockRecipe);
+      });
+
+      it('stringifies stepIngredients array before saving to Firestore', async () => {
+        mockDocRef.set.mockResolvedValueOnce();
+        const recipeWithSteps = {
+          ...mockRecipe,
+          stepIngredients: [[0, 1], [2]]
+        };
+
+        await saveToCache('some-hash', recipeWithSteps);
+        expect(mockDocRef.set).toHaveBeenCalledWith({
+          ...mockRecipe,
+          stepIngredients: '[[0,1],[2]]'
+        });
       });
 
       it('handles Firestore save error gracefully without throwing', async () => {

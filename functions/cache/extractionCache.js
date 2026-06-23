@@ -105,6 +105,15 @@ async function checkCache(urlHash) {
           data._extractionMeta = {};
         }
         data._extractionMeta.cacheHit = true;
+
+        if (data.stepIngredients && typeof data.stepIngredients === 'string') {
+          try {
+            data.stepIngredients = JSON.parse(data.stepIngredients);
+          } catch (e) {
+            // Keep as string if parsing fails
+          }
+        }
+
         return data;
       }
     }
@@ -128,7 +137,13 @@ async function saveToCache(urlHash, recipeData) {
   try {
     const db = admin.firestore();
     const docRef = db.collection('extraction_cache').doc(urlHash);
-    await docRef.set(recipeData);
+
+    const payload = { ...recipeData };
+    if (Array.isArray(payload.stepIngredients)) {
+      payload.stepIngredients = JSON.stringify(payload.stepIngredients);
+    }
+
+    await docRef.set(payload);
   } catch (error) {
     console.error('Error saving to extraction cache:', error);
   }

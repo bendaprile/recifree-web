@@ -87,7 +87,7 @@ describe('imagenService', () => {
 
       expect(result).toBe('iVBORw0KGgoAAAANS...');
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=test-api-key',
+        'https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=test-api-key',
         expect.objectContaining({
           method: 'POST',
           headers: {

@@ -9,6 +9,7 @@
   "servings": 1,
   "difficulty": "Easy",
   "tags": [
+    "Tried & True",
     "Mexican",
     "Seasoning",
     "Condiment",
@@ -61,7 +62,16 @@
     "Use the seasoning immediately in your recipe or store it in an airtight container for up to one year. Use approximately 2 tablespoons of this mix per one pound of ground beef."
   ],
   "stepIngredients": [
-    [0, 1, 2, 3, 4, 5, 6, 7],
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
     []
   ],
   "source": {
@@ -73,5 +83,6 @@
     "protein": "2g",
     "carbs": "8g",
     "fat": "1g"
-  }
+  },
+  "triedAndTrue": true
 }

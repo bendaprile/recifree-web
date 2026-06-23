@@ -9,6 +9,7 @@
   "servings": 12,
   "difficulty": "Easy",
   "tags": [
+    "Tried & True",
     "American",
     "Condiment",
     "Gluten-Free",
@@ -66,7 +67,17 @@
     "Keep the mixture in an airtight container for up to one year."
   ],
   "stepIngredients": [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
     []
   ],
   "source": {
@@ -78,5 +89,6 @@
     "protein": "1g",
     "carbs": "3g",
     "fat": "0g"
-  }
+  },
+  "triedAndTrue": true
 }

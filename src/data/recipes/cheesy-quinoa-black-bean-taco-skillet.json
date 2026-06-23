@@ -9,6 +9,7 @@
   "servings": 6,
   "difficulty": "Easy",
   "tags": [
+    "Tried & True",
     "Mexican",
     "Dinner",
     "Vegetarian",
@@ -16,23 +17,91 @@
     "High Protein"
   ],
   "ingredients": [
-    { "amount": "1 1/4", "unit": "cup", "item": "dry quinoa" },
-    { "amount": "2", "unit": "cup", "item": "water" },
-    { "amount": "2", "unit": "tbsp", "item": "olive oil" },
-    { "amount": "1", "unit": "medium", "item": "yellow onion, diced" },
-    { "amount": "2", "unit": "medium", "item": "bell peppers (red and yellow), diced" },
-    { "amount": "1", "unit": "small", "item": "jalapeno, seeded and diced" },
-    { "amount": "3", "unit": "cloves", "item": "garlic, minced" },
-    { "amount": "14", "unit": "oz", "item": "canned diced tomatoes (with juices)" },
-    { "amount": "19", "unit": "oz", "item": "canned black beans, drained and rinsed" },
-    { "amount": "1/2", "unit": "tbsp", "item": "chili powder" },
-    { "amount": "1", "unit": "tsp", "item": "cumin" },
-    { "amount": "1", "unit": "tsp", "item": "garlic powder" },
-    { "amount": "1", "unit": "tsp", "item": "onion powder" },
-    { "amount": "1", "unit": "tsp", "item": "paprika" },
-    { "amount": "1/2", "unit": "tsp", "item": "salt" },
-    { "amount": "1/4", "unit": "tsp", "item": "black pepper" },
-    { "amount": "1", "unit": "cup", "item": "shredded cheese (cheddar or Tex-Mex)" }
+    {
+      "amount": "1 1/4",
+      "unit": "cup",
+      "item": "dry quinoa"
+    },
+    {
+      "amount": "2",
+      "unit": "cup",
+      "item": "water"
+    },
+    {
+      "amount": "2",
+      "unit": "tbsp",
+      "item": "olive oil"
+    },
+    {
+      "amount": "1",
+      "unit": "medium",
+      "item": "yellow onion, diced"
+    },
+    {
+      "amount": "2",
+      "unit": "medium",
+      "item": "bell peppers (red and yellow), diced"
+    },
+    {
+      "amount": "1",
+      "unit": "small",
+      "item": "jalapeno, seeded and diced"
+    },
+    {
+      "amount": "3",
+      "unit": "cloves",
+      "item": "garlic, minced"
+    },
+    {
+      "amount": "14",
+      "unit": "oz",
+      "item": "canned diced tomatoes (with juices)"
+    },
+    {
+      "amount": "19",
+      "unit": "oz",
+      "item": "canned black beans, drained and rinsed"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tbsp",
+      "item": "chili powder"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "cumin"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "garlic powder"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "onion powder"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "paprika"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tsp",
+      "item": "salt"
+    },
+    {
+      "amount": "1/4",
+      "unit": "tsp",
+      "item": "black pepper"
+    },
+    {
+      "amount": "1",
+      "unit": "cup",
+      "item": "shredded cheese (cheddar or Tex-Mex)"
+    }
   ],
   "instructions": [
     "Boil water in a saucepan, add quinoa, then cover and simmer for 15 minutes until liquid is absorbed. Fluff with a fork.",
@@ -43,11 +112,34 @@
     "Serve immediately with optional toppings like avocado, cilantro, or a dollop of Greek yogurt."
   ],
   "stepIngredients": [
-    [0, 1],
-    [2, 3],
-    [4, 5, 6],
-    [7, 8, 9, 10, 11, 12, 13, 14, 15],
-    [0, 16],
+    [
+      0,
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6
+    ],
+    [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    [
+      0,
+      16
+    ],
     []
   ],
   "source": {
@@ -59,5 +151,6 @@
     "protein": "14g",
     "carbs": "55g",
     "fat": "12g"
-  }
+  },
+  "triedAndTrue": true
 }
