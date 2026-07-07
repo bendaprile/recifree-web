@@ -1,0 +1,116 @@
+{
+  "id": "steak-bowl",
+  "title": "Steak Bowl",
+  "description": "A quick, flavorful, and customizable steak bowl featuring marinated flank or sirloin steak served over a bed of warm rice with black beans, avocado, and fresh toppings.",
+  "image": "/images/recipes/steak-bowl.png",
+  "prepTime": "15 mins",
+  "cookTime": "10 mins",
+  "totalTime": "25 mins",
+  "servings": 4,
+  "difficulty": "Easy",
+  "tags": [
+    "Tried & True",
+    "American",
+    "Dinner",
+    "Beef",
+    "Healthy",
+    "Gluten-Free"
+  ],
+  "ingredients": [
+    {
+      "title": "Steak & Marinade",
+      "items": [
+        {
+          "amount": "1.5",
+          "unit": "lb",
+          "item": "flank or sirloin steak"
+        },
+        {
+          "amount": "1/4",
+          "unit": "cup",
+          "item": "olive oil"
+        },
+        {
+          "amount": "1/4",
+          "unit": "cup",
+          "item": "soy sauce (or tamari for gluten-free)"
+        },
+        {
+          "amount": "2",
+          "unit": "tbsp",
+          "item": "lime juice"
+        },
+        {
+          "amount": "3",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "amount": "1",
+          "unit": "tsp",
+          "item": "cumin"
+        },
+        {
+          "amount": "1/2",
+          "unit": "tsp",
+          "item": "chili powder"
+        }
+      ]
+    },
+    {
+      "title": "Bowl Base & Toppings",
+      "items": [
+        {
+          "amount": "4",
+          "unit": "cup",
+          "item": "cooked rice (or quinoa)"
+        },
+        {
+          "amount": "1",
+          "unit": "cup",
+          "item": "corn salsa"
+        },
+        {
+          "amount": "1",
+          "unit": "cup",
+          "item": "black beans, rinsed and drained"
+        },
+        {
+          "amount": "1",
+          "unit": "",
+          "item": "avocado, sliced or diced"
+        },
+        {
+          "amount": "1",
+          "unit": "cup",
+          "item": "cherry tomatoes, halved"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "In a medium bowl, whisk together the olive oil, soy sauce, lime juice, minced garlic, cumin, and chili powder.",
+    "Place the steak in a shallow dish or a zip-top bag and pour the marinade over it. Let it marinate for at least 15 minutes at room temperature.",
+    "Heat a large skillet or grill pan over medium-high heat. Cook the steak for 4 to 6 minutes per side for medium-rare.",
+    "Transfer the steak to a cutting board and let it rest for 10 minutes before slicing thinly against the grain.",
+    "To assemble, divide the rice among four bowls. Top with the sliced steak, corn salsa, black beans, avocado, and cherry tomatoes. Serve immediately."
+  ],
+  "stepIngredients": [
+    [1, 2, 3, 4, 5, 6],
+    [0],
+    [0],
+    [0],
+    [0, 7, 8, 9, 10, 11]
+  ],
+  "source": {
+    "name": "Daisy Meals",
+    "url": "https://daisymeals.com/steak-bowl-2/"
+  },
+  "nutrition": {
+    "calories": 580,
+    "protein": "38g",
+    "carbs": "64g",
+    "fat": "28g"
+  },
+  "triedAndTrue": true
+}
