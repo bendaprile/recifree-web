@@ -1,0 +1,86 @@
+{
+  "id": "mexican-stuffed-bell-peppers-recipe",
+  "title": "Mexican Stuffed Bell Peppers",
+  "description": "Colorful bell pepper halves stuffed with seasoned ground turkey, black beans, corn, rice, and salsa, topped with melted Mexican cheese.",
+  "image": "/images/recipes/mexican-stuffed-bell-peppers-recipe.png",
+  "prepTime": "20 mins",
+  "cookTime": "45 mins",
+  "totalTime": "1 hr 5 mins",
+  "servings": 8,
+  "difficulty": "Easy",
+  "tags": [
+    "Mexican",
+    "Dinner",
+    "Turkey",
+    "Tried & True"
+  ],
+  "ingredients": [
+    {
+      "amount": "4",
+      "unit": "",
+      "item": "Large red bell peppers"
+    },
+    {
+      "amount": "1",
+      "unit": "lb",
+      "item": "Ground turkey"
+    },
+    {
+      "amount": "2",
+      "unit": "cups",
+      "item": "Cooked rice"
+    },
+    {
+      "amount": "1/2",
+      "unit": "cup",
+      "item": "Frozen corn, thawed"
+    },
+    {
+      "amount": "10",
+      "unit": "oz",
+      "item": "Black beans, rinsed and drained"
+    },
+    {
+      "amount": "1",
+      "unit": "cup",
+      "item": "Salsa"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "Taco seasoning"
+    },
+    {
+      "amount": "2",
+      "unit": "cups",
+      "item": "Mexican cheese blend, divided"
+    }
+  ],
+  "instructions": [
+    "Preheat oven to 350°F (175°C). Rinse the black beans and thaw the corn.",
+    "In a large bowl, combine the ground turkey, cooked rice, thawed corn, black beans, salsa, taco seasoning, and 1 cup of the Mexican cheese.",
+    "Cut the bell peppers in half lengthwise, removing the seeds and membranes. Place the halves in a baking dish.",
+    "Spoon the turkey and rice mixture into each pepper half.",
+    "Bake for 30 minutes, then remove from the oven and sprinkle the remaining 1 cup of Mexican cheese over the tops.",
+    "Bake for an additional 15 minutes until the cheese is melted and bubbly. Serve hot."
+  ],
+  "stepIngredients": [
+    [3, 4],
+    [1, 2, 3, 4, 5, 6, { "id": 7, "amount": "1", "unit": "cup" }],
+    [0],
+    [0],
+    [{ "id": 7, "amount": "1", "unit": "cup" }],
+    []
+  ],
+  "source": {
+    "name": "Mom's Dish",
+    "url": "https://momsdish.com/recipe/mexican-stuffed-bell-peppers-recipe"
+  },
+  "nutrition": {
+    "calories": 286,
+    "protein": "25g",
+    "carbs": "26g",
+    "fat": "10g"
+  },
+  "triedAndTrue": true
+}
