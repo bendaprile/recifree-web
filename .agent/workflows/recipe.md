@@ -20,8 +20,8 @@ This document outlines the workflow for adding new recipes to Recifree using an 
 6.  **Generate Image**:
     *   Use the `generate_image` tool to create a high-quality, 4k food photography shot of the dish.
     *   Prompt Guidelines: "A delicious, high-quality food photography shot of [Recipe Title]. [Visual Description of Ingredients/Colors]. Professional food styling, 4k resolution."
-    *   Save the image to `public/images/recipes/` ensuring the filename matches the JSON ID (e.g. `[id].png`).
-    *   Update the `image` field in the JSON to point to `/images/recipes/[id].png`.
+    *   Save the image to `public/images/recipes/` ensuring the filename matches the JSON ID with the correct file extension matching the generated image's format (e.g., `[id].jpg` if the generated file is JPEG/JFIF, or `[id].png` if it is a PNG).
+    *   Update the `image` field in the JSON to point to `/images/recipes/[id].[extension]`.
 
 ---
 
