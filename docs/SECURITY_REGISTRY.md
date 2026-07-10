@@ -10,12 +10,12 @@
 | Severity | Open | In Progress | Fixed | Dismissed |
 |----------|------|-------------|-------|-----------|
 | 🔴 Critical | 0 | 0 | 2 | 0 |
-| 🟡 High | 2 | 0 | 10 | 0 |
-| 🟠 Moderate | 3 | 0 | 8 | 0 |
-| 🟢 Low | 0 | 0 | 6 | 0 |
+| 🟡 High | 0 | 0 | 12 | 0 |
+| 🟠 Moderate | 0 | 0 | 11 | 0 |
+| 🟢 Low | 0 | 0 | 7 | 0 |
 | ℹ️ Info | 0 | 0 | 4 | 0 |
 
-*Last audit run: 2026-06-05*
+*Last audit run: 2026-06-06*
 
 > **Note on scope**: The majority of vulnerabilities below are in `devDependencies` (build tools, Firebase emulator toolchain). They do not ship to the production browser bundle. However, they can pose a risk during CI/CD, local development, or build-time attacks and are tracked here for completeness. Production-facing vulnerabilities are explicitly noted.
 
@@ -87,15 +87,15 @@
 
 ### [VULN-004] undici HTTP Request Smuggling & Multiple High CVEs
 - **ID**: VULN-004
-- **Status**: `open`
+- **Status**: `fixed`
 - **Severity**: `high`
 - **Category**: `npm-dependency`
 - **Discovered**: 2026-05-19
-- **Fixed / Dismissed**: —
+- **Fixed / Dismissed**: 2026-06-06
 - **PR**: —
 - **Affected**: `undici` (transitive via `firebase` SDK — affects both client and functions)
 - **Description**: Multiple high-severity CVEs in `undici`: HTTP request/response smuggling, unbounded decompression chain (resource exhaustion), 64-bit WebSocket length overflow crashing client, CRLF injection via `upgrade` option, and unbounded memory in WebSocket permessage-deflate. Since `undici` is pulled in by the Firebase JS SDK (`@firebase/auth`, `@firebase/firestore`, etc.), this potentially affects the **production client bundle**.
-- **Fix Applied**: —
+- **Fix Applied**: Overrode undici version in package.json to ^6.24.0 (a safe, patched version).
 - **Dismissed Reason**: —
 
 ### [VULN-005] minimatch ReDoS — Multiple Patterns
@@ -152,15 +152,15 @@
 
 ### [VULN-009] node-tar Path Traversal & Symlink Poisoning (6 CVEs)
 - **ID**: VULN-009
-- **Status**: `open`
+- **Status**: `fixed`
 - **Severity**: `high`
 - **Category**: `npm-dependency`
 - **Discovered**: 2026-05-19
-- **Fixed / Dismissed**: —
+- **Fixed / Dismissed**: 2026-06-06
 - **PR**: —
 - **Affected**: `tar` (transitive via `firebase-tools` — devDependency)
 - **Description**: Six CVEs in `node-tar` covering hardlink path traversal, symlink poisoning, arbitrary file creation/overwrite, and a race condition via Unicode ligature collisions on macOS APFS. Affects Firebase CLI tools used locally and in CI.
-- **Fix Applied**: —
+- **Fix Applied**: Upgraded firebase-tools to v15.19.1 which uses a non-vulnerable version of tar.
 - **Dismissed Reason**: —
 
 ### [VULN-010] fast-uri Path Traversal & Host Confusion
@@ -225,15 +225,15 @@
 
 ### [VULN-012] brace-expansion Zero-Step Sequence & Large Range DoS
 - **ID**: VULN-012
-- **Status**: `open`
+- **Status**: `fixed`
 - **Severity**: `moderate`
 - **Category**: `npm-dependency`
 - **Discovered**: 2026-05-19
-- **Fixed / Dismissed**: —
+- **Fixed / Dismissed**: 2026-06-06
 - **PR**: —
 - **Affected**: `brace-expansion` (devDependency — build toolchain)
 - **Description**: Zero-step sequence causes process hang and memory exhaustion; large numeric range defeats documented `max` DoS protection. Build toolchain only.
-- **Fix Applied**: —
+- **Fix Applied**: Upgraded brace-expansion to v1.1.15 via npm audit fix.
 - **Dismissed Reason**: —
 
 ### [VULN-013] ajv ReDoS via $data Option
@@ -303,15 +303,15 @@
 
 ### [VULN-018] uuid Missing Buffer Bounds Check
 - **ID**: VULN-018
-- **Status**: `open`
+- **Status**: `fixed`
 - **Severity**: `moderate`
 - **Category**: `npm-dependency`
 - **Discovered**: 2026-05-19
-- **Fixed / Dismissed**: —
+- **Fixed / Dismissed**: 2026-06-06
 - **PR**: —
 - **Affected**: `uuid` (transitive dependency)
 - **Description**: Missing buffer bounds check in UUID v3/v5/v6 when `buf` is provided. Low exploitability in Recifree's context since UUIDs are generated server-side.
-- **Fix Applied**: —
+- **Fix Applied**: Overrode uuid version in package.json to ^11.1.1 (a safe, patched version).
 - **Dismissed Reason**: —
 
 ### [VULN-019] ws Uninitialized Memory Disclosure
@@ -329,15 +329,15 @@
 
 ### [VULN-020] undici (Firebase SDK) — Moderate CVEs
 - **ID**: VULN-020
-- **Status**: `open`
+- **Status**: `fixed`
 - **Severity**: `moderate`
 - **Category**: `npm-dependency`
 - **Discovered**: 2026-05-19
-- **Fixed / Dismissed**: —
+- **Fixed / Dismissed**: 2026-06-06
 - **PR**: —
 - **Affected**: `@firebase/auth`, `@firebase/firestore`, `@firebase/storage`, `@firebase/functions` (production client bundle)
 - **Description**: The Firebase JS SDK pulls in `undici` which has moderate vulnerabilities (unbounded WebSocket memory, invalid `server_max_window_bits` validation). While likely not directly exploitable in a browser context (undici is a Node.js HTTP client), these are tracked until the Firebase SDK ships an updated dependency.
-- **Fix Applied**: —
+- **Fix Applied**: Overrode undici version in package.json to ^6.24.0 (a safe, patched version).
 - **Dismissed Reason**: —
 
 ### [VULN-034] qs/express/body-parser DoS
@@ -450,6 +450,19 @@
 - **Affected**: `.env.development`
 - **Description**: Environment configuration file containing development API keys was accidentally committed to the git repository. This can lead to key leakage if the repository is made public.
 - **Fix Applied**: Untracked `.env.development` from the git index via `git rm --cached`.
+- **Dismissed Reason**: —
+
+### [VULN-036] Committed Environment File .env 2.development
+- **ID**: VULN-036
+- **Status**: `fixed`
+- **Severity**: `low`
+- **Category**: `env-exposure`
+- **Discovered**: 2026-06-06
+- **Fixed / Dismissed**: 2026-06-06
+- **PR**: —
+- **Affected**: `.env 2.development`
+- **Description**: Environment configuration file containing development configuration details was accidentally committed to the git repository.
+- **Fix Applied**: Untracked `.env 2.development` from the git index via `git rm --cached` and ignored it in `.gitignore`.
 - **Dismissed Reason**: —
 
 <!-- LOW_END -->
