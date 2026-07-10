@@ -11,6 +11,7 @@
 import { collection, getDocs, query, where, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import staticRecipes from '../data/recipes';
+import { mapStepsToIngredients } from './stepIngredientMapper';
 
 /**
  * Helper to wrap a promise with a timeout.
@@ -129,9 +130,26 @@ export async function addRecipe(recipeData) {
   const baseSlug = recipeData.id || recipeData.slug;
   const uniqueSlug = await generateUniqueSlug(baseSlug);
 
+  const payload = { ...recipeData };
+
+  // Generate stepIngredients if they are missing or empty
+  const hasExistingMapping = payload.stepIngredients && 
+    payload.stepIngredients.length > 0 && 
+    payload.stepIngredients.some(step => step && step.length > 0);
+
+  if (!hasExistingMapping && payload.instructions && payload.ingredients) {
+    // Flatten ingredient sections if sectioned, otherwise use directly
+    let flatIngredients = [];
+    if (payload.ingredients[0]?.items) {
+      flatIngredients = payload.ingredients.flatMap(section => section.items);
+    } else {
+      flatIngredients = payload.ingredients;
+    }
+    payload.stepIngredients = mapStepsToIngredients(payload.instructions, flatIngredients);
+  }
+
   // Firestore does not support nested arrays.
   // We centralize the stringification here to ensure consistency.
-  const payload = { ...recipeData };
   if (Array.isArray(payload.stepIngredients)) {
     payload.stepIngredients = JSON.stringify(payload.stepIngredients);
   }

@@ -214,6 +214,64 @@ describe('addRecipe', () => {
     );
   });
 
+  it('automatically maps stepIngredients when they are empty', async () => {
+    firestoreModule.addDoc.mockResolvedValue({ id: 'doc-id' });
+    firestoreModule.getDocs.mockResolvedValue(makeSnapshot([]));
+
+    const recipeData = {
+      title: 'Pasta',
+      id: 'pasta',
+      ingredients: [
+        { item: 'olive oil' },
+        { item: 'garlic' }
+      ],
+      instructions: [
+        'Heat olive oil in a pan.',
+        'Add the garlic.'
+      ],
+      stepIngredients: [[], []]
+    };
+    await addRecipe(recipeData);
+
+    expect(firestoreModule.addDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        stepIngredients: JSON.stringify([[0], [1]])
+      })
+    );
+  });
+
+  it('automatically maps stepIngredients with sectioned ingredients', async () => {
+    firestoreModule.addDoc.mockResolvedValue({ id: 'doc-id' });
+    firestoreModule.getDocs.mockResolvedValue(makeSnapshot([]));
+
+    const recipeData = {
+      title: 'Pasta',
+      id: 'pasta',
+      ingredients: [
+        {
+          title: 'Sauce',
+          items: [
+            { item: 'olive oil' },
+            { item: 'garlic' }
+          ]
+        }
+      ],
+      instructions: [
+        'Heat olive oil in a pan.',
+        'Add the garlic.'
+      ]
+    };
+    await addRecipe(recipeData);
+
+    expect(firestoreModule.addDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        stepIngredients: JSON.stringify([[0], [1]])
+      })
+    );
+  });
+
   it('throws an error if Firestore addition fails', async () => {
     firestoreModule.addDoc.mockRejectedValue(new Error('Firestore error'));
     firestoreModule.getDocs.mockResolvedValue(makeSnapshot([]));
