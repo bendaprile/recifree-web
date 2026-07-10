@@ -43,6 +43,7 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons.
 - **Dynamic Portion Scaling & Computation:** AI-powered serving size recalculation and automatic metric/imperial unit conversions.
 - **Print-Friendly View:** Dedicated CSS to hide everything except the recipe title, ingredients, and instructions when users print physically.
+- **Verified Recipe Ratings & Reviews:** Implement a community-driven rating (1–5 stars) and commenting system. To combat the "fake review" epidemic common on other food blogs, restrict submissions to authenticated, email-verified users, and display aggregate scores and review histories transparently.
 
 ## Phase 5: Contextual Commerce (Monetization V1)
 *Non-intrusive revenue generation based on high-intent grocery actions.*

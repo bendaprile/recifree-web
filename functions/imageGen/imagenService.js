@@ -18,18 +18,18 @@ function buildImagenPrompt(recipeTitle, tags = []) {
 }
 
 /**
- * Calls the Google Gemini Imagen API to generate a food photo.
+ * Calls the Google Gemini API to generate a food photo.
  * @param {string} prompt
  * @returns {Promise<string|null>} Base64-encoded image string or null if failed
  */
 async function generateAiFoodPhoto(prompt) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn('Imagen API call skipped: GEMINI_API_KEY environment variable is missing.');
+    console.warn('Gemini Image API call skipped: GEMINI_API_KEY environment variable is missing.');
     return null;
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent?key=${apiKey}`;
 
   try {
     const response = await fetch(url, {
@@ -38,33 +38,46 @@ async function generateAiFoodPhoto(prompt) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        instances: [
+        contents: [
           {
-            prompt: prompt,
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
           },
         ],
-        parameters: {
-          sampleCount: 1,
+        generationConfig: {
+          responseModalities: ['IMAGE'],
         },
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.warn(`Imagen API error response (status ${response.status}): ${errorText}`);
+      console.warn(`Gemini Image API error response (status ${response.status}): ${errorText}`);
       return null;
     }
 
     const data = await response.json();
-    const base64Image = data?.predictions?.[0]?.bytesBase64Encoded;
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    let base64Image = null;
+    
+    for (const part of parts) {
+      if (part.inlineData && part.inlineData.data) {
+        base64Image = part.inlineData.data;
+        break;
+      }
+    }
+
     if (!base64Image) {
-      console.warn('Imagen API returned no base64 image data in predictions.');
+      console.warn('Gemini Image API returned no base64 image data in candidate parts.');
       return null;
     }
 
     return base64Image;
   } catch (error) {
-    console.error('Graceful fallback triggered: Imagen API call failed:', error.message);
+    console.error('Graceful fallback triggered: Gemini Image API call failed:', error.message);
     return null;
   }
 }

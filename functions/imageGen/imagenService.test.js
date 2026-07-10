@@ -70,13 +70,22 @@ describe('imagenService', () => {
   });
 
   describe('generateAiFoodPhoto', () => {
-    it('returns base64 image string on successful Imagen API call', async () => {
+    it('returns base64 image string on successful Gemini Image API call', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          predictions: [
+          candidates: [
             {
-              bytesBase64Encoded: 'iVBORw0KGgoAAAANS...'
+              content: {
+                parts: [
+                  {
+                    inlineData: {
+                      mimeType: 'image/png',
+                      data: 'iVBORw0KGgoAAAANS...'
+                    }
+                  }
+                ]
+              }
             }
           ]
         })
@@ -87,21 +96,31 @@ describe('imagenService', () => {
 
       expect(result).toBe('iVBORw0KGgoAAAANS...');
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=test-api-key',
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent?key=test-api-key',
         expect.objectContaining({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            instances: [{ prompt }],
-            parameters: { sampleCount: 1 }
+            contents: [
+              {
+                parts: [
+                  {
+                    text: prompt,
+                  },
+                ],
+              },
+            ],
+            generationConfig: {
+              responseModalities: ['IMAGE'],
+            },
           })
         })
       );
     });
 
-    it('returns null and logs warning if Imagen API fails', async () => {
+    it('returns null and logs warning if Gemini Image API fails', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 400,
@@ -112,11 +131,17 @@ describe('imagenService', () => {
       expect(result).toBeNull();
     });
 
-    it('returns null and logs warning if no base64 string is returned in predictions', async () => {
+    it('returns null and logs warning if no base64 string is returned in candidate parts', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          predictions: []
+          candidates: [
+            {
+              content: {
+                parts: []
+              }
+            }
+          ]
         })
       });
 
