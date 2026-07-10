@@ -24,7 +24,8 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
   // Instructions as dynamic array of strings
   const [instructions, setInstructions] = useState(['']);
 
-
+  // stepIngredients from extraction — preserved to avoid losing backend mapping on save
+  const [initialStepIngredients, setInitialStepIngredients] = useState(null);
 
   // Tried & True Sign-off
   const [triedAndTrue, setTriedAndTrue] = useState(false);
@@ -70,7 +71,10 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
         setInstructions(initialData.instructions.map(step => String(step)));
       }
 
-
+      // Preserve the backend-generated stepIngredients mapping if present
+      if (initialData.stepIngredients && Array.isArray(initialData.stepIngredients)) {
+        setInitialStepIngredients(initialData.stepIngredients);
+      }
     }
   }, [initialData]);
 
@@ -224,7 +228,11 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
       tags,
       ingredients: formattedIngredients,
       instructions: formattedInstructions,
-      stepIngredients: formattedInstructions.map(() => []), // empty links for manual entries
+      // Preserve the extracted stepIngredients if they have real content.
+      // The recipeService will auto-map via heuristics if this is null/empty.
+      stepIngredients: (initialStepIngredients && initialStepIngredients.some(s => s && s.length > 0))
+        ? initialStepIngredients
+        : formattedInstructions.map(() => []),
       image: initialData?.image || '',
       triedAndTrue: true,
       source: initialData?.source || {

@@ -190,6 +190,51 @@ describe('AddRecipe Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/recipe/easy-mug-cake');
   });
 
+  it('preserves stepIngredients from extraction data and does not override with empty arrays', async () => {
+    const mockExtractedData = {
+      title: 'Greek Salad',
+      description: 'A classic salad',
+      prepTime: '10 mins',
+      cookTime: '0 mins',
+      servings: '4',
+      ingredients: [
+        { amount: '1', unit: '', item: 'cucumber' },
+        { amount: '2', unit: 'tbsp', item: 'olive oil' },
+      ],
+      instructions: ['Chop the cucumber.', 'Drizzle with olive oil.'],
+      stepIngredients: [[0], [1]], // pre-mapped by backend
+    };
+
+    extractRecipeFromUrl.mockResolvedValue(mockExtractedData);
+    addRecipe.mockResolvedValue({ slug: 'greek-salad' });
+
+    renderAddRecipe();
+
+    const input = screen.getByPlaceholderText(/e.g. https:\/\/www.bonappetit.com/);
+    const stripBtn = screen.getByRole('button', { name: 'Strip the Fluff' });
+
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'https://example.com/greek-salad' } });
+      fireEvent.click(stripBtn);
+    });
+
+    await screen.findByText('Review & Save');
+
+    // Check the Tried & True checkbox and submit
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+
+    const submitBtn = screen.getByRole('button', { name: 'Strip the Fluff & Save Recipe' });
+    await act(async () => {
+      fireEvent.click(submitBtn);
+    });
+
+    // The backend-generated stepIngredients should be preserved, not replaced with []
+    expect(addRecipe).toHaveBeenCalledWith(expect.objectContaining({
+      stepIngredients: [[0], [1]],
+    }));
+  });
+
   it('automatically adjusts height of instruction textareas to match scrollHeight', async () => {
     // Mock scrollHeight of HTMLTextAreaElement
     const originalScrollHeight = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'scrollHeight');
