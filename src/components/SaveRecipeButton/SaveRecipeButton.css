@@ -34,6 +34,19 @@
     box-shadow: none;
 }
 
+/* Variant: Large (for recipe page hero/details) */
+.save-btn.large {
+    height: 40px;
+    /* Explicit height to match primary button */
+    padding: 0 var(--space-6);
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--text-base);
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    /* Ensure border is included in height */
+}
+
 /* Variant: Icon Only (for smaller spaces like cards) */
 .save-btn.btn-icon {
     padding: var(--space-2);

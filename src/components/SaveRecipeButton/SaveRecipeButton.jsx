@@ -63,7 +63,7 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
         await toggleSaved(recipe.id);
     };
 
-    const buttonClass = `btn save-btn ${variant === 'icon-only' ? 'btn-icon' : 'btn-outline'} ${isSaved ? 'is-saved' : ''} ${className}`;
+    const buttonClass = `btn save-btn ${variant === 'icon-only' ? 'btn-icon' : 'btn-outline'} ${variant === 'large' ? 'large' : ''} ${isSaved ? 'is-saved' : ''} ${className}`;
 
     return (
         <div className="save-button-wrapper" ref={menuRef}>

@@ -85,6 +85,15 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
     }
   }, [prepTime, cookTime, totalTime]);
 
+  // Auto-resize instruction textareas to fit content
+  useEffect(() => {
+    const textareas = document.querySelectorAll('.instruction-textarea');
+    textareas.forEach(textarea => {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    });
+  }, [instructions]);
+
   const handleAddTag = (e) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();

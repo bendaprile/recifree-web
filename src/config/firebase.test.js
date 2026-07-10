@@ -16,6 +16,11 @@ vi.mock('firebase/firestore', () => ({
   enableMultiTabIndexedDbPersistence: vi.fn(() => Promise.resolve()),
 }));
 
+vi.mock('firebase/analytics', () => ({
+  getAnalytics: vi.fn(() => ({})),
+  isSupported: vi.fn(() => Promise.resolve(true)),
+}));
+
 describe('Firebase Config', () => {
   let authModule;
   let firestoreModule;
@@ -125,5 +130,13 @@ describe('Firebase Config', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(consoleWarnSpy).not.toHaveBeenCalled();
+  });
+
+  it('initializes analytics if supported', async () => {
+    const analyticsModule = await import('firebase/analytics');
+    await import('./firebase.js');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    expect(analyticsModule.isSupported).toHaveBeenCalled();
+    expect(analyticsModule.getAnalytics).toHaveBeenCalled();
   });
 });

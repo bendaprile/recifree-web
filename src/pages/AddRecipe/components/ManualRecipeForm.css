@@ -263,16 +263,6 @@
   margin-top: var(--space-3);
 }
 
-.btn-outline {
-  background: none;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-}
-
-.btn-outline:hover {
-  background-color: var(--color-background);
-}
-
 /* Instruction Step Editors */
 .instructions-editor-list {
   display: flex;
@@ -304,6 +294,11 @@
 .instruction-textarea {
   flex-grow: 1;
   font-family: var(--font-primary);
+  resize: none;
+  overflow-y: hidden;
+  field-sizing: content;
+  height: auto;
+  min-height: 76px;
 }
 
 /* Gradient theme grid */

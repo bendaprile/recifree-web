@@ -189,4 +189,46 @@ describe('AddRecipe Component', () => {
     }));
     expect(mockNavigate).toHaveBeenCalledWith('/recipe/easy-mug-cake');
   });
+
+  it('automatically adjusts height of instruction textareas to match scrollHeight', async () => {
+    // Mock scrollHeight of HTMLTextAreaElement
+    const originalScrollHeight = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'scrollHeight');
+    Object.defineProperty(HTMLTextAreaElement.prototype, 'scrollHeight', {
+      configurable: true,
+      get() {
+        return this.value.length * 5 + 40;
+      },
+    });
+
+    try {
+      renderAddRecipe();
+
+      // Go directly to manual entry
+      const manualBtn = screen.getByRole('button', { name: 'Write Recipe Manually' });
+      await act(async () => {
+        fireEvent.click(manualBtn);
+      });
+
+      const textarea = screen.getByPlaceholderText('Describe step 1...');
+      expect(textarea).toBeInTheDocument();
+
+      // Since value is empty initially, length is 0, scrollHeight mock returns 40
+      expect(textarea.style.height).toBe('40px');
+
+      // Change text to something longer to trigger change and auto-resize
+      await act(async () => {
+        fireEvent.change(textarea, { target: { value: 'This is a very long instruction step that will wrap and increase scrollHeight' } });
+      });
+
+      // value length is 77. 77 * 5 + 40 = 425
+      expect(textarea.style.height).toBe('425px');
+    } finally {
+      // Restore original scrollHeight property
+      if (originalScrollHeight) {
+        Object.defineProperty(HTMLTextAreaElement.prototype, 'scrollHeight', originalScrollHeight);
+      } else {
+        delete HTMLTextAreaElement.prototype.scrollHeight;
+      }
+    }
+  });
 });

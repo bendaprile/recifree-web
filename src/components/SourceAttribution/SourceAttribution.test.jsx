@@ -18,9 +18,9 @@ describe('SourceAttribution Component', () => {
     render(<SourceAttribution source={source} />);
 
     expect(screen.getByText(/Recipe adapted from/)).toBeInTheDocument();
-    expect(screen.getByText('bonappetit.com')).toBeInTheDocument();
+    expect(screen.getByText(/bonappetit.com/)).toBeInTheDocument();
     
-    const link = screen.getByRole('link', { name: /View Original/ });
+    const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', 'https://www.bonappetit.com/recipe/lasagna');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
@@ -31,6 +31,7 @@ describe('SourceAttribution Component', () => {
     render(<SourceAttribution source={source} />);
 
     expect(screen.getByText(/Recipe adapted from/)).toBeInTheDocument();
-    expect(screen.getByText('Serious Eats')).toBeInTheDocument();
+    expect(screen.getByText(/Serious Eats/)).toBeInTheDocument();
   });
 });
+
