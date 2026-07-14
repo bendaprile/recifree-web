@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
 import { getAllRecipes } from '../../services/recipeService';
 import { PlateIcon } from '../../components/Icons/Icons';
@@ -8,9 +9,29 @@ function Home() {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    
+    const [searchParams, setSearchParams] = useSearchParams();
+    const queryParam = searchParams.get('q') || '';
+    
     const [selectedTag, setSelectedTag] = useState('All');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(queryParam);
     const [gridColumns, setGridColumns] = useState(3);
+
+    // Keep local state in sync when URL parameters change externally
+    useEffect(() => {
+        setSearchQuery(searchParams.get('q') || '');
+    }, [searchParams]);
+
+    const handleSearchChange = (value) => {
+        setSearchQuery(value);
+        if (value) {
+            setSearchParams({ q: value }, { replace: true });
+        } else {
+            const newParams = new URLSearchParams(searchParams);
+            newParams.delete('q');
+            setSearchParams(newParams, { replace: true });
+        }
+    };
 
     useEffect(() => {
         getAllRecipes()
@@ -62,31 +83,49 @@ function Home() {
 
     return (
         <div className="home">
-            {/* Hero Section */}
-            <section className="hero">
+            {/* Compact Editorial Header */}
+            <header className="home-header">
                 <div className="container">
-                    <div className="hero-content animate-slide-up">
-                        <h1 className="hero-title">
-                            Recipes Without <span className="text-gradient">the Clutter</span>
-                        </h1>
-                        <p className="hero-subtitle">
-                            Simple, straightforward recipes. No life stories, no ads, no distractions. Just ingredients and steps to create something delicious.
-                        </p>
+                    <div className="home-header-grid animate-slide-up">
+                        <div className="home-header-info">
+                            <h1 className="hero-title">
+                                Recipes Without <span className="text-gradient">the Clutter</span>
+                            </h1>
+                            <p className="hero-subtitle">
+                                No ads. No pop-ups. No life stories. Just the recipe. That's Recifree.
+                            </p>
+                        </div>
 
-                        <div className="hero-search">
-                            <input
-                                type="text"
-                                placeholder="Search for a recipe..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="search-input"
-                            />
+                        <div className="home-header-actions">
+                            <div className="hero-search">
+                                <svg className="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input
+                                    type="text"
+                                    placeholder="Search for a recipe..."
+                                    value={searchQuery}
+                                    onChange={(e) => handleSearchChange(e.target.value)}
+                                    className="search-input"
+                                />
+                                {searchQuery && (
+                                    <button 
+                                        className="search-clear-btn" 
+                                        onClick={() => handleSearchChange('')}
+                                        aria-label="Clear search"
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
-
-
-            </section>
+            </header>
 
             {/* Recipe Grid Section */}
             <section className="recipes-section section">
@@ -164,7 +203,7 @@ function Home() {
                                 className="btn btn-secondary"
                                 onClick={() => {
                                     setSelectedTag('All');
-                                    setSearchQuery('');
+                                    handleSearchChange('');
                                 }}
                             >
                                 Clear filters

@@ -26,7 +26,7 @@ import './App.css';
 function RootLayout() {
   return (
     <div className="app">
-      <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
+      <div className="sticky-header">
         <VerificationBanner />
         <OnboardingModal />
         <Navbar />

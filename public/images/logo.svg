@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <style>
+    .brand-stroke { 
+      stroke: #4A5D4E; 
+    }
+    .brand-leaf { 
+      stroke: #4A5D4E; 
+      fill: #4A5D4E; 
+      fill-opacity: 0.15; 
+    }
+    .brand-leaf-vein { 
+      stroke: #4A5D4E; 
+    }
+    @media (prefers-color-scheme: dark) {
+      .brand-stroke { 
+        stroke: #6B8E6B; 
+      }
+      .brand-leaf { 
+        stroke: #6B8E6B; 
+        fill: #6B8E6B; 
+        fill-opacity: 0.15; 
+      }
+      .brand-leaf-vein { 
+        stroke: #6B8E6B; 
+      }
+    }
+  </style>
+  <!-- Page / Document (Input Data) -->
+  <path
+    class="brand-stroke"
+    d="M8 2H13.5L16 4.5V9.5H8V2Z"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.8"
+  />
+  <!-- Dog-ear fold detail on the document -->
+  <path
+    class="brand-stroke"
+    d="M13.5 2V4.5H16"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.8"
+  />
+  <!-- Lines on the document representing raw/cluttered data -->
+  <line
+    class="brand-stroke"
+    x1="10"
+    y1="5"
+    x2="12"
+    y2="5"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    opacity="0.6"
+  />
+  <line
+    class="brand-stroke"
+    x1="10"
+    y1="7"
+    x2="14"
+    y2="7"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    opacity="0.6"
+  />
+
+  <!-- The Distilling Funnel -->
+  <path
+    class="brand-stroke"
+    d="M4 9.5H20L14 15V18H10V15L4 9.5Z"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- The Refined/Distilled Leaf (Output Value) -->
+  <path
+    class="brand-leaf"
+    d="M12 19C10.2 19 9.8 20.8 12 22.5C14.2 20.8 13.8 19 12 19Z"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Leaf central vein -->
+  <line
+    class="brand-leaf-vein"
+    x1="12"
+    y1="19"
+    x2="12"
+    y2="22.5"
+    stroke-width="1.2"
+    stroke-linecap="round"
+  />
+</svg>

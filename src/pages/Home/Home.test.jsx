@@ -70,6 +70,7 @@ import Home from './Home';
 describe('Home Page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        window.history.replaceState({}, '', '/');
     });
 
     // Render and wait for async data to load

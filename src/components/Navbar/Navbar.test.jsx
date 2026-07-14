@@ -43,6 +43,8 @@ describe('Navbar Component', () => {
             },
             writable: true
         });
+
+        window.history.replaceState({}, '', '/');
     });
 
     const renderNavbar = () => {
@@ -80,9 +82,6 @@ describe('Navbar Component', () => {
         // Click to open
         fireEvent.click(toggleButton);
         expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
-        // Check if the 'open' class is applied to the menu container if possible, 
-        // or we can invoke a click on a link and see if it tries to close the menu.
-        // However, testing styles/classes directly is flaky, better to test behavior.
 
         // Click to close
         fireEvent.click(toggleButton);
@@ -148,7 +147,7 @@ describe('Navbar Component', () => {
         expect(screen.queryByRole('link', { name: /shopping list/i })).not.toBeInTheDocument();
     });
 
-    it('Shopping List shows as a /shopping-list link inside popover when user IS logged in', () => {
+    it('Shopping List shows as a link inside My Kitchen dropdown when user IS logged in', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
         renderNavbar();
 
@@ -157,11 +156,20 @@ describe('Navbar Component', () => {
         expect(listLink).toHaveAttribute('href', '/shopping-list');
     });
 
+    it('Saved Recipes shows inside My Kitchen dropdown when user IS logged in', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
+        renderNavbar();
+
+        const savedLink = screen.getByRole('link', { name: /saved recipes/i, hidden: true });
+        expect(savedLink).toBeInTheDocument();
+        expect(savedLink).toHaveAttribute('href', '/saved');
+    });
+
     it('toggles dropdown when My Kitchen button is clicked', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
         renderNavbar();
 
-        const dropdown = screen.getByText('Saved Recipes').closest('.user-dropdown');
+        const dropdown = screen.getByText('Settings').closest('.user-dropdown');
         expect(dropdown).not.toHaveClass('open');
 
         const kitchenBtn = screen.getByRole('button', { name: /my kitchen/i });
@@ -176,7 +184,7 @@ describe('Navbar Component', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
         renderNavbar();
 
-        const dropdown = screen.getByText('Saved Recipes').closest('.user-dropdown');
+        const dropdown = screen.getByText('Settings').closest('.user-dropdown');
         expect(dropdown).not.toHaveClass('open');
 
         const container = dropdown.closest('.user-menu-container');
@@ -238,13 +246,15 @@ describe('Navbar Component', () => {
         fireEvent.click(loginButton);
         expect(screen.getByText('Welcome Back')).toBeInTheDocument();
 
-        // Close modal (LoginModal has a close button or we can fire the onClose prop if we could, 
-        // but we test the interaction. LoginModal usually has a close button with &times; or similar)
-        // Looking at LoginModal.jsx (I should check it but typically it has a close button)
         const closeButton = screen.getByLabelText('Close'); 
         fireEvent.click(closeButton);
 
-        // Verify modal is closed (queryByText should return null)
+        // Verify modal is closed
         expect(screen.queryByText('Welcome Back')).not.toBeInTheDocument();
+    });
+
+    it('renders sticky search bar on homepage', () => {
+        renderNavbar();
+        expect(screen.getByTestId('sticky-search-bar')).toBeInTheDocument();
     });
 });
