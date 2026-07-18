@@ -49,3 +49,5 @@ ui-debug.log
 
 # Local/Temp files
 test-output.txt
+
+.fake-config/

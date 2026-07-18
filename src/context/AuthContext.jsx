@@ -10,7 +10,7 @@ import {
   sendEmailVerification
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import { getUserProfile } from '../services/userService';
+import { getUserProfile, createUserProfile, updateUserProfile } from '../services/userService';
 
 const AuthContext = createContext();
 
@@ -82,7 +82,20 @@ export function AuthProvider({ children }) {
       setCurrentUser(user);
       if (user) {
         try {
-          const profile = await getUserProfile(user.uid);
+          let profile = await getUserProfile(user.uid);
+          
+          if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' && user.email === 'dev@recifree.local') {
+            if (!profile) {
+              profile = await createUserProfile(user.uid, {
+                displayName: 'Local Admin',
+                role: 'admin'
+              });
+            } else if (profile.role !== 'admin') {
+              await updateUserProfile(user.uid, { role: 'admin' });
+              profile.role = 'admin';
+            }
+          }
+
           setUserProfile(profile);
         } catch (e) {
           console.error("Failed to fetch user profile:", e);
@@ -100,7 +113,7 @@ export function AuthProvider({ children }) {
     currentUser,
     userProfile,
     setUserProfile,
-    isEmailVerified: currentUser?.emailVerified ?? false,
+    isEmailVerified: (currentUser?.emailVerified ?? false) || (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' && currentUser?.email === 'dev@recifree.local'),
     login,
     signup,
     loginWithGoogle,

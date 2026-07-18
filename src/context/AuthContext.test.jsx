@@ -27,7 +27,9 @@ vi.mock('firebase/auth', () => ({
 
 // Mock the userService
 vi.mock('../services/userService', () => ({
-  getUserProfile: vi.fn(() => Promise.resolve(null))
+  getUserProfile: vi.fn(() => Promise.resolve(null)),
+  createUserProfile: vi.fn(() => Promise.resolve({ displayName: 'Local Admin', role: 'admin' })),
+  updateUserProfile: vi.fn(() => Promise.resolve())
 }));
 
 // Mock the firebase config
