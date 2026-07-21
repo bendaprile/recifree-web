@@ -35,15 +35,23 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - ✅ **Dynamic JSON-LD Recipe Schema:** Auto-formatting parsed database data into perfect technical schema for Google Rich Snippets.
 - ✅ **Core Web Vitals Optimization:** Implement aggressive asset caching and edge delivery for instant, sub-second loading speeds.
 
-## Phase 4: Culinary UX & Functional Polish
-*Transforming the site from a simple reader into a powerful kitchen utility.*
+## Phase 4a: Culinary UX & Functional Polish (Immediate Priorities)
+*Transforming the site from a simple reader into a powerful kitchen utility. These are the highest-impact features that make Recifree genuinely useful in a real kitchen.*
+
+- ✅ **Print-Friendly View:** Dedicated CSS to hide everything except the recipe title, ingredients, and instructions when users print physically. *(Quick win — the print button already exists, just needs proper `@media print` styling.)*
+- ✅ **Shopping List 2.0 (Ingredient Consolidation):** Overhauled the shopping list from per-recipe grouping into a **unified, ingredient-merged view** with unit-aware quantity consolidation (tsp↔tbsp↔cup, oz↔lb, g↔kg, ml↔L), bulk check/uncheck actions, expandable source recipe attribution, checked-items-at-bottom sorting, and a toggle to switch back to per-recipe view. Includes print-optimized styling.
+  - ⏳ *Fast-follow: Shopping List Cloud Sync* — Persist shopping lists to Firestore so they sync across devices (currently localStorage only).
+  - ⏳ *Fast-follow: Grocery Category Grouping* — Group consolidated ingredients by category (Produce, Dairy, Pantry, etc.) for grocery-aisle navigation.
+- **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons. This is the flagship differentiator — turning Recifree from a recipe viewer into a hands-free kitchen tool.
+- **Dynamic Portion Scaling & Computation:** AI-powered serving size recalculation and automatic metric/imperial unit conversions.
+- **PWA Support (Offline Mode):** *(Pulled forward from Phase 6.)* Service workers to cache recipes so the app works seamlessly from the user's mobile home screen. Offline support is essential for Cook Mode in kitchens with spotty WiFi, making these two features natural companions.
+
+## Phase 4b: Scale-Dependent UX Features
+*These features become valuable once the recipe catalog reaches critical mass (~100+ recipes). Building them prematurely would feel empty.*
+
 - **Advanced Search & Filtering:** Granular filters for aspects like "Total Time", "Difficulty", and "Main Ingredient" querying the new database.
 - **Infinite Scrolling & Pagination:** Implement asynchronous batch rendering (e.g., loading 15 recipes at a time via `IntersectionObserver`) to ensure ultra-fast front-end performance as the recipe count scales. This will be integrated directly with the overarching search overhaul.
-- **Shopping List 2.0:** Improve the shopping list with smart aisle categorization and bulk actions.
-- **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons.
-- **Dynamic Portion Scaling & Computation:** AI-powered serving size recalculation and automatic metric/imperial unit conversions.
-- **Print-Friendly View:** Dedicated CSS to hide everything except the recipe title, ingredients, and instructions when users print physically.
-- **Verified Recipe Ratings & Reviews:** Implement a community-driven rating (1–5 stars) and commenting system. To combat the "fake review" epidemic common on other food blogs, restrict submissions to authenticated, email-verified users, and display aggregate scores and review histories transparently.
+- **Verified Recipe Ratings & Reviews:** Implement a community-driven rating (1–5 stars) and commenting system. To combat the "fake review" epidemic common on other food blogs, restrict submissions to authenticated, email-verified users, and display aggregate scores and review histories transparently. *(Requires user traction to avoid "0 reviews" on every recipe.)*
 
 ## Phase 5: Contextual Commerce (Monetization V1)
 *Non-intrusive revenue generation based on high-intent grocery actions.*
@@ -55,7 +63,6 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 ## Phase 6: Acquisition & Virality
 *Features designed specifically to encourage sharing and external discovery.*
 - **Social Sharing Mechanics:** Easily exportable, beautifully branded, ad-free image "Recipe Cards" optimized for sharing on Pinterest, Instagram, and TikTok.
-- **PWA Support (Offline Mode):** Service workers to cache recipes so the app works seamlessly from the user's mobile home screen, increasing retention.
 
 ## Phase 7: Freemium SaaS (Monetization V2)
 *Locking in "power users" with premium utility formats and recurring subscriptions.*

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Navbar from './Navbar';
@@ -42,6 +42,11 @@ describe('Navbar Component', () => {
                 clear: vi.fn(),
             },
             writable: true
+        });
+
+        Object.defineProperty(window, 'requestAnimationFrame', {
+            writable: true,
+            value: vi.fn().mockImplementation(cb => cb()),
         });
 
         window.history.replaceState({}, '', '/');
@@ -256,5 +261,59 @@ describe('Navbar Component', () => {
     it('renders sticky search bar on homepage', () => {
         renderNavbar();
         expect(screen.getByTestId('sticky-search-bar')).toBeInTheDocument();
+    });
+
+    it('shows mobile search trigger when scrolling down on home page, and handles input/close/cancel/keypresses', () => {
+        const { container } = renderNavbar();
+        
+        // Mock scrollY and trigger scroll event
+        Object.defineProperty(window, 'scrollY', { value: 300, writable: true });
+        fireEvent.scroll(window);
+        
+        // Now mobile search trigger should be visible
+        const triggerBtn = screen.getByLabelText('Open search');
+        expect(triggerBtn).toBeInTheDocument();
+
+        // Click trigger to open mobile search overlay
+        fireEvent.click(triggerBtn);
+        
+        const input = container.querySelector('.mobile-search-input');
+        expect(input).toBeInTheDocument();
+
+        // Test keypress on search input (Enter should close the overlay)
+        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+        expect(container.querySelector('.mobile-search-input')).toBeNull();
+
+        // Open search again to test cancel button
+        const triggerBtn2 = screen.getByLabelText('Open search');
+        fireEvent.click(triggerBtn2);
+        const cancelBtn = screen.getByRole('button', { name: /cancel/i });
+        fireEvent.click(cancelBtn);
+        expect(container.querySelector('.mobile-search-input')).toBeNull();
+
+        // Open search once more to fire a search input change event
+        const triggerBtn3 = screen.getByLabelText('Open search');
+        fireEvent.click(triggerBtn3);
+        const input2 = container.querySelector('.mobile-search-input');
+        fireEvent.change(input2, { target: { value: 'pasta' } });
+    });
+
+    it('closes the user menu dropdown via onBlur when clicking outside', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
+        renderNavbar();
+
+        const dropdown = screen.getByText('Settings').closest('.user-dropdown');
+        const kitchenBtn = screen.getByRole('button', { name: /my kitchen/i });
+        
+        // Open the dropdown first
+        fireEvent.click(kitchenBtn);
+        expect(dropdown).toHaveClass('open');
+
+        // Find the container element
+        const container = dropdown.closest('.user-menu-container');
+
+        // Trigger blur event on the container, simulating focus moving outside the container
+        fireEvent.blur(container, { relatedTarget: document.body });
+        expect(dropdown).not.toHaveClass('open');
     });
 });

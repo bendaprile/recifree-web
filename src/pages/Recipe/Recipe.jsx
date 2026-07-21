@@ -1,17 +1,18 @@
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
-import { CartIcon, ChefHatIcon, CheckIcon, PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
-import InstructionItem from '../../components/InstructionItem/InstructionItem';
+import { PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import SourceAttribution from '../../components/SourceAttribution/SourceAttribution';
+import IngredientList from '../../components/IngredientList/IngredientList';
+import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
 
 function Recipe() {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     // Initialize state from window.__INITIAL_RECIPE__ if it exists (SSR Hydration)
     const [recipe, setRecipe] = useState(() => {
         if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
@@ -20,33 +21,29 @@ function Recipe() {
         }
         return null;
     });
-    
+
     const [loading, setLoading] = useState(() => !recipe);
     const [checkedIngredients, setCheckedIngredients] = useState([]);
-    const [checkedSteps, setCheckedSteps] = useState([]);
-    const [expandedSteps, setExpandedSteps] = useState([]);
-    const [hoveredStep, setHoveredStep] = useState(null);
-    const [hoveredStepY, setHoveredStepY] = useState(0);
-    const [adjustedPopupY, setAdjustedPopupY] = useState(0);
-    const popupRef = useRef(null);
+    const [activeStepIndex, setActiveStepIndex] = useState(0);
+    const [hoveredStepIndex, setHoveredStepIndex] = useState(null);
+    const [currentScale, setCurrentScale] = useState(1);
 
     useEffect(() => {
-        // If we already have the recipe from hydration, skip the fetch
         if (recipe && (recipe.slug === id || recipe.id === id)) {
             setLoading(false);
         } else {
             setLoading(true);
             setRecipe(null);
             setCheckedIngredients([]);
-            setCheckedSteps([]);
-            setExpandedSteps([]);
+            setActiveStepIndex(0);
+            setHoveredStepIndex(null);
+            setCurrentScale(1);
 
             getRecipeBySlug(id)
                 .then(setRecipe)
                 .finally(() => setLoading(false));
         }
 
-        // Scroll to top when recipe loads
         window.scrollTo(0, 0);
     }, [id]);
 
@@ -58,32 +55,8 @@ function Recipe() {
         );
     };
 
-    const toggleStep = (index, e) => {
-        // Prevent triggering expansion when clicking checkbox
-        if (e) e.stopPropagation();
-
-        setCheckedSteps(prev =>
-            prev.includes(index)
-                ? prev.filter(i => i !== index)
-                : [...prev, index]
-        );
-    };
-
-    const toggleStepExpansion = (index) => {
-        setExpandedSteps(prev =>
-            prev.includes(index)
-                ? prev.filter(i => i !== index)
-                : [...prev, index]
-        );
-    };
-
-    const scrollToRecipe = () => {
-        document.getElementById('instructions')?.scrollIntoView({ behavior: 'smooth' });
-    };
-
     const handleBack = (e) => {
         e.preventDefault();
-        // If there's history in the app, go back, otherwise go home
         if (window.history.state && window.history.state.idx > 0) {
             navigate(-1);
         } else {
@@ -95,35 +68,23 @@ function Recipe() {
     const getFlatIngredients = () => {
         if (!recipe) return [];
         if (recipe.ingredients[0]?.items) {
-            // Sectioned ingredients - flatten them
             return recipe.ingredients.flatMap(section => section.items);
         }
         return recipe.ingredients;
     };
 
-    const flatIngredients = getFlatIngredients();
+    // Determine effective step index for highlighting: hovered step takes precedence, else active step
+    const effectiveStepIndex = hoveredStepIndex !== null ? hoveredStepIndex : activeStepIndex;
 
-    // Dynamically adjust popup position based on actual height
-    useLayoutEffect(() => {
-        if (popupRef.current && hoveredStep !== null) {
-            const popupHeight = popupRef.current.offsetHeight;
-            const viewportHeight = window.innerHeight;
-            const headerHeight = 80; // Space below header
-            const padding = 20;
+    // Get ingredient indices used in the effective step
+    const getStepIngredientIds = (stepIndex) => {
+        if (stepIndex === null || stepIndex === undefined || !recipe?.stepIngredients?.[stepIndex]) return [];
+        return recipe.stepIngredients[stepIndex].map(entry =>
+            typeof entry === 'object' && entry !== null ? entry.id : entry
+        );
+    };
 
-            // Calculate if popup would overflow bottom of viewport
-            const wouldOverflow = hoveredStepY + popupHeight + padding > viewportHeight;
-
-            if (wouldOverflow) {
-                // Adjust Y to keep popup fully visible
-                const adjusted = Math.max(headerHeight, viewportHeight - popupHeight - padding);
-                setAdjustedPopupY(adjusted);
-            } else {
-                // Position next to the step
-                setAdjustedPopupY(Math.max(headerHeight, hoveredStepY));
-            }
-        }
-    }, [hoveredStep, hoveredStepY]);
+    const highlightedIngredientIds = getStepIngredientIds(effectiveStepIndex);
 
     if (loading) {
         return (
@@ -150,289 +111,178 @@ function Recipe() {
         );
     }
 
-    const defaultImage = 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=1200&auto=format&fit=crop&q=80';
+    const defaultImage = 'https://images.unsplash.com/photo-1621996346565-e3d5d6288339?auto=format&fit=crop&w=1400&q=80';
 
     return (
-        <article className="recipe-page">
-            {/* Hero Section */}
-            <header className="recipe-hero">
-                <div
-                    className="recipe-hero-image"
-                    style={{ backgroundImage: `url(${recipe.image || defaultImage})` }}
+        <div className="recipe-page-container">
+            <article className="swiss-wrapper">
+
+                {/* HYBRID HERO OVERLAY HEADER */}
+                <header
+                    className="hero-overlay-header"
+                    style={{ backgroundImage: `url('${recipe.image || defaultImage}')` }}
                 >
-                    <div className="recipe-hero-overlay"></div>
-                </div>
+                    <div className="hero-overlay-backdrop"></div>
 
-                <div className="container">
-                    <div className="recipe-hero-content">
-                        <Link to="/" className="back-link" onClick={handleBack}>
-                            ← Back to recipes
-                        </Link>
+                    <div className="hero-overlay-content">
+                        <div className="hero-top-nav">
+                            <Link to="/" className="hero-back-link" onClick={handleBack}>
+                                ← Back to recipes
+                            </Link>
 
-                        <h1 className="recipe-title">
-                            {recipe.title}
                             {recipe.triedAndTrue && (
-                                <span className="tried-true-badge" title="Tried & True: Kitchen-tested & verified tasty!">
+                                <div className="hero-tried-true-badge" title="Tried & True: Kitchen-tested & verified tasty!">
                                     ✓ Tried & True
-                                </span>
+                                </div>
                             )}
-                        </h1>
+                        </div>
+
+                        <h1 className="hero-title">{recipe.title}</h1>
 
                         {recipe.description && (
-                            <p className="recipe-description">{recipe.description}</p>
+                            <p className="hero-description">{recipe.description}</p>
                         )}
 
-                        <div className="recipe-meta">
-                            <div className="meta-card">
-                                <span className="meta-label">Prep Time</span>
-                                <span className="meta-value">{recipe.prepTime}</span>
-                            </div>
-                            <div className="meta-card">
-                                <span className="meta-label">Cook Time</span>
-                                <span className="meta-value">{recipe.cookTime}</span>
-                            </div>
-                            <div className="meta-card">
-                                <span className="meta-label">Total Time</span>
-                                <span className="meta-value">{recipe.totalTime}</span>
-                            </div>
-                            <div className="meta-card">
-                                <span className="meta-label">Servings</span>
-                                <span className="meta-value">{recipe.servings}</span>
-                            </div>
-                        </div>
-
-                        <div className="recipe-actions flex gap-4 items-center">
-                            <button onClick={scrollToRecipe} className="btn btn-primary jump-btn">
-                                Jump to Recipe ↓
-                            </button>
-                            <SaveRecipeButton recipe={recipe} variant="large" className="hero-add-btn" />
-                            <AddToShoppingListButton recipe={recipe} variant="large" className="hero-add-btn" />
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <div className="recipe-content">
-                <div className="container">
-                    <div className="recipe-layout">
-                        {/* Main Content */}
-                        <div className="recipe-main">
-                            {/* Ingredients */}
-                            <section id="ingredients" className="recipe-section">
-                                <h2 className="section-heading">
-                                    Ingredients
-                                </h2>
-                                <p className="section-hint">Tap items to check them off</p>
-
-                                {recipe.ingredients[0]?.items ? (
-                                    // Sectioned Ingredients
-                                    recipe.ingredients.map((section, sIndex) => (
-                                        <div key={sIndex} className="ingredients-section">
-                                            {section.title && <h3 className="ingredient-section-title">{section.title}</h3>}
-                                            <ul className="ingredients-list">
-                                                {section.items.map((ingredient, iIndex) => {
-                                                    const uniqueId = `${sIndex}-${iIndex}`;
-                                                    return (
-                                                        <li
-                                                            key={uniqueId}
-                                                            className={`ingredient-item ${checkedIngredients.includes(uniqueId) ? 'checked' : ''}`}
-                                                            onClick={() => toggleIngredient(uniqueId)}
-                                                        >
-                                                            <span className="ingredient-checkbox">
-                                                                {checkedIngredients.includes(uniqueId) ? <CheckIcon size={14} /> : ''}
-                                                            </span>
-                                                            <span className="ingredient-text">
-                                                                {ingredient.amount && (
-                                                                    <strong className="ingredient-amount">
-                                                                        {ingredient.amount} {ingredient.unit}
-                                                                    </strong>
-                                                                )}
-                                                                {' '}{ingredient.item}
-                                                            </span>
-                                                        </li>
-                                                    );
-                                                })}
-                                            </ul>
-                                        </div>
-                                    ))
-                                ) : (
-                                    // Flat List (Legacy Support)
-                                    <ul className="ingredients-list">
-                                        {recipe.ingredients.map((ingredient, index) => (
-                                            <li
-                                                key={index}
-                                                className={`ingredient-item ${checkedIngredients.includes(index) ? 'checked' : ''}`}
-                                                onClick={() => toggleIngredient(index)}
-                                            >
-                                                <span className="ingredient-checkbox">
-                                                    {checkedIngredients.includes(index) ? <CheckIcon size={14} /> : ''}
-                                                </span>
-                                                <span className="ingredient-text">
-                                                    {ingredient.amount && (
-                                                        <strong className="ingredient-amount">
-                                                            {ingredient.amount} {ingredient.unit}
-                                                        </strong>
-                                                    )}
-                                                    {' '}{ingredient.item}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </section>
-
-                            {/* Instructions */}
-                            <section id="instructions" className="recipe-section">
-                                <h2 className="section-heading">
-                                    Instructions
-                                </h2>
-                                <div className="section-hint-wrapper">
-                                    <p className="section-hint hint-mobile">Tap text to view ingredients, check circle to complete</p>
-                                    <p className="section-hint hint-desktop">Hover over steps to view ingredients</p>
-                                </div>
-
-                                <ol className="instructions-list">
-                                    {recipe.instructions.map((step, index) => {
-                                        const isExpanded = expandedSteps.includes(index);
-                                        const hasIngredients = recipe.stepIngredients && recipe.stepIngredients[index] && recipe.stepIngredients[index].length > 0;
-
-                                        // Resolve inline ingredients
-                                        const inlineIngredients = hasIngredients ? recipe.stepIngredients[index].map((entry) => {
-                                            const isObject = typeof entry === 'object' && entry !== null;
-                                            const ingredientIndex = isObject ? entry.id : entry;
-                                            const ingredient = flatIngredients[ingredientIndex];
-
-                                            if (!ingredient) return null;
-
-                                            return {
-                                                amount: isObject && entry.amount !== undefined ? entry.amount : ingredient.amount,
-                                                unit: isObject && entry.unit !== undefined ? entry.unit : ingredient.unit,
-                                                item: ingredient.item
-                                            };
-                                        }).filter(Boolean) : [];
-
-                                        return (
-                                            <InstructionItem
-                                                key={index}
-                                                step={step}
-                                                index={index}
-                                                isChecked={checkedSteps.includes(index)}
-                                                isExpanded={isExpanded}
-                                                hasIngredients={hasIngredients}
-                                                inlineIngredients={inlineIngredients}
-                                                onToggle={toggleStep}
-                                                onExpand={toggleStepExpansion}
-                                                onHover={(e) => {
-                                                    setHoveredStep(index);
-                                                    const rect = e.currentTarget.getBoundingClientRect();
-                                                    setHoveredStepY(rect.top);
-                                                }}
-                                                onLeave={() => setHoveredStep(null)}
-                                            />
-                                        );
-                                    })}
-                                </ol>
-                            </section>
-
-                            {/* Nutrition (if available) */}
-                            {recipe.nutrition && (
-                                <section className="recipe-section nutrition-section">
-                                    <h2 className="section-heading">
-                                        Nutrition (per serving)
-                                    </h2>
-
-                                    <div className="nutrition-grid">
-                                        <div className="nutrition-item">
-                                            <span className="nutrition-value">{recipe.nutrition.calories}</span>
-                                            <span className="nutrition-label">Calories</span>
-                                        </div>
-                                        <div className="nutrition-item">
-                                            <span className="nutrition-value">{recipe.nutrition.protein}</span>
-                                            <span className="nutrition-label">Protein</span>
-                                        </div>
-                                        <div className="nutrition-item">
-                                            <span className="nutrition-value">{recipe.nutrition.carbs}</span>
-                                            <span className="nutrition-label">Carbs</span>
-                                        </div>
-                                        <div className="nutrition-item">
-                                            <span className="nutrition-value">{recipe.nutrition.fat}</span>
-                                            <span className="nutrition-label">Fat</span>
-                                        </div>
+                        <div className="hero-meta-row">
+                            <div className="hero-badges">
+                                {recipe.prepTime && (
+                                    <div>
+                                        Prep: <strong>{recipe.prepTime}</strong>
                                     </div>
-                                </section>
-                            )}
+                                )}
+                                {recipe.cookTime && (
+                                    <div>
+                                        Cook: <strong>{recipe.cookTime}</strong>
+                                    </div>
+                                )}
+                                {recipe.totalTime && (
+                                    <div>
+                                        Total: <strong>{recipe.totalTime}</strong>
+                                    </div>
+                                )}
+                                {recipe.servings && (
+                                    <div>
+                                        Yield: <strong>{typeof recipe.servings === 'number' ? recipe.servings * currentScale : recipe.servings} Servings</strong>
+                                    </div>
+                                )}
+                            </div>
 
-                            {/* Source Attribution */}
-                            <SourceAttribution source={recipe.source} />
+                            <div className="hero-actions">
+                                <button className="hero-btn" onClick={() => window.print()}>
+                                    <PrinterIcon size={16} /> Print Recipe
+                                </button>
+                                <SaveRecipeButton recipe={recipe} variant="large" className="hero-action-btn" />
+                                <AddToShoppingListButton recipe={recipe} variant="large" className="hero-action-btn" />
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                {/* SWISS EDITORIAL 2-COLUMN BODY CONTENT */}
+                <div className="swiss-body-content">
+                    <div className="swiss-grid">
+
+                        {/* Ingredients Column */}
+                        <div className="swiss-ingredients-panel" id="ingredients">
+                            <div className="swiss-panel-title">
+                                <span>Ingredients</span>
+                                <div className="swiss-scaler">
+                                    <button
+                                        className={`swiss-scale-btn ${currentScale === 1 ? 'active' : ''}`}
+                                        onClick={() => setCurrentScale(1)}
+                                    >
+                                        1x
+                                    </button>
+                                    <button
+                                        className={`swiss-scale-btn ${currentScale === 2 ? 'active' : ''}`}
+                                        onClick={() => setCurrentScale(2)}
+                                    >
+                                        2x
+                                    </button>
+                                    <button
+                                        className={`swiss-scale-btn ${currentScale === 3 ? 'active' : ''}`}
+                                        onClick={() => setCurrentScale(3)}
+                                    >
+                                        3x
+                                    </button>
+                                </div>
+                            </div>
+
+                            <IngredientList
+                                ingredients={recipe.ingredients}
+                                checkedIngredients={checkedIngredients}
+                                highlightedIngredientIds={highlightedIngredientIds}
+                                currentScale={currentScale}
+                                onToggleIngredient={toggleIngredient}
+                            />
                         </div>
 
-                        {/* Sidebar */}
-                        <aside className="recipe-sidebar">
-                            <div className="sidebar-card">
-                                <h3>Tags</h3>
-                                <div className="sidebar-tags">
-                                    {recipe.tags?.map((tag, index) => (
-                                        <span key={index} className="tag">{tag}</span>
-                                    ))}
-                                </div>
+                        {/* Instructions Column */}
+                        <div className="swiss-instructions-panel" id="instructions">
+                            <div className="swiss-panel-title">
+                                <span>Instructions</span>
                             </div>
 
-                            <div className="sidebar-card">
-                                <h3>Difficulty</h3>
-                                <span className={`difficulty-badge difficulty-${recipe.difficulty?.toLowerCase()}`}>
-                                    {recipe.difficulty}
-                                </span>
+                            <div className="swiss-step-list">
+                                {recipe.instructions.map((stepText, index) => {
+                                    const stepNumStr = String(index + 1).padStart(2, '0');
+                                    const isActive = activeStepIndex === index;
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`swiss-step-card ${isActive ? 'active' : ''}`}
+                                            onClick={() => setActiveStepIndex(index)}
+                                            onMouseEnter={() => setHoveredStepIndex(index)}
+                                            onMouseLeave={() => setHoveredStepIndex(null)}
+                                            data-testid={`instruction-item-${index}`}
+                                        >
+                                            <div className="swiss-step-num">{stepNumStr}</div>
+                                            <div className="swiss-step-content">
+                                                {stepText}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-
-                            <div className="sidebar-card print-card">
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => window.print()}
-                                >
-                                    <PrinterIcon size={18} /> Print Recipe
-                                </button>
-                            </div>
-
-                            {/* Step Ingredients Popup */}
-                            {hoveredStep !== null && recipe.stepIngredients && recipe.stepIngredients[hoveredStep] && recipe.stepIngredients[hoveredStep].length > 0 && (
-                                <div
-                                    ref={popupRef}
-                                    className="sidebar-card step-ingredients-card"
-                                    style={{ top: `${adjustedPopupY}px` }}
-                                >
-                                    <h3>Step {hoveredStep + 1} Ingredients</h3>
-                                    <ul className="step-ingredients-list">
-                                        {recipe.stepIngredients[hoveredStep].map((entry, i) => {
-                                            // Handle both number (index) and object ({id, amount, unit}) formats
-                                            const isObject = typeof entry === 'object' && entry !== null;
-                                            const index = isObject ? entry.id : entry;
-
-                                            const ingredient = flatIngredients[index];
-                                            if (!ingredient) return null;
-
-                                            // Use overrides if provided, otherwise fallback to original ingredient data
-                                            const displayAmount = isObject && entry.amount !== undefined ? entry.amount : ingredient.amount;
-                                            const displayUnit = isObject && entry.unit !== undefined ? entry.unit : ingredient.unit;
-
-                                            return (
-                                                <li key={`${index}-${i}`} className="step-ingredient-item">
-                                                    {displayAmount && (
-                                                        <span className="step-ingredient-amount">
-                                                            {displayAmount} {displayUnit}
-                                                        </span>
-                                                    )}
-                                                    <span className="step-ingredient-name">{ingredient.item}</span>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            )}
-                        </aside>
+                        </div>
                     </div>
+
+                    {/* Nutrition (if available) */}
+                    {recipe.nutrition && (
+                        <section className="recipe-section nutrition-section">
+                            <h2 className="section-heading">
+                                Nutrition (per serving)
+                            </h2>
+
+                            <div className="nutrition-grid">
+                                <div className="nutrition-item">
+                                    <span className="nutrition-value">{recipe.nutrition.calories}</span>
+                                    <span className="nutrition-label">Calories</span>
+                                </div>
+                                <div className="nutrition-item">
+                                    <span className="nutrition-value">{recipe.nutrition.protein}</span>
+                                    <span className="nutrition-label">Protein</span>
+                                </div>
+                                <div className="nutrition-item">
+                                    <span className="nutrition-value">{recipe.nutrition.carbs}</span>
+                                    <span className="nutrition-label">Carbs</span>
+                                </div>
+                                <div className="nutrition-item">
+                                    <span className="nutrition-value">{recipe.nutrition.fat}</span>
+                                    <span className="nutrition-label">Fat</span>
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Source Attribution */}
+                    <SourceAttribution source={recipe.source} />
+
                 </div>
-            </div>
-        </article>
+
+            </article>
+        </div>
     );
 }
 

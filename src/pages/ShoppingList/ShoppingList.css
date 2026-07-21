@@ -4,19 +4,41 @@
     min-height: 80vh;
 }
 
-.shopping-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-8);
-    flex-wrap: wrap;
-    gap: var(--space-4);
-}
-
 .shopping-list-title {
-    margin-bottom: 0;
+    margin-bottom: var(--space-6);
 }
 
+/* ==============================
+   Consolidated View
+   ============================== */
+.consolidated-list {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    max-width: 720px;
+}
+
+.checked-divider {
+    display: flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background-color: var(--color-border-light);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.checked-divider span {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ==============================
+   Recipe Grid View (Legacy)
+   ============================== */
 .shopping-list-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -134,7 +156,9 @@
     transform: scale(1.1);
 }
 
-/* Empty State */
+/* ==============================
+   Empty State
+   ============================== */
 .empty-list {
     text-align: center;
     padding: var(--space-12) var(--space-4);
@@ -157,11 +181,53 @@
 .empty-list p {
     color: var(--color-text-secondary);
     margin-bottom: var(--space-6);
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+/* ==============================
+   Mobile Adjustments
+   ============================== */
 @media (max-width: 640px) {
     .remove-item-btn {
         opacity: 1;
         /* Always show on mobile */
+    }
+}
+
+/* ==============================
+   Print Styles
+   ============================== */
+@media print {
+    .shopping-list-page {
+        background: white;
+        min-height: auto;
+    }
+
+    .shopping-list-title {
+        font-size: 18pt;
+        margin-bottom: 8pt;
+    }
+
+    .consolidated-list {
+        border: none;
+        max-width: none;
+    }
+
+    .checked-divider {
+        background: none;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Hide interactive elements when printing */
+    .shopping-toolbar,
+    .sources-toggle,
+    .sources-list,
+    .source-remove-btn,
+    .remove-item-btn,
+    .remove-group-btn {
+        display: none !important;
     }
 }

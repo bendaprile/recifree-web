@@ -185,3 +185,18 @@
   padding-top: var(--space-8);
   border-top: 1px solid var(--color-border-light);
 }
+
+/* =================================
+   Print Styles
+   ================================= */
+@media print {
+  .sticky-header,
+  .footer {
+    display: none !important;
+  }
+  
+  .main-content {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}

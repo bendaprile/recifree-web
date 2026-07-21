@@ -26,16 +26,14 @@ describe('InstructionItem', () => {
     it('renders step text and number correctly', () => {
         render(<InstructionItem {...defaultProps} />);
         expect(screen.getByText('Mix ingredients')).toBeInTheDocument();
-        expect(screen.getByText('1')).toBeInTheDocument();
+        expect(screen.getByText('01')).toBeInTheDocument();
     });
 
     it('displays CheckIcon when checked', () => {
         render(<InstructionItem {...defaultProps} isChecked={true} />);
-        // CheckIcon usually renders an svg or similar, checking for absence of number '1' or class logic
-        // But since we can't easily query the icon by icon name without aria-label, let's check class
         const item = screen.getByTestId('instruction-item-0');
         expect(item).toHaveClass('checked');
-        expect(screen.queryByText('1')).not.toBeInTheDocument();
+        expect(screen.queryByText('01')).not.toBeInTheDocument();
     });
 
     it('calls onToggle when checkbox is clicked', () => {

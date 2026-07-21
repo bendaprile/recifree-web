@@ -276,4 +276,127 @@ describe('AddRecipe Component', () => {
       }
     }
   });
+
+  it('handles cancel/abandon confirm and deny scenarios when editing', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm');
+    renderAddRecipe();
+
+    // Go directly to manual entry
+    const manualBtn = screen.getByRole('button', { name: 'Write Recipe Manually' });
+    await act(async () => {
+      fireEvent.click(manualBtn);
+    });
+
+    const backBtn = screen.getByText('← Back to options');
+
+    // Case 1: User denies confirmation
+    confirmSpy.mockReturnValueOnce(false);
+    await act(async () => {
+      fireEvent.click(backBtn);
+    });
+    expect(confirmSpy).toHaveBeenCalledWith(
+      'Are you sure you want to abandon this recipe? Any unsaved changes will be lost.'
+    );
+    expect(screen.getByText('New Custom Recipe')).toBeInTheDocument();
+
+    // Case 2: User confirms confirmation
+    confirmSpy.mockReturnValueOnce(true);
+    await act(async () => {
+      fireEvent.click(backBtn);
+    });
+    expect(screen.getByText('Add a Recipe')).toBeInTheDocument();
+  });
+
+  it('shows an alert when recipe saving fails', async () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    renderAddRecipe();
+
+    // Go to manual entry
+    const manualBtn = screen.getByRole('button', { name: 'Write Recipe Manually' });
+    await act(async () => {
+      fireEvent.click(manualBtn);
+    });
+
+    // Fill in required fields
+    fireEvent.change(screen.getByLabelText(/Recipe Title/), { target: { value: 'Bad Recipe' } });
+    fireEvent.change(screen.getByPlaceholderText('e.g. fresh mozzarella'), { target: { value: 'sugar' } });
+    fireEvent.change(screen.getByPlaceholderText('Describe step 1...'), { target: { value: 'eat it' } });
+    fireEvent.click(screen.getByRole('checkbox'));
+
+    addRecipe.mockRejectedValueOnce(new Error('Database Down'));
+
+    const submitBtn = screen.getByRole('button', { name: 'Strip the Fluff & Save Recipe' });
+    await act(async () => {
+      fireEvent.click(submitBtn);
+    });
+
+    expect(alertSpy).toHaveBeenCalledWith('Failed to save recipe: Database Down');
+    alertSpy.mockRestore();
+  });
+
+  it('triggers window beforeunload event correctly when editing', async () => {
+    renderAddRecipe();
+
+    // Go to manual entry
+    const manualBtn = screen.getByRole('button', { name: 'Write Recipe Manually' });
+    await act(async () => {
+      fireEvent.click(manualBtn);
+    });
+
+    const event = new Event('beforeunload', { cancelable: true });
+    vi.spyOn(event, 'preventDefault');
+
+    window.dispatchEvent(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it('triggers router blocker confirmation modal when navigating away while editing', async () => {
+    const router = createMemoryRouter(
+      [
+        { path: '/add', element: <AddRecipe /> },
+        { path: '/other', element: <div>Other Page</div> }
+      ],
+      { initialEntries: ['/add'] }
+    );
+
+    render(<RouterProvider router={router} />);
+
+    // Go to EDIT mode
+    const manualBtn = screen.getByRole('button', { name: 'Write Recipe Manually' });
+    await act(async () => {
+      fireEvent.click(manualBtn);
+    });
+
+    // Try navigating to /other
+    await act(async () => {
+      router.navigate('/other');
+    });
+
+    // Blocker should be active, modal should be rendered
+    expect(screen.getByText('Unsaved Recipe')).toBeInTheDocument();
+
+    // Click "Keep Editing" -> blocker is reset, modal closes, remains on /add
+    const keepEditingBtn = screen.getByRole('button', { name: 'Keep Editing' });
+    await act(async () => {
+      fireEvent.click(keepEditingBtn);
+    });
+    expect(screen.queryByText('Unsaved Recipe')).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/add');
+
+    // Try navigating to /other again
+    await act(async () => {
+      router.navigate('/other');
+    });
+    expect(screen.getByText('Unsaved Recipe')).toBeInTheDocument();
+
+    // Click "Leave Page" -> blocker proceeds, navigates to /other
+    const leavePageBtn = screen.getByRole('button', { name: 'Leave Page' });
+    await act(async () => {
+      fireEvent.click(leavePageBtn);
+    });
+    expect(screen.queryByText('Unsaved Recipe')).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/other');
+  });
 });

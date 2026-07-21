@@ -10,7 +10,7 @@
    ================================= */
 :root {
   /* Primary Colors - Sage Green Palette */
-  --color-background: #FDFBF7;
+  --color-background: #FAFAFA;
   --color-surface: #FFFFFF;
   --color-primary: #4A5D4E;
   --color-primary-dark: #3A4A3E;
@@ -21,22 +21,22 @@
   --color-text-secondary: #6B6B6B;
   --color-text-muted: #9A9A9A;
 
-  /* Accent Colors - Warm Tan */
-  --color-accent: #8B7355;
-  --color-accent-light: #B8A089;
-  --color-warning: #C9A962;
+  /* Accent Colors - Recifree Green Palette */
+  --color-accent: #4A5D4E;
+  --color-accent-light: #6B8E6B;
+  --color-warning: #D97706;
   --color-error: #A85454;
 
   /* Neutral Colors */
-  --color-border: #E8E4DE;
-  --color-border-light: #F5F3EF;
+  --color-border: #E2E4E2;
+  --color-border-light: #F0F2F0;
 
   /* Semantic Aliases (used across components) */
   --color-text: var(--color-text-primary);
   --color-text-light: var(--color-text-muted);
   --color-background-alt: var(--color-border-light);
-  --color-background-hover: #F0EDE7;
-  --skeleton-bg: #E2DDD6;
+  --color-background-hover: #F0F4F1;
+  --skeleton-bg: #E8EAE8;
 
   /* Typography */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -132,8 +132,8 @@
   --color-text-muted: #707070;
 
   /* Accent Colors */
-  --color-accent: #A68B6B;
-  --color-accent-light: #8B7355;
+  --color-accent: #6B8E6B;
+  --color-accent-light: #4A5D4E;
   --color-warning: #D4B86A;
   --color-error: #C46B6B;
 

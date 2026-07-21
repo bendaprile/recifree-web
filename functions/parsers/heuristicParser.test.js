@@ -87,6 +87,64 @@ describe('heuristicParser', () => {
     expect(result.instructions).toEqual(['Chop lettuce and tomato.', 'Toss together.']);
   });
 
+  it('parses Mediavine Create Card structure successfully', () => {
+    const html = `
+      <div class="mv-create-card">
+        <h2 class="mv-create-title">Mediavine Berry Smoothie</h2>
+        <div class="mv-create-description">A cool refreshing summer smoothie.</div>
+        <div class="mv-create-time-prep"><span class="mv-create-time-format">5 mins</span></div>
+        <div class="mv-create-time-active"><span class="mv-create-time-format">5 mins</span></div>
+        <div class="mv-create-time-total"><span class="mv-create-time-format">10 mins</span></div>
+        <div class="mv-create-yield"><span class="mv-create-time-format">1 serving</span></div>
+        <div class="mv-create-ingredients">
+          <ul>
+            <li>1 cup berries</li>
+            <li>1/2 cup yogurt</li>
+          </ul>
+        </div>
+        <div class="mv-create-instructions">
+          <ol>
+            <li>Blend all ingredients.</li>
+          </ol>
+        </div>
+      </div>
+    `;
+
+    const result = parseHeuristics(html);
+    expect(result).not.toBeNull();
+    expect(result.title).toBe('Mediavine Berry Smoothie');
+    expect(result.description).toBe('A cool refreshing summer smoothie.');
+    expect(result.prepTime).toBe('5 mins');
+    expect(result.cookTime).toBe('5 mins');
+    expect(result.totalTime).toBe('10 mins');
+    expect(result.servings).toBe(1);
+    expect(result.ingredients).toEqual(['1 cup berries', '1/2 cup yogurt']);
+    expect(result.instructions).toEqual(['Blend all ingredients.']);
+  });
+
+  it('extracts lists from non-standard siblings using nested li tags', () => {
+    const html = `
+      <html>
+        <body>
+          <h1>Special Custom Recipe</h1>
+          <h2>Ingredients</h2>
+          <div class="not-a-list-tag">
+            <li>Special Item 1</li>
+            <li>Special Item 2</li>
+          </div>
+          <h2>Instructions</h2>
+          <div class="also-not-a-list-tag">
+            <li>Step 1 description</li>
+          </div>
+        </body>
+      </html>
+    `;
+    const result = parseHeuristics(html);
+    expect(result).not.toBeNull();
+    expect(result.ingredients).toEqual(['Special Item 1', 'Special Item 2']);
+    expect(result.instructions).toEqual(['Step 1 description']);
+  });
+
   it('returns null if no headings or lists can be found on a generic page', () => {
     const html = `
       <html>
@@ -99,3 +157,4 @@ describe('heuristicParser', () => {
     expect(parseHeuristics(html)).toBeNull();
   });
 });
+

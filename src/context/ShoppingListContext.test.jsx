@@ -14,11 +14,25 @@ Object.defineProperty(window, 'localStorage', {
 
 // Basic wrapper for testing context
 const TestComponent = () => {
-    const { items, itemCount, addRecipe, toggleItem, removeItem, removeRecipe, clearList } = useShoppingList();
+    const { 
+        items, itemCount, addRecipe, toggleItem, removeItem, removeRecipe, clearList,
+        consolidatedItems, toggleConsolidatedItem, checkAll, uncheckAll, checkedCount
+    } = useShoppingList();
     
     return (
         <div>
             <span data-testid="item-count">{itemCount}</span>
+            <span data-testid="checked-count">{checkedCount}</span>
+            <button onClick={checkAll}>Check All</button>
+            <button onClick={uncheckAll}>Uncheck All</button>
+            <ul>
+                {consolidatedItems?.map(c => (
+                    <li key={c.key} data-testid={`consolidated-${c.key}`}>
+                        {c.originalName} - {c.checked ? 'Checked' : 'Unchecked'}
+                        <button onClick={() => toggleConsolidatedItem(c.key)}>Toggle Consolidated</button>
+                    </li>
+                ))}
+            </ul>
             <button onClick={() => addRecipe({
                 id: 'r1',
                 title: 'Recipe 1',
@@ -195,5 +209,92 @@ describe('ShoppingListContext', () => {
         
         expect(consoleSpy).toHaveBeenCalled();
         consoleSpy.mockRestore();
+    });
+
+    it('consolidates ingredients correctly', () => {
+        render(
+            <ShoppingListProvider>
+                <TestComponent />
+            </ShoppingListProvider>
+        );
+        
+        act(() => {
+            screen.getByText('Add Recipe Flat').click();
+            screen.getByText('Add Recipe Flat').click();
+        });
+        
+        expect(screen.getByTestId('item-count')).toHaveTextContent('2');
+        expect(screen.getByTestId('consolidated-salt')).toBeInTheDocument();
+    });
+
+    it('toggles consolidated item', () => {
+        render(
+            <ShoppingListProvider>
+                <TestComponent />
+            </ShoppingListProvider>
+        );
+        
+        act(() => {
+            screen.getByText('Add Recipe Flat').click();
+            screen.getByText('Add Recipe Flat').click();
+        });
+        
+        expect(screen.getByTestId('consolidated-salt')).toHaveTextContent('Unchecked');
+        
+        act(() => {
+            screen.getByTestId('consolidated-salt').querySelector('button').click();
+        });
+        
+        expect(screen.getByTestId('consolidated-salt')).toHaveTextContent('Checked');
+        expect(screen.getByTestId('checked-count')).toHaveTextContent('2');
+    });
+
+    it('checks all and unchecks all items', () => {
+        render(
+            <ShoppingListProvider>
+                <TestComponent />
+            </ShoppingListProvider>
+        );
+        
+        act(() => {
+            screen.getByText('Add Recipe Flat').click();
+            screen.getByText('Add Recipe Sectioned').click();
+        });
+        
+        expect(screen.getByTestId('checked-count')).toHaveTextContent('0');
+        
+        act(() => {
+            screen.getByText('Check All').click();
+        });
+        
+        expect(screen.getByTestId('checked-count')).toHaveTextContent('2');
+        
+        act(() => {
+            screen.getByText('Uncheck All').click();
+        });
+        
+        expect(screen.getByTestId('checked-count')).toHaveTextContent('0');
+    });
+
+    it('updates checkedCount correctly', () => {
+        render(
+            <ShoppingListProvider>
+                <TestComponent />
+            </ShoppingListProvider>
+        );
+        
+        act(() => {
+            screen.getByText('Add Recipe Flat').click();
+            screen.getByText('Add Recipe Sectioned').click();
+        });
+        
+        expect(screen.getByTestId('checked-count')).toHaveTextContent('0');
+        
+        const toggleBtns = screen.getAllByText('Toggle');
+        act(() => {
+            toggleBtns[0].click();
+        });
+        
+        expect(screen.getByTestId('checked-count')).toHaveTextContent('1');
     });
 });

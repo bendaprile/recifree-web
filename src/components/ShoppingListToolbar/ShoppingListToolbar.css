@@ -1,0 +1,105 @@
+.shopping-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.toolbar-status {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-medium);
+}
+
+.status-number {
+  color: var(--color-primary);
+  font-weight: var(--font-bold);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.toolbar-right {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.toolbar-btn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.toolbar-btn:hover {
+  background-color: var(--color-background-hover);
+}
+
+.toolbar-btn-danger {
+  color: #ef4444; /* Fallback */
+  color: var(--color-danger, #ef4444);
+  border-color: currentColor;
+}
+
+.toolbar-btn-danger:hover {
+  background-color: rgba(239, 68, 68, 0.1); /* Fallback */
+  background-color: var(--color-danger-muted, rgba(239, 68, 68, 0.1));
+}
+
+.toolbar-view-toggle {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  padding: var(--space-1) var(--space-2);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.toggle-btn:hover {
+  background-color: var(--color-background-hover);
+}
+
+.toggle-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+@media (max-width: 640px) {
+  .shopping-toolbar {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .toolbar-actions, .toolbar-right {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -13,6 +13,8 @@ const InstructionItem = ({
     onHover,
     onLeave
 }) => {
+    const formattedStepNum = String(index + 1).padStart(2, '0');
+
     return (
         <li
             className={`instruction-item ${isChecked ? 'checked' : ''} ${isExpanded ? 'expanded' : ''}`}
@@ -29,7 +31,7 @@ const InstructionItem = ({
                     data-testid={`instruction-checkbox-${index}`}
                 >
                     <span className="step-number">
-                        {isChecked ? <CheckIcon size={16} /> : index + 1}
+                        {isChecked ? <CheckIcon size={16} /> : formattedStepNum}
                     </span>
                 </div>
                 <div className="instruction-content">
@@ -48,14 +50,7 @@ const InstructionItem = ({
                 <div className="step-inline-ingredients" data-testid={`inline-ingredients-${index}`}>
                     <ul className="step-ingredients-list-inline">
                         {inlineIngredients.map((entry, i) => {
-                            // entry is { amount, unit, item }
-                            // we expect the parent to pass already resolved ingredients to avoid extensive logic here?
-                            // OR we pass the raw entry and the resolution logic is here?
-                            // The previous code did resolution inside the map. 
-                            // To keep this component dumb, let's assume `inlineIngredients` is an array of objects { text, amount, unit, item }
-                            // Actually, looking at Recipe.jsx, it does a lookup `flatIngredients[ingredientIndex]`.
-                            // Passing that down is cleaner.
-
+                            if (!entry) return null;
                             return (
                                 <li key={`${index}-${i}`} className="step-ingredient-item-inline">
                                     <span className="step-ingredient-bullet">•</span>
