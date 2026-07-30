@@ -1,6 +1,127 @@
 .save-button-wrapper {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* The bookmark stays on top so the trigger can tuck in behind it, and stays
+   last in the row so it never shifts when the trigger slides out. */
+.save-button-wrapper .save-btn {
+    position: relative;
+    z-index: 2;
+}
+
+/* Secondary "manage lists" trigger. It reads as an extension of the bookmark
+   rather than a peer button: it lives behind it, only emerges while the
+   bookmark group is engaged, and slides out from under it. */
+.list-menu-btn {
+    --menu-btn-size: 32px;
+    --menu-btn-ease: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Sits to the LEFT of the bookmark. .card-actions is pinned to the card's
+       right edge, so growing leftward keeps the bookmark under the cursor. */
+    order: -1;
+    position: relative;
+    z-index: 1;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--menu-btn-size);
+    height: var(--menu-btn-size);
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+
+    /* Resting state: fully tucked behind the bookmark and invisible */
+    margin-right: calc(var(--menu-btn-size) * -1);
+    opacity: 0;
+    transform: scale(0.7);
+    transform-origin: right center;
+    pointer-events: none;
+
+    transition: margin-right var(--menu-btn-ease),
+                transform var(--menu-btn-ease),
+                opacity 190ms ease,
+                background-color var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast);
+}
+
+/* Revealed while the group is hovered or keyboard-focused, and held open for
+   as long as the menu itself is. :not(.is-hidden) keeps it sealed when the
+   recipe is not saved, whatever the pointer is doing. */
+.save-button-wrapper:hover .list-menu-btn:not(.is-hidden),
+.save-button-wrapper:focus-within .list-menu-btn:not(.is-hidden),
+.list-menu-btn.is-open:not(.is-hidden) {
+    margin-right: 5px;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+/* Touch devices have no hover, so never hide it behind one there. */
+@media (hover: none) {
+    .list-menu-btn:not(.is-hidden) {
+        margin-right: 5px;
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+}
+
+.list-menu-btn:hover,
+.list-menu-btn.is-open {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--color-background-hover);
+}
+
+/* The large variant lives in an explicit button row on the recipe page, where
+   a hover-reveal would shift its neighbours. It stays put and always visible.
+   Height comes from sharing the Save button's padding and icon size. */
+.list-menu-btn.large {
+    order: 0;
+    width: auto;
+    height: auto;
+    padding: 0.55rem 0.9rem;
+    border-radius: var(--radius-lg);
+    margin-right: 0;
+    margin-left: 6px;
+    transform: none;
+    transition: width var(--menu-btn-ease),
+                margin-left var(--menu-btn-ease),
+                padding var(--menu-btn-ease),
+                border-width var(--menu-btn-ease),
+                opacity 190ms ease,
+                background-color var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast);
+}
+
+.list-menu-btn.large:not(.is-hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.list-menu-btn.large.is-hidden {
+    width: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-width: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .list-menu-btn {
+        transition-duration: 1ms;
+    }
 }
 
 .save-btn {
@@ -34,6 +155,27 @@
     box-shadow: none;
 }
 
+/* Hovering an already-saved icon button previews the removal: it turns to the
+   error tone and the solid bookmark swaps for a bookmark-minus. This is what
+   replaced the explicit "Remove from library" row in the list menu. */
+.save-icon-remove {
+    display: none;
+}
+
+.save-btn.btn-icon.is-saved:hover {
+    background-color: var(--color-error) !important;
+    border-color: var(--color-error) !important;
+    color: #FFFFFF !important;
+}
+
+.save-btn.btn-icon.is-saved:hover .save-icon-rest {
+    display: none;
+}
+
+.save-btn.btn-icon.is-saved:hover .save-icon-remove {
+    display: block;
+}
+
 /* Variant: Large (for recipe page hero/details) */
 .save-btn.large {
     height: 40px;
@@ -57,38 +199,37 @@
 }
 
 
-/* Floating List Menu */
+/* Floating List Menu - tuned to the recipe card's editorial language */
 .save-list-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     right: 0;
-    margin-top: 0.5rem;
-    background: var(--color-background);
+    width: 200px;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
-    z-index: 50;
-    overflow: hidden;
-    animation: fadeInDown 0.2s ease;
+    border-radius: 10px;
+    box-shadow: var(--shadow-xl);
+    z-index: 60;
+    padding: 6px;
+    animation: fadeInDown 0.16s ease;
 }
 
+/* Mono eyebrow, matching the card's category chips */
 .menu-header {
-    padding: 0.75rem 1rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-background-alt);
+    padding: 6px 8px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-weight: var(--font-semibold);
+    color: var(--color-text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.14em;
 }
 
 .menu-lists {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 200px;
+    max-height: 220px;
     overflow-y: auto;
 }
 
@@ -98,42 +239,56 @@
 
 .list-option-btn {
     width: 100%;
-    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 8px;
     text-align: left;
     background: none;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.95rem;
-    color: var(--color-text);
-    transition: background-color 0.2s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .list-option-btn:hover {
     background-color: var(--color-background-hover);
-    color: var(--color-primary);
+    color: var(--color-text-primary);
+}
+
+/* Leading checkbox reads as "which lists is this in?" at a glance, rather than
+   a trailing tick that only appears on some rows. */
+.list-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: #FFFFFF;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .list-option-btn.active-list {
-    color: var(--color-primary);
-    font-weight: var(--font-medium);
+    color: var(--color-text-primary);
 }
 
-.menu-divider {
-    border-top: 1px solid var(--color-border);
+.list-option-btn.active-list .list-check {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
 }
 
-.list-option-btn.remove-btn {
-    color: var(--color-error);
-    font-weight: 500;
+.list-option-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.list-option-btn.remove-btn:hover {
-    background-color: rgba(220, 38, 38, 0.05); /* subtle red hover */
-    color: var(--color-error);
-}
 
 @keyframes fadeInDown {
     from {

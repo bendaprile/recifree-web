@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSavedRecipes } from '../../context/SavedRecipesContext';
 import { useAuth } from '../../context/AuthContext';
-import { BookmarkIcon, BookmarkSolidIcon, CheckIcon } from '../Icons/Icons';
+import { BookmarkIcon, BookmarkSolidIcon, BookmarkMinusIcon, CheckIcon, MoreIcon } from '../Icons/Icons';
 import SignupPromptModal from '../SignupPromptModal/SignupPromptModal';
 import './SaveRecipeButton.css';
 
@@ -28,24 +28,22 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleClick = async (e) => {
+    // The bookmark is a plain toggle in every state. List management lives on its
+    // own trigger, so this button never changes meaning under the user.
+    const handleToggleSave = async (e) => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!isSaved) {
-            // Not saved — save immediately (goes into "All Saved", no specific list)
-            await toggleSaved(recipe.id);
-            if (!currentUser) setShowSignupPrompt(true);
-            return;
-        }
+        const wasSaved = isSaved;
+        setShowListMenu(false);
+        await toggleSaved(recipe.id);
+        // Only nudge for signup on the way in, not when removing
+        if (!wasSaved && !currentUser) setShowSignupPrompt(true);
+    };
 
-        if (lists.length === 0) {
-            // Saved, but user has no custom lists — clicking again unsaves
-            await toggleSaved(recipe.id);
-            return;
-        }
-
-        // Saved and user has custom lists — show the list management menu
+    const handleToggleMenu = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         setShowListMenu(prev => !prev);
     };
 
@@ -56,31 +54,50 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
         if (!currentUser) setShowSignupPrompt(true);
     };
 
-    const handleUnsave = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setShowListMenu(false);
-        await toggleSaved(recipe.id);
-    };
-
     const buttonClass = `btn save-btn ${variant === 'icon-only' ? 'btn-icon' : 'btn-outline'} ${variant === 'large' ? 'large' : ''} ${isSaved ? 'is-saved' : ''} ${className}`;
 
     return (
         <div className="save-button-wrapper" ref={menuRef}>
             <button
                 className={buttonClass}
-                onClick={handleClick}
+                onClick={handleToggleSave}
                 aria-label={isSaved ? 'Remove from saved recipes' : 'Save recipe'}
                 title={isSaved ? 'Remove from saved recipes' : 'Save recipe'}
             >
-                {isSaved
-                    ? <BookmarkSolidIcon size={variant === 'icon-only' ? 20 : 18} />
-                    : <BookmarkIcon size={variant === 'icon-only' ? 20 : 18} />
-                }
+                {isSaved ? (
+                    <>
+                        <BookmarkSolidIcon size={variant === 'icon-only' ? 20 : 18} className="save-icon-rest" />
+                        {/* Swapped in on hover by CSS to preview what a click does */}
+                        {variant === 'icon-only' && (
+                            <BookmarkMinusIcon size={20} className="save-icon-remove" />
+                        )}
+                    </>
+                ) : (
+                    <BookmarkIcon size={variant === 'icon-only' ? 20 : 18} />
+                )}
                 {variant !== 'icon-only' && (
                     <span>{isSaved ? 'Saved' : 'Save'}</span>
                 )}
             </button>
+
+            {/* Secondary trigger, only once there is something to organise into.
+                Kept mounted and collapsed with CSS rather than conditionally
+                rendered, so it can animate out as well as in. Staying mounted
+                also means no transition fires on first paint. */}
+            {lists.length > 0 && (
+                <button
+                    className={`list-menu-btn ${variant === 'large' ? 'large' : ''} ${showListMenu ? 'is-open' : ''} ${isSaved ? '' : 'is-hidden'}`}
+                    onClick={handleToggleMenu}
+                    aria-label="Manage lists"
+                    aria-haspopup="true"
+                    aria-expanded={showListMenu}
+                    aria-hidden={isSaved ? undefined : 'true'}
+                    tabIndex={isSaved ? undefined : -1}
+                    title="Manage lists"
+                >
+                    <MoreIcon size={variant === 'large' ? 18 : 16} />
+                </button>
+            )}
 
             {/* Custom-list management dropdown */}
             {showListMenu && (
@@ -95,19 +112,15 @@ function SaveRecipeButton({ recipe, variant = 'icon-only', className = '' }) {
                                         className={`list-option-btn ${inList ? 'active-list' : ''}`}
                                         onClick={(e) => handleSaveToList(e, listName)}
                                     >
-                                        <span>{listName}</span>
-                                        {inList && <CheckIcon size={14} className="check-icon" />}
+                                        <span className="list-check" aria-hidden="true">
+                                            {inList && <CheckIcon size={11} className="check-icon" />}
+                                        </span>
+                                        <span className="list-option-label">{listName}</span>
                                     </button>
                                 </li>
                             );
                         })}
                     </ul>
-                    {/* Divider + destructive action */}
-                    <div className="menu-divider">
-                        <button className="list-option-btn remove-btn" onClick={handleUnsave}>
-                            Remove from library
-                        </button>
-                    </div>
                 </div>
             )}
 

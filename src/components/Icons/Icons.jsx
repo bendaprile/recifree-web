@@ -305,3 +305,20 @@ export const PlusIcon = ({ size = 18, className = '' }) => (
         <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
 );
+
+/* Bookmark with a minus - shown while hovering an already-saved item to signal
+   that clicking will take it back out of the library. */
+export const BookmarkMinusIcon = ({ size = 20, className = '' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        <line x1="9" y1="10" x2="15" y2="10" />
+    </svg>
+);
+
+export const MoreIcon = ({ size = 18, className = '' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <circle cx="5" cy="12" r="1.75" />
+        <circle cx="12" cy="12" r="1.75" />
+        <circle cx="19" cy="12" r="1.75" />
+    </svg>
+);

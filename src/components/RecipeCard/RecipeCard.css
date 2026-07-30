@@ -1,36 +1,53 @@
 /* =================================
-   Recipe Card - Minimalist Cookbook Style
+   Recipe Card - Swiss Editorial style, ported from the redesign mockup
    ================================= */
 .recipe-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     background-color: var(--color-surface);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    /* Deliberately NOT overflow:hidden - that would clip the save button's list
+       menu. The image rounds its own top corners instead. */
     text-decoration: none;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid var(--color-border-light);
-    position: relative;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base),
+                box-shadow var(--transition-base),
+                border-color var(--transition-base);
 }
 
 .recipe-card:hover {
-    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.12);
-    transform: translateY(-5px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--color-primary-light);
 }
 
-/* Image Container */
+/* Lift the card above its later siblings while the menu is open, so the menu
+   is never painted under the next card in the grid. */
+.recipe-card:hover,
+.recipe-card:has(.save-list-menu) {
+    z-index: 5;
+}
+
+/* =================================
+   Image with overlaid time badge + save control
+   ================================= */
 .recipe-card-image {
     position: relative;
-    aspect-ratio: 4 / 3;
+    height: 200px;
+    width: 100%;
+    flex-shrink: 0;
     overflow: hidden;
-    border-top-left-radius: var(--radius-lg);
-    border-top-right-radius: var(--radius-lg);
+    /* 13px, not 14px: nests inside the card's 1px border without a hairline */
+    border-radius: 13px 13px 0 0;
 }
 
 .recipe-card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
     transition: transform var(--transition-slow);
 }
 
@@ -38,28 +55,149 @@
     transform: scale(1.03);
 }
 
-/* Card Actions */
+/* Prep-time pill, dark glass so it reads over any photo */
+.card-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: var(--font-semibold);
+    line-height: 1;
+}
+
 .card-actions {
     position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
+    top: 12px;
+    right: 12px;
     z-index: 2;
 }
 
-/* Difficulty Badge - Subtle */
-.recipe-difficulty {
-    position: absolute;
-    bottom: var(--space-3);
-    left: var(--space-3);
-    padding: var(--space-1) var(--space-3);
-    font-size: var(--text-xs);
-    font-weight: var(--font-medium);
-    border-radius: var(--radius-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    z-index: 2;
+/* Match the mockup's neutral 34px circle. The saved state keeps its own sage
+   fill (set with !important in SaveRecipeButton.css) as real status feedback. */
+.recipe-card .card-actions .save-btn.btn-icon {
+    width: 34px;
+    height: 34px;
+}
+
+/* Sized through the variable, not width/height directly, so the collapsed
+   .is-hidden state (lower specificity) can still flatten it. */
+.recipe-card .card-actions .list-menu-btn {
+    --menu-btn-size: 34px;
+}
+
+.recipe-card .card-actions .save-btn.btn-icon,
+.recipe-card .card-actions .list-menu-btn {
     background-color: var(--color-surface);
-    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+}
+
+/* Saved bookmarks are excluded here - they get the destructive removal hover
+   from SaveRecipeButton.css instead of the sage fill. */
+.recipe-card .card-actions .save-btn.btn-icon:not(.is-saved):hover,
+.recipe-card .card-actions .list-menu-btn:hover,
+.recipe-card .card-actions .list-menu-btn.is-open {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* =================================
+   Content
+   ================================= */
+.recipe-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 22px;
+}
+
+/* Mono uppercase category chips, sitting above the title */
+.recipe-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.recipe-card-tags .card-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+    padding: 2px 8px;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+}
+
+.recipe-card-title {
+    /* Sans, not the global serif heading - matches the mockup */
+    font-family: var(--font-primary);
+    font-size: 1.18rem;
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Clamped to two lines so cards stay visually even; the footer's auto margin
+   handles bottom alignment, so this must not also flex-grow (the two fight and
+   the clamp stops applying). */
+.recipe-card-desc {
+    font-size: 0.86rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    margin: 0 0 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* =================================
+   Footer meta rail
+   ================================= */
+.recipe-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+}
+
+.card-footer-servings {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-footer-difficulty {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: var(--font-semibold);
 }
 
 .difficulty-easy {
@@ -67,87 +205,9 @@
 }
 
 .difficulty-medium {
-    color: var(--color-accent);
+    color: var(--color-warning);
 }
 
 .difficulty-hard {
     color: var(--color-error);
-}
-
-.recipe-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-5) var(--space-5) var(--space-6);
-    flex: 1;
-}
-
-.recipe-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-3);
-}
-
-.recipe-card-title {
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: var(--font-medium);
-    color: var(--color-text-primary);
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin: 0;
-    letter-spacing: -0.01em;
-    flex: 1;
-}
-
-.recipe-card-action {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    margin-top: -2px; /* slight visual alignment */
-}
-
-/* Meta Info */
-.recipe-card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-}
-
-.meta-icon {
-    font-size: var(--text-sm);
-    opacity: 0.7;
-}
-
-/* Tags - Simple Text Style */
-.recipe-card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-top: var(--space-2);
-}
-
-.recipe-card-tags .tag {
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    background: none;
-    padding: 0;
-}
-
-.recipe-card-tags .tag:not(:last-child)::after {
-    content: '·';
-    margin-left: var(--space-2);
-    color: var(--color-text-muted);
 }

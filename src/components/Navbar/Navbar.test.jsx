@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Navbar from './Navbar';
@@ -49,6 +49,10 @@ describe('Navbar Component', () => {
             value: vi.fn().mockImplementation(cb => cb()),
         });
 
+        // Reset scroll between tests — otherwise a value set by one test leaks
+        // into the next one's mount and pre-triggers the scrolled state.
+        Object.defineProperty(window, 'scrollY', { value: 0, writable: true });
+
         window.history.replaceState({}, '', '/');
     });
 
@@ -71,10 +75,16 @@ describe('Navbar Component', () => {
         expect(screen.getByText('Recifree')).toBeInTheDocument();
     });
 
-    it('renders navigation links', () => {
+    it('renders Explore for everyone, and the gated links only when signed in', () => {
         renderNavbar();
-        expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('About')).toBeInTheDocument();
+        expect(screen.getByText('Explore')).toBeInTheDocument();
+        expect(screen.queryByText('Saved')).not.toBeInTheDocument();
+
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
+        renderNavbar();
+        expect(screen.getAllByText('Explore').length).toBeGreaterThan(0);
+        expect(screen.getByText('Saved')).toBeInTheDocument();
+        expect(screen.getByText('Shopping List')).toBeInTheDocument();
     });
 
     it('toggles the mobile menu when hamburger button is clicked', () => {
@@ -102,8 +112,8 @@ describe('Navbar Component', () => {
         expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
 
         // Click a link
-        const homeLink = screen.getByRole('link', { name: /home/i });
-        fireEvent.click(homeLink);
+        const exploreLink = screen.getByRole('link', { name: /explore/i });
+        fireEvent.click(exploreLink);
 
         // Should be closed now (state update happens)
         expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
@@ -129,18 +139,19 @@ describe('Navbar Component', () => {
         expect(screen.queryByTestId('navbar-overlay')).not.toBeInTheDocument();
     });
 
-    it('navigates to About page from mobile menu', () => {
+    it('navigates to a gated page from the mobile menu', () => {
+        useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
         renderNavbar();
         const toggleButton = screen.getByLabelText('Toggle navigation menu');
 
         // Open
         fireEvent.click(toggleButton);
 
-        const aboutLink = screen.getByRole('link', { name: /about/i });
-        expect(aboutLink).toHaveAttribute('href', '/about');
+        const savedLink = screen.getByRole('link', { name: /^saved/i });
+        expect(savedLink).toHaveAttribute('href', '/saved');
 
         // Verify click closes menu
-        fireEvent.click(aboutLink);
+        fireEvent.click(savedLink);
         expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
     });
 
@@ -152,22 +163,22 @@ describe('Navbar Component', () => {
         expect(screen.queryByRole('link', { name: /shopping list/i })).not.toBeInTheDocument();
     });
 
-    it('Shopping List shows as a link inside My Kitchen dropdown when user IS logged in', () => {
+    it('Shopping List shows in the primary nav when user IS logged in', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
-        renderNavbar();
+        const { container } = renderNavbar();
 
         const listLink = screen.getByRole('link', { name: /shopping list/i, hidden: true });
-        expect(listLink).toBeInTheDocument();
         expect(listLink).toHaveAttribute('href', '/shopping-list');
+        expect(container.querySelector('.navbar-cluster--start')).toContainElement(listLink);
     });
 
-    it('Saved Recipes shows inside My Kitchen dropdown when user IS logged in', () => {
+    it('Saved shows in the primary nav when user IS logged in', () => {
         useAuth.mockReturnValue(makeAuth({ currentUser: { uid: 'user-123' } }));
-        renderNavbar();
+        const { container } = renderNavbar();
 
-        const savedLink = screen.getByRole('link', { name: /saved recipes/i, hidden: true });
-        expect(savedLink).toBeInTheDocument();
+        const savedLink = screen.getByRole('link', { name: /^saved/i, hidden: true });
         expect(savedLink).toHaveAttribute('href', '/saved');
+        expect(container.querySelector('.navbar-cluster--start')).toContainElement(savedLink);
     });
 
     it('toggles dropdown when My Kitchen button is clicked', () => {
@@ -296,6 +307,106 @@ describe('Navbar Component', () => {
         fireEvent.click(triggerBtn3);
         const input2 = container.querySelector('.mobile-search-input');
         fireEvent.change(input2, { target: { value: 'pasta' } });
+
+        // Typing writes to ?q=, which changes location. The overlay must survive
+        // that — only an actual page navigation should dismiss it.
+        expect(container.querySelector('.mobile-search-input')).toBeInTheDocument();
+    });
+
+    it('condenses into the 2D rail on scroll and never hides itself', () => {
+        const { container } = renderNavbar();
+        const header = container.querySelector('.navbar');
+
+        expect(header).not.toHaveClass('is-scrolled');
+
+        // Past the 40px threshold -> condensed rail
+        Object.defineProperty(window, 'scrollY', { value: 300, writable: true });
+        fireEvent.scroll(window);
+        expect(header).toHaveClass('is-scrolled');
+
+        // Continuing to scroll DOWN must not translate the bar away
+        Object.defineProperty(window, 'scrollY', { value: 900, writable: true });
+        fireEvent.scroll(window);
+        expect(header).toHaveClass('is-scrolled');
+        expect(header).not.toHaveClass('navbar-hidden');
+        expect(document.querySelector('.sticky-header--hidden')).toBeNull();
+
+        // Back to the top -> full masthead again
+        Object.defineProperty(window, 'scrollY', { value: 0, writable: true });
+        fireEvent.scroll(window);
+        expect(header).not.toHaveClass('is-scrolled');
+    });
+
+    it('does not oscillate when scroll anchoring corrects for the collapsed height', () => {
+        const { container } = renderNavbar();
+        const header = container.querySelector('.navbar');
+        const setScroll = (value) => {
+            Object.defineProperty(window, 'scrollY', { value, writable: true });
+            fireEvent.scroll(window);
+        };
+
+        // Condensing costs 16px of sticky-header flow height, which the browser
+        // hands back as a scrollY correction. Collapse and expand therefore sit
+        // on separate thresholds; anything inside the dead band must hold still.
+
+        // Inside the band, on the way down: still the full masthead.
+        setScroll(50);
+        expect(header).not.toHaveClass('is-scrolled');
+
+        // Clear of the band: condenses.
+        setScroll(70);
+        expect(header).toHaveClass('is-scrolled');
+
+        // The anchoring correction lands back inside the band. With a single
+        // threshold this flipped it open again, then shut, then open...
+        setScroll(70 - 16);
+        expect(header).toHaveClass('is-scrolled');
+
+        // Only a genuine return to the top expands it.
+        setScroll(20);
+        expect(header).not.toHaveClass('is-scrolled');
+
+        // And expanding re-adds those 16px without immediately re-collapsing.
+        expect(20 + 16).toBeLessThan(70);
+        setScroll(20 + 16);
+        expect(header).not.toHaveClass('is-scrolled');
+    });
+
+    it('reveals the search icon only once scrolled, and expands it into a field', () => {
+        const { container } = renderNavbar();
+        const search = container.querySelector('.nav-search');
+
+        // Hidden while the masthead is in its full 2A state
+        expect(search).not.toHaveClass('is-visible');
+
+        Object.defineProperty(window, 'scrollY', { value: 300, writable: true });
+        fireEvent.scroll(window);
+        expect(search).toHaveClass('is-visible');
+        expect(search).not.toHaveClass('is-open');
+
+        // Clicking the icon expands it in place
+        fireEvent.click(screen.getByLabelText('Search recipes'));
+        expect(search).toHaveClass('is-open');
+
+        // And it collapses again, both by click and by scrolling back to top
+        fireEvent.click(screen.getByLabelText('Close search'));
+        expect(search).not.toHaveClass('is-open');
+
+        fireEvent.click(screen.getByLabelText('Search recipes'));
+        expect(search).toHaveClass('is-open');
+        Object.defineProperty(window, 'scrollY', { value: 0, writable: true });
+        fireEvent.scroll(window);
+        expect(search).not.toHaveClass('is-visible');
+        expect(search).not.toHaveClass('is-open');
+    });
+
+    it('renders the left-hand nav links as plain text, without icons', () => {
+        const { container } = renderNavbar();
+        const leftCluster = container.querySelector('.navbar-cluster--start');
+
+        expect(leftCluster).toBeInTheDocument();
+        expect(leftCluster.querySelectorAll('svg')).toHaveLength(0);
+        expect(leftCluster.textContent).toBe('Explore');
     });
 
     it('closes the user menu dropdown via onBlur when clicking outside', () => {
