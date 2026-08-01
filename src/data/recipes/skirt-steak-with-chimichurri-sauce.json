@@ -1,0 +1,115 @@
+{
+  "id": "skirt-steak-with-chimichurri-sauce",
+  "title": "Skirt Steak with Chimichurri Sauce",
+  "description": "An essential Argentinian classic featuring juicy grilled steak topped with a fresh, zingy parsley, garlic, and oregano chimichurri sauce.",
+  "image": "/images/recipes/skirt-steak-with-chimichurri-sauce.jpg",
+  "prepTime": "5 mins",
+  "cookTime": "10 mins",
+  "totalTime": "15 mins",
+  "servings": 4,
+  "difficulty": "Easy",
+  "tags": [
+    "Argentinian",
+    "Dinner",
+    "Beef",
+    "Gluten-Free",
+    "Quick and Easy"
+  ],
+  "ingredients": [
+    {
+      "title": "Chimichurri Sauce",
+      "items": [
+        {
+          "amount": "1",
+          "unit": "cup",
+          "item": "parsley leaves, tightly packed"
+        },
+        {
+          "amount": "1",
+          "unit": "tbsp",
+          "item": "oregano leaves, tightly packed"
+        },
+        {
+          "amount": "4",
+          "unit": "cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "amount": "1",
+          "unit": "tsp",
+          "item": "red pepper flakes (optional)"
+        },
+        {
+          "amount": "1/4",
+          "unit": "cup",
+          "item": "red wine vinegar"
+        },
+        {
+          "amount": "1/2",
+          "unit": "tsp",
+          "item": "salt"
+        },
+        {
+          "amount": "",
+          "unit": "",
+          "item": "freshly cracked black pepper"
+        },
+        {
+          "amount": "1/2",
+          "unit": "cup",
+          "item": "extra virgin olive oil"
+        }
+      ]
+    },
+    {
+      "title": "Steak",
+      "items": [
+        {
+          "amount": "1.4",
+          "unit": "lb",
+          "item": "skirt steak (or flank / flat iron)"
+        },
+        {
+          "amount": "1",
+          "unit": "tbsp",
+          "item": "vegetable oil"
+        },
+        {
+          "amount": "",
+          "unit": "",
+          "item": "salt and pepper"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Place parsley, oregano, garlic, red pepper flakes, red wine vinegar, salt, and black pepper into a food processor. Pulse until finely chopped but not pureed.",
+    "Transfer the mixture to a small bowl, pour in the extra virgin olive oil, and stir gently. Set aside for 1 hour to allow flavors to meld.",
+    "Remove steak from the refrigerator 30 minutes before cooking to bring to room temperature.",
+    "Heat vegetable oil in a heavy skillet or grill over high heat until smoking.",
+    "Generously season both sides of the steak with salt and pepper.",
+    "Cook the steak for 2 minutes per side for medium-rare or 2.5 minutes per side for medium.",
+    "Transfer steak to a plate, cover loosely with foil, and rest for 5 to 10 minutes.",
+    "Slice thin against the grain and serve with Chimichurri Sauce on the side."
+  ],
+  "stepIngredients": [
+    [0, 1, 2, 3, 4, 5, 6],
+    [7],
+    [8],
+    [9],
+    [10],
+    [8],
+    [],
+    []
+  ],
+  "source": {
+    "name": "RecipeTin Eats",
+    "url": "https://www.recipetineats.com/skirt-steak-with-chimichurri-sauce/"
+  },
+  "nutrition": {
+    "calories": 491,
+    "protein": "38g",
+    "carbs": "2g",
+    "fat": "35g"
+  }
+}
