@@ -18,7 +18,8 @@ This roadmap tracks Recifree's path from a single-author recipe collection to a 
 - ✅ **Dynamic Routing Architecture:** Reconfigure the router to handle dynamic database lookups (e.g., `/recipe/:slug`) instead of static local files.
 - ✅ **SSR / Pre-rendering Implementation:** Upgrade deployment (e.g., Server-Side Rendering or Static Site Generation) to ensure SEO crawlers receive fully rendered HTML instead of an empty loading state.
 - ✅ **User Saved Recipes:** Implement a system for users to save recipes to their profile and create different lists for different types of recipes.
-- ✅ **Custom Domain & Email Deliverability:** Register a production domain and configure custom DNS records (SPF/DKIM/DMARC) in Firebase Authentication to ensure verification emails reliably land in users' primary inboxes instead of spam.
+- ⚠️ **Custom Domain & Email Deliverability:** Register a production domain and configure custom DNS records (SPF/DKIM/DMARC) in Firebase Authentication so verification emails land in primary inboxes rather than spam. **Previously marked complete; it is not.** Firebase Hosting has exactly one site, `recifree-web-4731f`, serving `recifree-web-4731f.web.app`. No custom domain is attached.
+  - ⛔ **Now blocking sharing.** Chrome Safe Browsing flags the site as dangerous. The Site Status lookup returns no data, which points at Chrome's on-device phishing heuristic rather than a public listing — the profile it matches is a zero-reputation `*.web.app` subdomain with a login form that only became crawlable in August 2026. Reputation attaches to a hostname, so a real domain is the durable fix; appealing a listing that may not exist is not. Check Search Console → Security Issues first to find out which case this is.
 - ✅ **Production Rollout:** Remove the active closed-beta feature flag (`VITE_ENABLE_SIGNUPS`) and roll out the final registration engine to live servers.
 
 ## Phase 2: The Extraction Engine (MVP) ✅ Complete
