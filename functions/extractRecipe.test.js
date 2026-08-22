@@ -12,7 +12,20 @@ const admin = require('firebase-admin');
 
 if (admin.apps.length === 0) admin.initializeApp();
 
-let publishedMatches = [];
+const { normalizeUrl, hashUrl } = require('./cache/extractionCache');
+
+/** The deduplication key for a URL, computed the way the function computes it. */
+const keyFor = (url) => hashUrl(normalizeUrl(url));
+
+/**
+ * Published recipes, keyed by their sourceUrlHash. Matching on the hash rather
+ * than answering every query is the point: a test that redirects to a match has
+ * to prove the *alternate* address matched, not the pasted one.
+ */
+let publishedByHash = {};
+
+/** Extraction cache documents, keyed by their url hash. */
+let cachedByHash = {};
 
 const fakeDb = {
   // Rate limiting writes here.
@@ -21,13 +34,19 @@ const fakeDb = {
     set: () => {}
   }),
   collection: (name) => ({
-    doc: () => ({ get: async () => ({ exists: false, data: () => ({}) }), set: async () => {} }),
-    where: () => ({
+    doc: (id) => ({
+      get: async () => ({
+        exists: name === 'extraction_cache' && Boolean(cachedByHash[id]),
+        data: () => cachedByHash[id]
+      }),
+      set: async () => {}
+    }),
+    where: (field, op, value) => ({
       limit: () => ({
-        get: async () => ({
-          empty: name !== 'recipes' || publishedMatches.length === 0,
-          docs: name === 'recipes' ? publishedMatches : []
-        })
+        get: async () => {
+          const hit = name === 'recipes' ? publishedByHash[value] : null;
+          return { empty: !hit, docs: hit ? [{ data: () => hit }] : [] };
+        }
       })
     })
   })
@@ -58,14 +77,15 @@ const postUrl = (url) => ({
 
 describe('extractRecipe paste deduplication', () => {
   beforeEach(() => {
-    publishedMatches = [];
+    publishedByHash = {};
+    cachedByHash = {};
     globalThis.fetch = vi.fn(() => {
       throw new Error('the page must not be fetched for a URL that is already published');
     });
   });
 
   it('routes a duplicate paste to the published recipe', async () => {
-    publishedMatches = [{ data: () => ({ slug: 'kale-salad', title: 'Kale Salad' }) }];
+    publishedByHash[keyFor('https://example.com/kale-salad')] = { slug: 'kale-salad' };
     const res = fakeRes();
 
     await extractRecipeOrchestrator(postUrl('https://example.com/kale-salad'), res);
@@ -75,7 +95,7 @@ describe('extractRecipe paste deduplication', () => {
   });
 
   it('never fetches the page for a duplicate, which is the point of checking first', async () => {
-    publishedMatches = [{ data: () => ({ slug: 'kale-salad', title: 'Kale Salad' }) }];
+    publishedByHash[keyFor('https://example.com/kale-salad')] = { slug: 'kale-salad' };
 
     await extractRecipeOrchestrator(postUrl('https://example.com/kale-salad'), fakeRes());
 
@@ -83,12 +103,93 @@ describe('extractRecipe paste deduplication', () => {
   });
 
   it('matches a paste that carries tracking parameters the canonical URL lacks', async () => {
-    publishedMatches = [{ data: () => ({ slug: 'kale-salad', title: 'Kale Salad' }) }];
+    publishedByHash[keyFor('https://example.com/kale-salad')] = { slug: 'kale-salad' };
     const res = fakeRes();
 
     await extractRecipeOrchestrator(postUrl('https://example.com/kale-salad/?utm_source=pinterest'), res);
 
     expect(res.body.duplicate).toBe(true);
+  });
+
+  it('hands the deduplication key back with the recipe', async () => {
+    // The shelf uses it to recognise a URL the user already holds, without the
+    // frontend reimplementing normalizeUrl and drifting from it.
+    globalThis.fetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => `<html><script type="application/ld+json">${JSON.stringify({
+        '@type': 'Recipe',
+        name: 'Kale Salad',
+        recipeIngredient: ['1 cup kale'],
+        recipeInstructions: [{ '@type': 'HowToStep', text: 'Toss it.' }]
+      })}</script></html>`
+    }));
+    const res = fakeRes();
+
+    await extractRecipeOrchestrator(postUrl('https://example.com/kale-salad'), res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.sourceUrlHash).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it('matches a shortened link against the page it redirects to', async () => {
+    // The paste and the recipe hash differently; only the address the fetch
+    // landed on matches what is in the catalog.
+    publishedByHash[keyFor('https://www.gimmesomeoven.com/cajun-seasoning/')] = { slug: 'cajun-seasoning' };
+    globalThis.fetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      url: 'https://www.gimmesomeoven.com/cajun-seasoning/',
+      text: async () => '<html></html>'
+    }));
+    const res = fakeRes();
+
+    await extractRecipeOrchestrator(postUrl('https://pin.it/shortlink'), res);
+
+    expect(res.body).toEqual({ duplicate: true, slug: 'cajun-seasoning' });
+  });
+
+  it('matches the publisher\'s canonical address', async () => {
+    publishedByHash[keyFor('https://www.gimmesomeoven.com/cajun-seasoning/')] = { slug: 'cajun-seasoning' };
+    globalThis.fetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      url: 'https://www.gimmesomeoven.com/?p=1234',
+      text: async () => '<html><head><link rel="canonical" href="https://www.gimmesomeoven.com/cajun-seasoning/"/></head></html>'
+    }));
+    const res = fakeRes();
+
+    await extractRecipeOrchestrator(postUrl('https://www.gimmesomeoven.com/?p=1234'), res);
+
+    expect(res.body).toEqual({ duplicate: true, slug: 'cajun-seasoning' });
+  });
+
+  it('still deduplicates when the paste is already in the extraction cache', async () => {
+    // A cache hit returns before the page is fetched, so the redirect and
+    // canonical checks never run. The cached source URL has to carry it.
+    const pasted = 'https://pin.it/shortlink';
+    cachedByHash[keyFor(pasted)] = {
+      title: 'Cajun Seasoning',
+      source: { url: 'https://www.gimmesomeoven.com/cajun-seasoning/' }
+    };
+    publishedByHash[keyFor('https://www.gimmesomeoven.com/cajun-seasoning/')] = { slug: 'cajun-seasoning' };
+    const res = fakeRes();
+
+    await extractRecipeOrchestrator(postUrl(pasted), res);
+
+    expect(res.body).toEqual({ duplicate: true, slug: 'cajun-seasoning' });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  it('returns the cached recipe when nothing matches it in the catalog', async () => {
+    const pasted = 'https://example.com/kale-salad';
+    cachedByHash[keyFor(pasted)] = { title: 'Kale Salad', source: { url: pasted } };
+    const res = fakeRes();
+
+    await extractRecipeOrchestrator(postUrl(pasted), res);
+
+    expect(res.body.title).toBe('Kale Salad');
+    expect(res.body.sourceUrlHash).toBe(keyFor(pasted));
   });
 
   it('extracts as normal when nothing has been published from that URL', async () => {
@@ -105,7 +206,8 @@ describe('extractRecipe paste deduplication', () => {
 
 describe('extractRecipe manual-entry fallbacks', () => {
   beforeEach(() => {
-    publishedMatches = [];
+    publishedByHash = {};
+    cachedByHash = {};
   });
 
   it('names the site when a publisher blocks the fetch', async () => {

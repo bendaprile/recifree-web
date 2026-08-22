@@ -22,6 +22,11 @@ import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
 const admin = require('firebase-admin');
 
+// The deduplication key, computed with the same normalizer the extraction path
+// uses. Without it a recipe added here never matches a paste of its own source
+// URL, and the catalog grows a second copy of it.
+const { normalizeUrl, hashUrl } = require('../functions/cache/extractionCache');
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
@@ -92,6 +97,14 @@ for (const file of recipeFiles) {
   const payload = { ...recipe };
   if (Array.isArray(payload.stepIngredients)) {
     payload.stepIngredients = JSON.stringify(payload.stepIngredients);
+  }
+
+  if (recipe.source && recipe.source.url) {
+    try {
+      payload.sourceUrlHash = hashUrl(normalizeUrl(recipe.source.url));
+    } catch {
+      // A manual entry can carry anything in that field. No key, no dedupe.
+    }
   }
 
   try {

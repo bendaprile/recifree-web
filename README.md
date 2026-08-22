@@ -59,7 +59,13 @@ Reports which parse layer handled each cached extraction (`ld+json`, `microdata`
 npm run backfill:source-hash
 ```
 
-Adds `sourceUrlHash` to catalog recipes that predate paste deduplication, so pasting their source URL routes to the existing recipe instead of extracting a copy. Reports what it would change and writes nothing; run `npm run backfill:source-hash -- --apply` to write. Add `FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"` to run against the local emulator.
+Adds `sourceUrlHash` to catalog recipes that are missing it, so pasting their source URL routes to the existing recipe instead of extracting a copy. Reports what it would change and writes nothing; run `npm run backfill:source-hash -- --apply` to write. Add `FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"` to run against the local emulator.
+
+Pass `--rehash` to recompute keys that already exist. **Required whenever `normalizeUrl` changes**, immediately after deploying the change — otherwise the function computes new-style keys against a catalog holding old-style ones, and deduplication silently stops matching:
+
+```bash
+npm run backfill:source-hash -- --rehash --apply
+```
 
 ### Proof Scripts
 

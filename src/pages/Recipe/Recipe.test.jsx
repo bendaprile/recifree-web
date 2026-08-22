@@ -186,6 +186,13 @@ describe('Recipe Page', () => {
             expect(screen.getByText(/already in your saved recipes/)).toBeInTheDocument();
         });
 
+        it('explains a paste that reopened the user\'s own draft', async () => {
+            await renderRecipe('test-recipe', { alreadyShelved: true });
+
+            expect(screen.getByText(/You already had this one/)).toBeInTheDocument();
+            expect(screen.getByText(/opened your draft/)).toBeInTheDocument();
+        });
+
         it('shows no notice on an ordinary visit', async () => {
             await renderRecipe();
 

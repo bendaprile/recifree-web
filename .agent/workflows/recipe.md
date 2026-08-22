@@ -19,7 +19,7 @@ There are two ways in. Pick by who does the typing.
 1.  **Get the recipe text.** The user pastes it, or you read the page with the browser tools — a real browser gets pages a server-side fetch cannot. Never take the page's photo; see step 5.
 2.  **Write the JSON.** Follow the prompt and schema below. Save it to `src/data/recipes/[id].json`, where `[id]` is the kebab-case slug from the schema.
 3.  **Load it into Firestore.** Run `npm run migrate -- --id=[id]`. The catalog reads Firestore; `src/data/recipes/` is only the offline fallback. Skip this and the recipe renders nowhere, which is the most common way this workflow silently does nothing. Note that it writes to **production**.
-4.  **Give it a deduplication key.** Run `npm run backfill:source-hash -- --apply`. Without it, pasting the source URL later extracts a duplicate instead of routing to this recipe.
+4.  **Confirm it has a deduplication key.** `npm run migrate` computes `sourceUrlHash` from the recipe's source URL, so this is usually already done. Run `npm run backfill:source-hash` to check; without a key, pasting the source URL later extracts a duplicate instead of routing to this recipe.
 5.  **Add an image.** Two legal sources only, per `AGENTS.md` rule 6: a photo the user took, or an AI-generated one. Never the source site's photo, and never a hotlink.
     *   Prompt guidelines: "A delicious, high-quality food photography shot of [Recipe Title]. [Visual description of ingredients and colors]. Professional food styling, 4k resolution."
     *   Save to `public/images/recipes/[id].[ext]`, matching the generated file's real format (`.jpg` for JPEG/JFIF, `.png` for PNG).

@@ -48,6 +48,18 @@ describe('ssrRecipe public serialisation', () => {
     expect(publish).toMatch(/lookupPublisherName\(db, admin\.auth\(\), caller\.uid\)/);
   });
 
+  it('hashes the source URL when a recipe is migrated from JSON', () => {
+    // Recipes added through .agent/workflows/recipe.md arrive this way. Without
+    // the key they never match a paste of their own source URL, and the catalog
+    // grows the duplicate this whole mechanism exists to prevent. Asserted on
+    // the source because the script initialises the Admin SDK at import.
+    const migrate = readFileSync(
+      resolve(dirname(fileURLToPath(import.meta.url)), '..', 'scripts', 'migrate-to-firestore.js'),
+      'utf8'
+    );
+    expect(migrate).toMatch(/payload\.sourceUrlHash = hashUrl\(normalizeUrl\(recipe\.source\.url\)\)/);
+  });
+
   it('parses stepIngredients before hydrating, so the client never maps a string', () => {
     // Firestore stores it as a JSON string. The hydration payload bypasses
     // recipeService's mapping, so the parse has to happen here.

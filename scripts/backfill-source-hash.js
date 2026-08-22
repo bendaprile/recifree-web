@@ -11,9 +11,15 @@
  *
  * Reports and writes nothing unless --apply is passed.
  *
+ * --rehash recomputes hashes that already exist. Needed whenever normalizeUrl
+ * changes: the function starts producing new-style keys while the catalog
+ * still holds old-style ones, and every paste silently stops matching until
+ * this has run.
+ *
  * Usage:
- *   node scripts/backfill-source-hash.js                                     # dry run, production
- *   node scripts/backfill-source-hash.js --apply                             # write
+ *   node scripts/backfill-source-hash.js                        # dry run, production
+ *   node scripts/backfill-source-hash.js --apply                # fill in what is missing
+ *   node scripts/backfill-source-hash.js --rehash --apply       # recompute everything
  *   FIRESTORE_EMULATOR_HOST="127.0.0.1:8080" node scripts/backfill-source-hash.js --apply   # local emulator
  */
 
@@ -32,6 +38,7 @@ const { normalizeUrl, hashUrl } = require('../functions/cache/extractionCache');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const APPLY = process.argv.includes('--apply');
+const REHASH = process.argv.includes('--rehash');
 
 function initFirestore() {
   if (process.env.FIRESTORE_EMULATOR_HOST) {
@@ -58,12 +65,12 @@ function initFirestore() {
 
 const db = initFirestore();
 const target = process.env.FIRESTORE_EMULATOR_HOST || 'production';
-console.log(`\nBackfilling sourceUrlHash on ${target}${APPLY ? '' : ' (dry run)'}\n`);
+console.log(`\n${REHASH ? 'Recomputing' : 'Backfilling'} sourceUrlHash on ${target}${APPLY ? '' : ' (dry run)'}\n`);
 
 const snapshot = await db.collection('recipes').get();
 
 let written = 0;
-let alreadyHashed = 0;
+let alreadyCorrect = 0;
 let noSource = 0;
 let unhashable = 0;
 
@@ -71,8 +78,8 @@ for (const doc of snapshot.docs) {
   const data = doc.data();
   const slug = data.slug || doc.id;
 
-  if (data.sourceUrlHash) {
-    alreadyHashed += 1;
+  if (data.sourceUrlHash && !REHASH) {
+    alreadyCorrect += 1;
     continue;
   }
 
@@ -92,6 +99,12 @@ for (const doc of snapshot.docs) {
     continue;
   }
 
+  // A rehash that lands on the same value is not a change worth reporting.
+  if (data.sourceUrlHash === hash) {
+    alreadyCorrect += 1;
+    continue;
+  }
+
   if (APPLY) {
     await doc.ref.set({ sourceUrlHash: hash }, { merge: true });
   }
@@ -102,13 +115,13 @@ for (const doc of snapshot.docs) {
 console.log(`
 ${snapshot.size} recipes read
 ${written} ${APPLY ? 'updated' : 'to update'}
-${alreadyHashed} already hashed
+${alreadyCorrect} already correct
 ${noSource} without a source URL
 ${unhashable} with an unusable source URL
 `);
 
 if (!APPLY && written > 0) {
-  console.log('Re-run with --apply to write.\n');
+  console.log(`Re-run with ${REHASH ? '--rehash ' : ''}--apply to write.\n`);
 }
 
 process.exit(0);

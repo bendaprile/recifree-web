@@ -1,3 +1,5 @@
+const { parse } = require('node-html-parser');
+
 /**
  * Finds an already-published recipe by the URL it was adapted from.
  *
@@ -39,4 +41,55 @@ async function findPublishedByUrlHash(db, urlHash) {
   }
 }
 
-module.exports = { findPublishedByUrlHash };
+/**
+ * The page's own address, as distinct from the one the user pasted.
+ *
+ * A paste rarely arrives clean. Pinterest and link shorteners redirect, and a
+ * publisher's permalink often 301s to a slug-bearing canonical. Each of those
+ * hashes differently from the address the reader copied, so without this the
+ * same recipe gets extracted a second time.
+ *
+ * The canonical tag is only trusted when it points at the same host. A site
+ * that misconfigures it to another domain would otherwise send readers to
+ * someone else's recipe.
+ *
+ * @param {string} pastedUrl
+ * @param {string} finalUrl `response.url` after redirects
+ * @param {string} html
+ * @returns {string[]} Other addresses for this page, excluding the pasted one
+ */
+function alternateUrlsFor(pastedUrl, finalUrl, html) {
+  const alternates = [];
+
+  if (finalUrl && finalUrl !== pastedUrl) alternates.push(finalUrl);
+
+  const canonical = canonicalFromHtml(html);
+  if (canonical && canonical !== pastedUrl && sameHost(canonical, pastedUrl)) {
+    alternates.push(canonical);
+  }
+
+  return alternates;
+}
+
+function canonicalFromHtml(html) {
+  if (!html || typeof html !== 'string') return null;
+
+  try {
+    const link = parse(html).querySelector('link[rel="canonical"]');
+    const href = link && link.getAttribute('href');
+    return href ? href.trim() : null;
+  } catch {
+    return null;
+  }
+}
+
+function sameHost(a, b) {
+  try {
+    return new URL(a).hostname.replace(/^www\./, '').toLowerCase()
+      === new URL(b).hostname.replace(/^www\./, '').toLowerCase();
+  } catch {
+    return false;
+  }
+}
+
+module.exports = { findPublishedByUrlHash, alternateUrlsFor, canonicalFromHtml };

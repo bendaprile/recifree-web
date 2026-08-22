@@ -2,13 +2,60 @@ const crypto = require('crypto');
 const admin = require('firebase-admin');
 
 /**
- * Normalizes a URL:
- * - Converts host to lowercase.
- * - Strips trailing slash.
- * - Strips anchor/hash (#...).
- * - Drops UTM marketing params: utm_source, utm_medium, utm_campaign, utm_term, utm_content, gclid, fbclid.
- * - Sorts remaining query parameters deterministically.
- * 
+ * Parameters that identify a campaign, a click, or a share, and never the
+ * page. Two addresses differing only in these are the same recipe.
+ *
+ * Prefixes cover the families that keep adding members (utm_, Matomo's mtm_
+ * and pk_, HubSpot's hsa_); the exact list covers the click ids that do not
+ * follow a pattern.
+ */
+const TRACKING_PREFIXES = ['utm_', 'mtm_', 'pk_', 'piwik_', 'hsa_'];
+
+const TRACKING_PARAMS = [
+  // Google
+  'gclid', 'gclsrc', 'dclid', 'wbraid', 'gbraid', 'srsltid', '_ga', '_gl',
+  // Meta
+  'fbclid', 'fb_action_ids', 'fb_action_types', 'fb_ref', 'igshid', 'igsh',
+  // Other networks
+  'msclkid', 'twclid', 'ttclid', 'li_fat_id', 'epik', 'yclid',
+  // Email and marketing platforms
+  'mc_cid', 'mc_eid', '_hsenc', '_hsmi', 'vero_conv', 'vero_id',
+  'oly_anon_id', 'oly_enc_id',
+  // Renders the AMP copy of the same page
+  'amp'
+];
+
+function isTrackingParam(key) {
+  const name = key.toLowerCase();
+  return TRACKING_PARAMS.includes(name) || TRACKING_PREFIXES.some(prefix => name.startsWith(prefix));
+}
+
+/**
+ * Canonicalizes a URL into a deduplication key.
+ *
+ * The result is only ever hashed — `extractRecipe` fetches the URL the user
+ * pasted, never this one — so it canonicalizes harder than something you would
+ * follow. The bar it has to clear: two addresses a reader would call the same
+ * recipe page must produce the same string.
+ *
+ * What it collapses:
+ * - `http` and `https`, which serve the same page on every recipe site that
+ *   has not simply switched off port 80.
+ * - `www.` and the bare domain.
+ * - Host casing, and the default port.
+ * - A trailing slash, and a trailing `/amp` segment from a mobile share.
+ * - Every tracking parameter (see TRACKING_PARAMS), and the fragment.
+ * - Query parameter order.
+ *
+ * What it deliberately leaves alone: path casing, because a case-sensitive
+ * server can serve two different pages, and any subdomain other than `www.`,
+ * because those routinely are different sites.
+ *
+ * Changing any of this changes every key. `sourceUrlHash` values already
+ * stored on recipes have to be recomputed with
+ * `npm run backfill:source-hash -- --rehash --apply` or deduplication silently
+ * stops matching.
+ *
  * @param {string} urlStr
  * @returns {string} Normalized URL
  */
@@ -24,45 +71,36 @@ function normalizeUrl(urlStr) {
     throw new Error('Invalid URL');
   }
 
-  // Lowercase hostname (URL standard already does this, but let's be safe)
-  const host = parsed.hostname.toLowerCase();
+  // The scheme is not part of a page's identity here. A recipe pasted from an
+  // old http bookmark is the recipe that now lives on https.
+  const protocol = 'https:';
 
-  // Handle standard marketing query parameters
+  const host = parsed.hostname.toLowerCase().replace(/^www\./, '');
+
+  // The parser has already dropped a default port; a non-default one is part
+  // of the address.
+  const portPart = parsed.port && parsed.port !== '443' && parsed.port !== '80' ? `:${parsed.port}` : '';
+
   const searchParams = new URLSearchParams(parsed.search);
-  const marketingParams = [
-    'utm_source',
-    'utm_medium',
-    'utm_campaign',
-    'utm_term',
-    'utm_content',
-    'gclid',
-    'fbclid'
-  ];
-
-  marketingParams.forEach(param => {
-    searchParams.delete(param);
-  });
-
-  // Sort remaining parameters for determinism
+  for (const key of [...searchParams.keys()]) {
+    if (isTrackingParam(key)) searchParams.delete(key);
+  }
   searchParams.sort();
 
   const searchStr = searchParams.toString();
   const queryPart = searchStr ? `?${searchStr}` : '';
 
-  // Standardize path (remove trailing slash unless it's just '/')
   let pathname = parsed.pathname;
   if (pathname.length > 1 && pathname.endsWith('/')) {
     pathname = pathname.slice(0, -1);
   }
+  // A mobile share often carries the AMP copy of the page.
+  if (pathname.endsWith('/amp')) {
+    pathname = pathname.slice(0, -'/amp'.length);
+  }
 
-  // Construct normalized URL
-  const protocol = parsed.protocol.toLowerCase();
-  const portPart = parsed.port ? `:${parsed.port}` : '';
-  const domainPart = host + portPart;
+  let normalized = `${protocol}//${host}${portPart}${pathname}${queryPart}`;
 
-  let normalized = `${protocol}//${domainPart}${pathname}${queryPart}`;
-
-  // Strip trailing slash of normalized URL (e.g. if it ended in '/' with empty path)
   if (normalized.endsWith('/')) {
     normalized = normalized.slice(0, -1);
   }

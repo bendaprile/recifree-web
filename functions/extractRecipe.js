@@ -9,7 +9,7 @@ const { mapToRecifreeSchema } = require('./parsers/schemaMapper');
 const { buildImagenPrompt, generateAiFoodPhoto, uploadImageToStorage } = require('./imageGen/imagenService');
 const { normalizeUrl, hashUrl, checkCache, saveToCache } = require('./cache/extractionCache');
 const { checkRateLimit } = require('./security/rateLimiter');
-const { findPublishedByUrlHash } = require('./publishedLookup');
+const { findPublishedByUrlHash, alternateUrlsFor } = require('./publishedLookup');
 
 /**
  * Validates the URL string.
@@ -51,6 +51,16 @@ function siteName(url) {
     return new URL(url).hostname.replace(/^www\./, '');
   } catch {
     return 'That site';
+  }
+}
+
+/** The deduplication key for a URL, or null when there is nothing to key on. */
+function safeHash(url) {
+  if (!url) return null;
+  try {
+    return hashUrl(normalizeUrl(url));
+  } catch {
+    return null;
   }
 }
 
@@ -130,7 +140,22 @@ async function extractRecipeOrchestrator(req, res) {
       const cachedRecipe = await checkCache(urlHash);
       if (cachedRecipe) {
         console.log(`Cache HIT for ${url} (hash: ${urlHash})`);
-        res.status(200).json(cachedRecipe);
+
+        // A cache hit returns before the page is fetched, so the redirect and
+        // canonical checks below never run. The cached recipe already records
+        // the address the page answers to; if that differs from the paste, it
+        // is the one to match against the catalog.
+        const cachedSourceHash = safeHash(cachedRecipe.source && cachedRecipe.source.url);
+        if (cachedSourceHash && cachedSourceHash !== urlHash) {
+          const publishedFromCache = await findPublishedByUrlHash(admin.firestore(), cachedSourceHash);
+          if (publishedFromCache) {
+            console.log(`Duplicate paste for ${url} via the cached source URL — already published as ${publishedFromCache}`);
+            res.status(200).json({ duplicate: true, slug: publishedFromCache });
+            return;
+          }
+        }
+
+        res.status(200).json({ ...cachedRecipe, sourceUrlHash: urlHash });
         return;
       }
       console.log(`Cache MISS for ${url} (hash: ${urlHash})`);
@@ -163,6 +188,22 @@ async function extractRecipeOrchestrator(req, res) {
     }
 
     const htmlText = await response.text();
+
+    // The pasted address is not always the page's own. A Pinterest link or a
+    // shortener redirects, and a permalink often 301s to a slug. Check the
+    // addresses the page answers to before parsing a second copy of a recipe
+    // that is already in the catalog.
+    for (const alternate of alternateUrlsFor(url, response.url, htmlText)) {
+      const alternateHash = safeHash(alternate);
+      if (!alternateHash || alternateHash === urlHash) continue;
+
+      const publishedAlternate = await findPublishedByUrlHash(admin.firestore(), alternateHash);
+      if (publishedAlternate) {
+        console.log(`Duplicate paste for ${url} via ${alternate} — already published as ${publishedAlternate}`);
+        res.status(200).json({ duplicate: true, slug: publishedAlternate });
+        return;
+      }
+    }
 
     let rawRecipeData = null;
     let methodUsed = '';
@@ -243,9 +284,11 @@ async function extractRecipeOrchestrator(req, res) {
       return;
     }
 
-    // Ensure the source URL is attached to the raw data for mapping
+    // Attribute to the address the page answers to, not to the shortener or
+    // tracking wrapper the reader happened to paste. It is the link the
+    // original creator gets credited with, and the key a later paste matches.
     rawRecipeData.source = rawRecipeData.source || {};
-    rawRecipeData.source.url = url;
+    rawRecipeData.source.url = response.url || url;
 
     const normalizedRecipe = mapToRecifreeSchema(rawRecipeData);
 
@@ -294,7 +337,11 @@ async function extractRecipeOrchestrator(req, res) {
     }
 
     console.log(`Successfully completed extraction via method: ${methodUsed}`);
-    res.status(200).json(normalizedRecipe);
+    // The deduplication key travels with the recipe so the shelf can recognise
+    // a URL the user already holds, without the frontend having to reimplement
+    // normalizeUrl and drift from it. Attached after saveToCache, so the key is
+    // never stored inside the document it keys.
+    res.status(200).json({ ...normalizedRecipe, sourceUrlHash: urlHash });
 
   } catch (globalError) {
     console.error('Global extraction endpoint error:', globalError);

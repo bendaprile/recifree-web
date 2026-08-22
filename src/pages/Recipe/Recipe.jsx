@@ -15,6 +15,32 @@ import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
 
 /**
+ * The explanation for a paste that landed the reader somewhere they did not
+ * name: the recipe was already published, or already on their own shelf.
+ *
+ * Returns null for an ordinary visit.
+ */
+function pasteNoticeFor(state) {
+    if (state?.alreadyShelved) {
+        return {
+            lead: 'You already had this one.',
+            detail: 'It was on your shelf, so we opened your draft instead of extracting a second copy over it.'
+        };
+    }
+
+    if (state?.alreadyPublished) {
+        return {
+            lead: 'Recifree already had this one.',
+            detail: state.alreadyPublished.saved
+                ? 'We added it to your saved recipes instead of making a second copy.'
+                : 'It is already in your saved recipes, so nothing was copied.'
+        };
+    }
+
+    return null;
+}
+
+/**
  * The SSR hydration payload comes from the raw Firestore document and does not
  * pass through recipeService's mapping, where stepIngredients is parsed back
  * from its stored JSON string. Guard here as well as at the producer: a string
@@ -39,6 +65,7 @@ function Recipe({ fromShelf = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const pasteNotice = pasteNoticeFor(location.state);
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
@@ -185,17 +212,13 @@ function Recipe({ fromShelf = false }) {
         <div className="recipe-page-container">
             <article className="swiss-wrapper">
 
-                {/* Paste deduplication landed the user here: they pasted a
-                    URL someone had already published. Without a word of
-                    explanation, a paste that silently becomes a different
-                    page reads as a bug. */}
-                {location.state?.alreadyPublished && (
+                {/* Paste deduplication landed the user here rather than on
+                    the editor they asked for. Without a word of explanation
+                    that reads as a bug. */}
+                {pasteNotice && (
                     <div className="duplicate-paste-notice">
                         <p>
-                            <strong>Recifree already had this one.</strong>{' '}
-                            {location.state.alreadyPublished.saved
-                                ? 'We added it to your saved recipes instead of making a second copy.'
-                                : 'It is already in your saved recipes, so nothing was copied.'}
+                            <strong>{pasteNotice.lead}</strong>{' '}{pasteNotice.detail}
                         </p>
                     </div>
                 )}

@@ -12,7 +12,7 @@ import './AddRecipe.css';
 
 function AddRecipe() {
   const navigate = useNavigate();
-  const { shelveRecipe } = useShelf();
+  const { shelveRecipe, shelf } = useShelf();
   const { isRecipeSaved, toggleSaved } = useSavedRecipes();
   const { userProfile } = useAuth();
   const [viewState, setViewState] = useState('INPUT'); // 'INPUT' | 'LOADING' | 'EDIT'
@@ -73,6 +73,17 @@ function AddRecipe() {
         return;
       }
 
+      // Already on this user's own shelf. Send them to the draft they have
+      // rather than the editor: saving would overwrite it, and any edits they
+      // had made to it would go with it.
+      const shelved = data.sourceUrlHash
+        ? shelf.find(r => r.sourceUrlHash === data.sourceUrlHash && r.status !== 'published')
+        : null;
+      if (shelved) {
+        navigate(`/shelf/${shelved.id}`, { state: { alreadyShelved: true } });
+        return;
+      }
+
       setExtractedData(data);
       setViewState('EDIT');
     } catch (err) {
@@ -114,7 +125,13 @@ function AddRecipe() {
       setIsSaving(true);
 
       if (!canPublish) {
-        await shelveRecipe({ ...recipePayload, id: recipePayload.slug });
+        await shelveRecipe({
+          ...recipePayload,
+          // Carried so a later paste of the same URL finds this draft. The form
+          // builds an explicit payload and does not know about it.
+          ...(extractedData?.sourceUrlHash ? { sourceUrlHash: extractedData.sourceUrlHash } : {}),
+          id: recipePayload.slug
+        });
         navigate('/shelf');
         return;
       }
