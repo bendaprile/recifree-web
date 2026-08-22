@@ -158,6 +158,20 @@ describe('Recipe Page', () => {
         return result;
     };
 
+    describe('reviews', () => {
+        it('shows the reviews section on a catalog recipe', async () => {
+            await renderRecipe();
+
+            expect(screen.getByRole('heading', { name: 'Reviews' })).toBeInTheDocument();
+        });
+
+        it('invites a signed-out reader to create an account rather than hiding the section', async () => {
+            await renderRecipe();
+
+            expect(screen.getByRole('link', { name: /Create an account/ })).toBeInTheDocument();
+        });
+    });
+
     describe('duplicate paste notice', () => {
         it('explains why a paste landed on an existing recipe, and that it was saved', async () => {
             await renderRecipe('test-recipe', { alreadyPublished: { saved: true } });
@@ -316,6 +330,13 @@ describe('Recipe Page from the shelf', () => {
 
     beforeEach(() => {
         window.localStorage.clear();
+    });
+
+    it('shows no reviews on a draft, which is not in the catalog for anyone to review', async () => {
+        window.localStorage.setItem('recifree_shelf', JSON.stringify([shelfRecipe]));
+        await renderFromShelf();
+
+        expect(screen.queryByRole('heading', { name: 'Reviews' })).not.toBeInTheDocument();
     });
 
     it('renders a recipe that exists only on the shelf', async () => {

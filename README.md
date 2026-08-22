@@ -71,6 +71,12 @@ npm run prove:rules
 
 Checks that `firestore.rules` keeps one user's shelf out of another user's hands.
 
+```bash
+npm run prove:reviews
+```
+
+Checks that only a signed-in, email-verified account can review a recipe, that it can only write its own review under its own name, and that ratings and review text stay inside their limits.
+
 ## 🌐 Deployment
 
 This project is configured for Firebase Hosting with GitHub Actions for CI/CD.

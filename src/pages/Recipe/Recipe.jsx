@@ -9,6 +9,7 @@ import AddToShoppingListButton from '../../components/AddToShoppingListButton/Ad
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
 import { PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import SourceAttribution from '../../components/SourceAttribution/SourceAttribution';
+import Reviews from '../../components/Reviews/Reviews';
 import IngredientList from '../../components/IngredientList/IngredientList';
 import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
@@ -395,6 +396,12 @@ function Recipe({ fromShelf = false }) {
                             </div>
                         </section>
                     )}
+
+                    {/* Reviews are keyed on the slug and read from the public
+                        catalog, so a shelf draft has nothing to show and nobody
+                        to show it to. Suppressed there for the same reason Save
+                        is. */}
+                    {!fromShelf && <Reviews slug={recipe.slug} />}
 
                     {/* Source Attribution */}
                     <SourceAttribution source={recipe.source} />

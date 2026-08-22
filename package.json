@@ -14,6 +14,7 @@
     "backfill:source-hash": "node scripts/backfill-source-hash.js",
     "scrub:extractor-identity": "node scripts/scrub-extractor-identity.js",
     "prove:rules": "node scripts/prove-shelf-rules.mjs",
+    "prove:reviews": "node scripts/prove-review-rules.mjs",
     "build": "vite build && mkdir -p functions && cp dist/index.html functions/index.html",
     "lint": "eslint .",
     "preview": "vite preview",
