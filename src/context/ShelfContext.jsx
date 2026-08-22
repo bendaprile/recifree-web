@@ -4,13 +4,25 @@ import { getUserShelf, addToShelf, removeFromShelf } from '../services/shelfServ
 
 /**
  * ShelfContext
- * The user's private shelf: recipes they have extracted but not published.
+ * The user's collection of recipes they brought in themselves.
+ *
+ * An entry is one of two things:
+ *   - a private draft, holding the full recipe, visible only to its owner
+ *   - a published reference, holding just the slug, pointing at the public
+ *     catalog copy
+ *
+ * Publishing converts the first into the second. It deliberately does not keep
+ * a second copy of the recipe: two copies drift, and the public one has to win.
+ * The shelf page resolves references against the catalog for display.
  *
  * Signed out, the shelf lives in localStorage and is explicitly at risk — the UI
  * must tell the user they will lose it without an account. On sign-in, the local
  * shelf drains into Firestore and the local copy is cleared, so nothing a user
  * extracted before signing up is thrown away.
  */
+
+export const SHELF_PRIVATE = 'private';
+export const SHELF_PUBLISHED = 'published';
 
 const LOCAL_STORAGE_KEY = 'recifree_shelf';
 
@@ -83,6 +95,10 @@ export function ShelfProvider({ children }) {
     [shelf]
   );
 
+  // Entries written before status existed are drafts.
+  const privateRecipes = shelf.filter(r => r.status !== SHELF_PUBLISHED);
+  const publishedRefs = shelf.filter(r => r.status === SHELF_PUBLISHED);
+
   /**
    * Adds a recipe to the shelf, or replaces the existing entry with the same id.
    * Re-extracting the same URL updates in place rather than duplicating.
@@ -95,6 +111,28 @@ export function ShelfProvider({ children }) {
 
     if (currentUser) {
       await addToShelf(currentUser.uid, recipe);
+    } else {
+      writeLocalShelf(next);
+    }
+  }, [shelf, currentUser]);
+
+  /**
+   * Converts a draft into a reference once it reaches the public catalog.
+   * Keeps the entry so the author can still find what they contributed, while
+   * leaving exactly one copy of the recipe itself.
+   */
+  const markPublished = useCallback(async (recipeId, slug) => {
+    const reference = {
+      id: recipeId,
+      slug,
+      status: SHELF_PUBLISHED,
+      publishedAt: new Date().toISOString()
+    };
+    const next = [...shelf.filter(r => r.id !== recipeId), reference];
+    setShelf(next);
+
+    if (currentUser) {
+      await addToShelf(currentUser.uid, reference);
     } else {
       writeLocalShelf(next);
     }
@@ -113,12 +151,16 @@ export function ShelfProvider({ children }) {
 
   const value = {
     shelf,
+    privateRecipes,
+    publishedRefs,
     loading,
     isOnShelf,
     shelveRecipe,
+    markPublished,
     unshelveRecipe,
     // True when the shelf is only in localStorage and would be lost.
-    isAtRisk: !currentUser && shelf.length > 0
+    // Only drafts are at risk; a published reference can be rebuilt from the catalog.
+    isAtRisk: !currentUser && privateRecipes.length > 0
   };
 
   return (

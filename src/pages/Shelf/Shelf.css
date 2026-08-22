@@ -100,3 +100,61 @@
         text-align: center;
     }
 }
+
+/* Filter tabs, shown only once the shelf holds both kinds of entry. */
+.shelf-filters {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.shelf-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-light);
+    font-family: var(--font-primary);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    margin-bottom: -1px;
+}
+
+.shelf-filter:hover {
+    color: var(--color-text);
+}
+
+.shelf-filter.is-active {
+    color: var(--color-text);
+    border-bottom-color: var(--color-primary);
+    font-weight: 600;
+}
+
+.shelf-filter-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-light);
+}
+
+.shelf-empty-filter {
+    color: var(--color-text-light);
+    padding: var(--space-8) 0;
+}
+
+/* A published recipe is live in the catalog and cannot be pulled back, so the
+   card shows status instead of a remove control. */
+.shelf-published-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: #FFFFFF;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+}

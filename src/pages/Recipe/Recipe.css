@@ -663,3 +663,31 @@
     border-color: var(--color-primary) !important;
     color: #FFFFFF !important;
 }
+
+/* Admin-only catalog removal. Styled as a destructive action so it is never
+   mistaken for one of the reader controls beside it. */
+.hero-admin-delete {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.hero-admin-delete:hover:not(:disabled) {
+    background: var(--color-error);
+    border-color: var(--color-error);
+    color: #FFFFFF;
+}
+
+.hero-overlay-header--flat .hero-admin-delete {
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+.hero-overlay-header--flat .hero-admin-delete:hover:not(:disabled) {
+    background: var(--color-error) !important;
+    border-color: var(--color-error) !important;
+    color: #FFFFFF !important;
+}
+
+.hero-admin-delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

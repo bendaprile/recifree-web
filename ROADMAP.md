@@ -47,6 +47,8 @@ Everything in this list ships before anything in Phase 4b.
 
 - **Private Extraction Shelf:** A per-user view of recipes the user extracted but has not published. Visible only to that user. Fully usable — readable, printable, addable to the shopping list — without ever being published.
   - ✅ *Storage and state:* `src/services/shelfService.js` (Firestore at `users/{uid}/shelf`) and `src/context/ShelfContext.jsx` (localStorage when signed out, drains into Firestore on sign-in and clears the local copy). Owner-only access enforced by the `shelf` rule in `firestore.rules`. 26 tests across `shelfService.test.js` and `ShelfContext.test.jsx`.
+  - ✅ *Published recipes stay on the shelf as references.* Publishing converts the draft into a `{ slug, status: 'published' }` pointer rather than keeping a second copy — two copies drift and the public one has to win. The shelf resolves references against the catalog for display, and drops any whose recipe has been removed. Filter tabs separate Private from Published once both exist.
+  - ✅ *Users delete their own drafts; published recipes cannot be pulled back.* No unpublish: recipes disappearing from the catalog at will is worse for readers than the occasional regret, and other users' saved lists resolve through `getRecipeBySlug` and would silently lose the entry.
   - ✅ *Shelf view:* `src/pages/Shelf/Shelf.jsx` at `/shelf`, plus `/shelf/:id` which renders the existing Recipe page with `fromShelf`. Deliberately not behind `ProtectedRoute` — a signed-out user must be able to reach their own localStorage shelf. A "Shelf" nav link appears once the user is signed in or holds any shelved recipe.
   - ✅ *The at-risk warning:* a banner on `/shelf` while the shelf is device-only, with a route to sign up. Not a tooltip.
   - ⚠️ *Save is suppressed on shelf recipes.* `SavedRecipes` stores only a recipe id and resolves it later through `getRecipeBySlug`, which cannot see unpublished recipes — a save would silently vanish from the saved list. Print and Add to Shopping List both work, because they read the recipe inline. Revisit when the Publish Gate exists.
@@ -85,6 +87,11 @@ Everything in this list ships before anything in Phase 4b.
 - Publish the agent's name, physical address, phone, and email on a public page of the site. Use a business address; the directory is public.
 - Write and enforce a repeat-infringer termination policy (17 U.S.C. §512(i) — a threshold condition; failing it voids all four safe harbors).
 - Set a calendar reminder for the three-year re-designation. A lapsed registration voids protection retroactively.
+
+**Removal.** Required for a takedown to be possible at all, so it precedes opening publishing rather than following it.
+- ✅ Admin deletion of any catalog recipe, via `functions/adminRecipes.js`. Deletes the Firestore document and every stored image for the slug. Admin-only against the `app_config/admin_users` allowlist, enforced server-side; `firestore.rules` keeps `allow delete: if false` so no client can do it directly.
+- ✅ The client learns whether it may show destructive controls from the `capabilities` endpoint, because `firestore.rules` denies reading `app_config` and no account carries an admin custom claim. It fails closed.
+- ⏳ A documented takedown procedure: who receives the notice, how fast it is actioned, and where it is recorded.
 
 **Image moderation.** Accepting photos from strangers is what creates this; it does not apply while publishing is admin-only.
 - Screen every upload with Cloud Vision SafeSearch **before** the bytes reach Storage, and reject on high-confidence adult, violence, or racy results. $1.50 per 1,000 images, first 1,000 each month free.

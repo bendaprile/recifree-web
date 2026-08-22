@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { getUserProfile, createUserProfile, updateUserProfile } from '../services/userService';
+import { fetchCapabilities } from '../services/adminService';
 
 const AuthContext = createContext();
 
@@ -22,6 +23,11 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  // Whether this caller may perform catalog admin actions. Answered by the
+  // server from the admin allowlist, because the client cannot read it and no
+  // account carries an admin custom claim. Display only; every action is
+  // re-checked server-side.
+  const [isAdmin, setIsAdmin] = useState(false);
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -100,8 +106,18 @@ export function AuthProvider({ children }) {
         } catch (e) {
           console.error("Failed to fetch user profile:", e);
         }
+
+        // Ask the server, not the profile. profile.role is set only by the
+        // local dev path above and does not reflect the admin allowlist.
+        try {
+          const { admin } = await fetchCapabilities();
+          setIsAdmin(Boolean(admin));
+        } catch {
+          setIsAdmin(false);
+        }
       } else {
         setUserProfile(null);
+        setIsAdmin(false);
       }
       setLoading(false);
     });
@@ -111,6 +127,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    isAdmin,
     userProfile,
     setUserProfile,
     isEmailVerified: (currentUser?.emailVerified ?? false) || (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' && currentUser?.email === 'dev@recifree.local'),

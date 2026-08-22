@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import { useShelf } from '../../context/ShelfContext';
+import { useAuth } from '../../context/AuthContext';
+import { deleteRecipe as deleteRecipeFromCatalog } from '../../services/adminService';
 import PublishPanel from '../../components/PublishPanel/PublishPanel';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
@@ -22,7 +24,9 @@ function Recipe({ fromShelf = false }) {
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
-    const { shelf, loading: shelfLoading, unshelveRecipe } = useShelf();
+    const { shelf, loading: shelfLoading, markPublished } = useShelf();
+    const { isAdmin } = useAuth();
+    const [deleting, setDeleting] = useState(false);
 
     // Initialize state from window.__INITIAL_RECIPE__ if it exists (SSR Hydration)
     const [recipe, setRecipe] = useState(() => {
@@ -138,6 +142,24 @@ function Recipe({ fromShelf = false }) {
     // an unpublished one legitimately has none. Falling back to a stock photo of
     // a different dish would undercut the Tried & True promise, so the header
     // drops to a flat editorial treatment instead.
+    // Catalog removal is admin-only and enforced server-side; isAdmin only
+    // decides whether the control is offered. Required for DMCA takedowns.
+    const handleAdminDelete = async () => {
+        const confirmed = window.confirm(
+            `Remove "${recipe.title}" from the public catalog? This cannot be undone.`
+        );
+        if (!confirmed) return;
+
+        setDeleting(true);
+        try {
+            await deleteRecipeFromCatalog(recipe.slug || recipe.id);
+            navigate('/');
+        } catch (err) {
+            setDeleting(false);
+            alert(`Could not remove the recipe: ${err.message}`);
+        }
+    };
+
     const heroImage = recipe.image || publishPreview;
     const hasHeroImage = Boolean(heroImage);
 
@@ -150,9 +172,9 @@ function Recipe({ fromShelf = false }) {
                         recipe={recipe}
                         onPreviewChange={setPublishPreview}
                         onPublished={async (slug) => {
-                            // The public copy is now the canonical one; drop the
-                            // private duplicate so it cannot drift.
-                            await unshelveRecipe(recipe.id);
+                            // Keep the shelf entry, but as a reference. One copy
+                            // of the recipe, and the author can still find it.
+                            await markPublished(recipe.id, slug);
                             navigate(`/recipe/${slug}`);
                         }}
                     />
@@ -220,6 +242,16 @@ function Recipe({ fromShelf = false }) {
                                     <SaveRecipeButton recipe={recipe} variant="large" className="hero-action-btn" />
                                 )}
                                 <AddToShoppingListButton recipe={recipe} variant="large" className="hero-action-btn" />
+                                {isAdmin && !fromShelf && (
+                                    <button
+                                        type="button"
+                                        className="hero-btn hero-admin-delete"
+                                        onClick={handleAdminDelete}
+                                        disabled={deleting}
+                                    >
+                                        {deleting ? 'Removing…' : 'Remove from catalog'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

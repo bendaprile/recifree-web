@@ -1,17 +1,61 @@
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useShelf } from '../../context/ShelfContext';
 import { useAuth } from '../../context/AuthContext';
+import { getRecipeBySlug } from '../../services/recipeService';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
 import { NotepadIcon, TrashIcon } from '../../components/Icons/Icons';
 import './Shelf.css';
+
+const FILTERS = [
+    { key: 'all', label: 'All' },
+    { key: 'private', label: 'Private' },
+    { key: 'published', label: 'Published' }
+];
 
 /**
  * The private shelf: recipes this user extracted but has not published.
  * Nobody else can see anything on this page.
  */
 function Shelf() {
-    const { shelf, loading, unshelveRecipe, isAtRisk } = useShelf();
+    const { privateRecipes, publishedRefs, loading, unshelveRecipe, isAtRisk } = useShelf();
     const { currentUser } = useAuth();
+    const [filter, setFilter] = useState('all');
+    const [publishedRecipes, setPublishedRecipes] = useState([]);
+    const [resolving, setResolving] = useState(false);
+
+    // A published entry holds only a slug. Resolve it against the catalog so the
+    // shelf shows the live recipe rather than a stale copy of it.
+    const slugKey = useMemo(
+        () => publishedRefs.map(r => r.slug).sort().join(','),
+        [publishedRefs]
+    );
+
+    useEffect(() => {
+        let active = true;
+        const slugs = slugKey ? slugKey.split(',') : [];
+        if (slugs.length === 0) {
+            setPublishedRecipes([]);
+            return () => { active = false; };
+        }
+
+        setResolving(true);
+        Promise.all(slugs.map(slug =>
+            getRecipeBySlug(slug)
+                // Carry the slug we resolved with rather than trusting the
+                // document to echo it back; it is what the card links to.
+                .then(found => (found ? { ...found, slug } : null))
+                .catch(() => null)
+        ))
+            .then(results => {
+                // A recipe an admin removed resolves to nothing. Drop it rather
+                // than rendering a broken card.
+                if (active) setPublishedRecipes(results.filter(Boolean));
+            })
+            .finally(() => { if (active) setResolving(false); });
+
+        return () => { active = false; };
+    }, [slugKey]);
 
     const handleRemove = (e, recipeId) => {
         // The card is a Link; without this the click navigates instead of deleting.
@@ -20,7 +64,22 @@ function Shelf() {
         unshelveRecipe(recipeId);
     };
 
-    if (loading) {
+    const publishedCards = publishedRecipes.map(r => ({ ...r, isPublished: true }));
+    const allCards = [...privateRecipes, ...publishedCards];
+    const total = allCards.length;
+
+    const visible = filter === 'private'
+        ? privateRecipes
+        : filter === 'published'
+            ? publishedCards
+            : allCards;
+
+    const countFor = (key) =>
+        key === 'private' ? privateRecipes.length
+            : key === 'published' ? publishedCards.length
+                : total;
+
+    if (loading || resolving) {
         return (
             <div className="shelf-page section">
                 <div className="container">
@@ -61,7 +120,7 @@ function Shelf() {
                     </div>
                 )}
 
-                {shelf.length === 0 ? (
+                {total === 0 ? (
                     <div className="empty-shelf-state text-center">
                         <div className="empty-icon-wrapper">
                             <NotepadIcon size={48} className="empty-icon" />
@@ -72,29 +131,59 @@ function Shelf() {
                     </div>
                 ) : (
                     <>
+                        {publishedRecipes.length > 0 && (
+                            <div className="shelf-filters" role="tablist" aria-label="Filter your shelf">
+                                {FILTERS.map(({ key, label }) => (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={filter === key}
+                                        className={`shelf-filter${filter === key ? ' is-active' : ''}`}
+                                        onClick={() => setFilter(key)}
+                                    >
+                                        {label}
+                                        <span className="shelf-filter-count">{countFor(key)}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
                         <p className="shelf-count">
-                            {shelf.length} {shelf.length === 1 ? 'recipe' : 'recipes'}
+                            {visible.length} {visible.length === 1 ? 'recipe' : 'recipes'}
                             {currentUser ? ' · synced to your account' : ' · on this device only'}
                         </p>
-                        <div className="recipe-grid">
-                            {shelf.map(recipe => (
-                                <RecipeCard
-                                    key={recipe.id}
-                                    recipe={recipe}
-                                    to={`/shelf/${recipe.id}`}
-                                    actions={
-                                        <button
-                                            type="button"
-                                            className="shelf-remove-btn"
-                                            aria-label={`Remove ${recipe.title} from your shelf`}
-                                            onClick={(e) => handleRemove(e, recipe.id)}
-                                        >
-                                            <TrashIcon size={16} />
-                                        </button>
-                                    }
-                                />
-                            ))}
-                        </div>
+
+                        {visible.length === 0 ? (
+                            <p className="shelf-empty-filter">Nothing here yet.</p>
+                        ) : (
+                            <div className="recipe-grid">
+                                {visible.map(recipe => (
+                                    <RecipeCard
+                                        key={recipe.id}
+                                        recipe={recipe}
+                                        to={recipe.isPublished ? `/recipe/${recipe.slug}` : `/shelf/${recipe.id}`}
+                                        actions={recipe.isPublished ? (
+                                            // Published recipes cannot be pulled back.
+                                            // Removing the reference would only hide the
+                                            // author's own record of it.
+                                            <span className="shelf-published-badge" title="Published to Recifree">
+                                                Live
+                                            </span>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                className="shelf-remove-btn"
+                                                aria-label={`Remove ${recipe.title} from your shelf`}
+                                                onClick={(e) => handleRemove(e, recipe.id)}
+                                            >
+                                                <TrashIcon size={16} />
+                                            </button>
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </>
                 )}
             </div>

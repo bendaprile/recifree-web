@@ -124,6 +124,18 @@ exports.extractRecipe = functions
     .runWith({ maxInstances: 3, secrets: ['GEMINI_API_KEY'] })
     .https.onRequest(extractRecipeOrchestrator);
 
+const { capabilities, deleteRecipe } = require('./adminRecipes');
+
+// Small and called on sign-in; the client has no other way to learn whether it
+// may show destructive controls.
+exports.capabilities = functions
+    .runWith({ maxInstances: 3 })
+    .https.onRequest(capabilities);
+
+exports.deleteRecipe = functions
+    .runWith({ maxInstances: 3 })
+    .https.onRequest(deleteRecipe);
+
 const { publishRecipe } = require('./publishRecipe');
 
 // Photos arrive base64-encoded in the request body, so this needs a larger
