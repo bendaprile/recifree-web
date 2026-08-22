@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import SaveRecipeButton from '../SaveRecipeButton/SaveRecipeButton';
+import StarRating from '../StarRating/StarRating';
 import { ClockIcon, UsersIcon } from '../Icons/Icons';
 import './RecipeCard.css';
 
@@ -11,8 +12,13 @@ import './RecipeCard.css';
  * @param {React.ReactNode} [actions]  Replaces the save button in the card's
  *                          action slot. Saving only works for published
  *                          recipes, so unpublished cards supply their own.
+ * @param {{count: number, average: number}} [rating]  Shown when the recipe has
+ *                          been reviewed. The grid fetches every summary in one
+ *                          query and hands each card its own, so a card never
+ *                          reads on its own behalf. Display only: it does not
+ *                          affect where the card appears.
  */
-function RecipeCard({ recipe, to, actions }) {
+function RecipeCard({ recipe, to, actions, rating }) {
     const { id, title, description, image, totalTime, servings, tags, difficulty } = recipe;
 
     // Placeholder image if none provided
@@ -57,6 +63,15 @@ function RecipeCard({ recipe, to, actions }) {
                 <h3 className="recipe-card-title">{title}</h3>
 
                 {description && <p className="recipe-card-desc">{description}</p>}
+
+                {rating && rating.count > 0 && (
+                    <div className="recipe-card-rating">
+                        <StarRating value={rating.average} />
+                        <span className="card-rating-count">
+                            {rating.average} ({rating.count})
+                        </span>
+                    </div>
+                )}
 
                 <div className="recipe-card-footer">
                     <span className="card-footer-servings">

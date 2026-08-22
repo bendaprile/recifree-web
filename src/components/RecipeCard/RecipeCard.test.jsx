@@ -44,19 +44,42 @@ describe('RecipeCard Component', () => {
         vi.clearAllMocks();
     });
 
-    const renderCard = (recipe = mockRecipe) => {
+    const renderCard = (recipe = mockRecipe, props = {}) => {
         return render(
             <AuthProvider>
                 <SavedRecipesProvider>
                     <ShoppingListProvider>
                         <BrowserRouter>
-                            <RecipeCard recipe={recipe} />
+                            <RecipeCard recipe={recipe} {...props} />
                         </BrowserRouter>
                     </ShoppingListProvider>
                 </SavedRecipesProvider>
             </AuthProvider>
         );
     };
+
+    describe('rating', () => {
+        it('shows the stars, the average, and the count when the recipe has reviews', () => {
+            renderCard(mockRecipe, { rating: { count: 3, average: 4.7 } });
+
+            expect(screen.getByRole('img', { name: '4.7 out of 5 stars' })).toBeInTheDocument();
+            expect(screen.getByText('4.7 (3)')).toBeInTheDocument();
+        });
+
+        it('shows nothing for a recipe nobody has reviewed', () => {
+            renderCard(mockRecipe, { rating: { count: 0, average: null } });
+
+            expect(screen.queryByText(/out of 5 stars/)).not.toBeInTheDocument();
+        });
+
+        it('shows nothing when the grid has no rating for it', () => {
+            // Recipes with no reviews are absent from the summaries map, so the
+            // prop arrives undefined rather than zeroed.
+            renderCard(mockRecipe);
+
+            expect(screen.queryByText(/out of 5 stars/)).not.toBeInTheDocument();
+        });
+    });
 
     it('renders recipe details correctly', () => {
         renderCard();

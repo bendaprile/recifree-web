@@ -141,19 +141,6 @@
     border-color: rgba(255, 255, 255, 0.35);
 }
 
-.hero-tried-true-badge {
-    font-family: var(--font-primary, 'Inter', sans-serif);
-    font-size: 0.825rem;
-    color: #8FBF8F;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 0.4rem 0.85rem;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
 
 .hero-title {
     font-family: var(--font-heading, 'Playfair Display', serif);
@@ -205,6 +192,18 @@
     margin-bottom: 1.75rem;
     line-height: 1.6;
     text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+}
+
+.hero-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.hero-rating span {
+    opacity: 0.75;
 }
 
 .hero-meta-row {
@@ -647,8 +646,8 @@
 /* The chips are glassmorphic to sit on a photo. Without one they need a real
    surface and border, not a translucent black panel on the page background. */
 .hero-overlay-header--flat .hero-back-link,
-.hero-overlay-header--flat .hero-tried-true-badge,
-.hero-overlay-header--flat .hero-badges {
+.hero-overlay-header--flat .hero-badges,
+.hero-overlay-header--flat .hero-rating {
     background: var(--color-surface);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -666,8 +665,8 @@
    than for lightness: #3A4A3E on the light background, #7FA87F on the dark one.
    --color-primary-light resolves to #4A5D4E in dark mode, which is a dark green
    on a near-black chip. */
-.hero-overlay-header--flat .hero-tried-true-badge,
-.hero-overlay-header--flat .hero-badges strong {
+.hero-overlay-header--flat .hero-badges strong,
+.hero-overlay-header--flat .hero-rating strong {
     color: var(--color-primary-dark);
 }
 

@@ -10,6 +10,7 @@ import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton
 import { PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import SourceAttribution from '../../components/SourceAttribution/SourceAttribution';
 import Reviews from '../../components/Reviews/Reviews';
+import StarRating from '../../components/StarRating/StarRating';
 import IngredientList from '../../components/IngredientList/IngredientList';
 import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
@@ -66,6 +67,7 @@ function Recipe({ fromShelf = false }) {
     const navigate = useNavigate();
     const location = useLocation();
     const pasteNotice = pasteNoticeFor(location.state);
+    const [ratingSummary, setRatingSummary] = useState({ count: 0, average: null });
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
@@ -248,12 +250,6 @@ function Recipe({ fromShelf = false }) {
                             <Link to="/" className="hero-back-link" onClick={handleBack}>
                                 ← Back to recipes
                             </Link>
-
-                            {recipe.triedAndTrue && (
-                                <div className="hero-tried-true-badge" title="Tried & True: Kitchen-tested & verified tasty!">
-                                    ✓ Tried & True
-                                </div>
-                            )}
                         </div>
 
                         <h1 className="hero-title">{recipe.title}</h1>
@@ -292,6 +288,13 @@ function Recipe({ fromShelf = false }) {
                                     <div>
                                         Yield: <strong>{typeof recipe.servings === 'number' ? recipe.servings * currentScale : recipe.servings} Servings</strong>
                                     </div>
+                                )}
+                                {ratingSummary.count > 0 && (
+                                    <a href="#reviews-heading" className="hero-rating">
+                                        <StarRating value={ratingSummary.average} />
+                                        <strong>{ratingSummary.average}</strong>
+                                        <span>({ratingSummary.count})</span>
+                                    </a>
                                 )}
                             </div>
 
@@ -424,7 +427,7 @@ function Recipe({ fromShelf = false }) {
                         catalog, so a shelf draft has nothing to show and nobody
                         to show it to. Suppressed there for the same reason Save
                         is. */}
-                    {!fromShelf && <Reviews slug={recipe.slug} />}
+                    {!fromShelf && <Reviews slug={recipe.slug} onSummaryChange={setRatingSummary} />}
 
                     {/* Source Attribution */}
                     <SourceAttribution source={recipe.source} />

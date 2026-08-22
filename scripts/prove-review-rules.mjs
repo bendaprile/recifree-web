@@ -10,7 +10,7 @@
 import { createRequire } from 'module';
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator, collectionGroup, doc, getDocs, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 
 process.env.FIRESTORE_EMULATOR_HOST ||= '127.0.0.1:8080';
 process.env.FIREBASE_AUTH_EMULATOR_HOST ||= '127.0.0.1:9099';
@@ -110,6 +110,19 @@ try {
 } catch (e) {
   record('a user can delete their own review', false, e.code);
 }
+
+// 7. The explore grid reads every rating in one collection-group query. That
+// needs its own rule; the path-specific one above does not cover it.
+await signOut(auth);
+try {
+  const snap = await getDocs(collectionGroup(db, 'entries'));
+  record('a signed-out reader can run the collection-group query the grid uses', snap.size >= 0, `${snap.size} entries`);
+} catch (e) {
+  record('a signed-out reader can run the collection-group query the grid uses', false, e.code || e.message);
+}
+
+// 8. Reading through the collection group must not have opened up writing.
+await denied('the collection-group rule grants no writes', () => setDoc(entry('nobody'), review()));
 
 const failed = results.filter(r => !r.passed);
 console.log(`\n${results.length - failed.length}/${results.length} checks passed`);

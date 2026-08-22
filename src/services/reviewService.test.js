@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as firestore from 'firebase/firestore';
-import { getReviews, saveReview, deleteReview, summarizeReviews, validateReview, MAX_REVIEW_TEXT } from './reviewService';
+import { getReviews, saveReview, deleteReview, summarizeReviews, validateReview, getAllReviewSummaries, MAX_REVIEW_TEXT } from './reviewService';
 
 vi.mock('firebase/firestore', () => ({
   collection: vi.fn((db, path) => ({ path })),
+  collectionGroup: vi.fn((db, name) => ({ group: name })),
   doc: vi.fn((db, path, id) => ({ path, id })),
   getDoc: vi.fn(),
   getDocs: vi.fn(),
@@ -148,6 +149,58 @@ describe('reviewService', () => {
 
     it('rejects an empty call without throwing', () => {
       expect(validateReview()).toMatch(/rating/i);
+    });
+  });
+
+  describe('getAllReviewSummaries', () => {
+    // reviews/{slug}/entries/{uid} — a collection-group query hands back the
+    // entries, and the grandparent document id is the slug.
+    const entry = (slug, data) => ({
+      data: () => data,
+      ref: { parent: { parent: { id: slug } } }
+    });
+
+    it('summarizes every reviewed recipe in one query', async () => {
+      firestore.getDocs.mockResolvedValue({
+        docs: [
+          entry('kale-salad', { rating: 5 }),
+          entry('kale-salad', { rating: 4 }),
+          entry('spicy-salmon-bowls', { rating: 3 })
+        ]
+      });
+
+      const summaries = await getAllReviewSummaries();
+
+      expect(firestore.collectionGroup).toHaveBeenCalledWith('MOCK_DB', 'entries');
+      expect(firestore.getDocs).toHaveBeenCalledTimes(1);
+      expect(summaries).toEqual({
+        'kale-salad': { count: 2, average: 4.5 },
+        'spicy-salmon-bowls': { count: 1, average: 3 }
+      });
+    });
+
+    it('leaves an unreviewed recipe out entirely', async () => {
+      firestore.getDocs.mockResolvedValue({ docs: [entry('kale-salad', { rating: 5 })] });
+
+      const summaries = await getAllReviewSummaries();
+
+      expect(summaries['never-reviewed']).toBeUndefined();
+    });
+
+    it('skips an entry with no recipe above it rather than throwing', async () => {
+      firestore.getDocs.mockResolvedValue({
+        docs: [{ data: () => ({ rating: 5 }), ref: { parent: { parent: null } } }]
+      });
+
+      await expect(getAllReviewSummaries()).resolves.toEqual({});
+    });
+
+    it('returns nothing on failure, so the grid still renders', async () => {
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+      firestore.getDocs.mockRejectedValue(new Error('unavailable'));
+
+      await expect(getAllReviewSummaries()).resolves.toEqual({});
+      error.mockRestore();
     });
   });
 

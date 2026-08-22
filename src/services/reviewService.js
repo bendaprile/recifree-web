@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, collectionGroup, doc, getDoc, getDocs, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../config/firebase';
 
 /**
@@ -104,6 +104,41 @@ export async function deleteReview(slug) {
   if (!user) throw new Error('You need to be signed in to remove a review.');
 
   await deleteDoc(doc(db, entriesPath(slug), user.uid));
+}
+
+/**
+ * Rating summaries for every reviewed recipe, keyed by slug.
+ *
+ * One collection-group query rather than one query per card. The explore grid
+ * renders forty-odd cards, and a read each would be forty round trips against
+ * a sub-second load promise.
+ *
+ * Nothing is denormalised onto the recipe documents to make this cheap. A
+ * stored counter needs a transaction to stay honest, and it is the first step
+ * towards ranking, which Phase 4a deliberately does not have.
+ *
+ * @returns {Promise<Object<string, {count: number, average: number}>>}
+ */
+export async function getAllReviewSummaries() {
+  try {
+    const snapshot = await getDocs(collectionGroup(db, 'entries'));
+
+    const bySlug = {};
+    snapshot.docs.forEach(entry => {
+      // reviews/{slug}/entries/{uid} — the grandparent document id is the slug.
+      const slug = entry.ref.parent.parent?.id;
+      if (!slug) return;
+      (bySlug[slug] = bySlug[slug] || []).push(entry.data());
+    });
+
+    return Object.fromEntries(
+      Object.entries(bySlug).map(([slug, reviews]) => [slug, summarizeReviews(reviews)])
+    );
+  } catch (error) {
+    // A grid of recipes with no ratings on it beats no grid.
+    console.error('Error fetching review summaries:', error);
+    return {};
+  }
 }
 
 /**

@@ -29,7 +29,15 @@ vi.mock('firebase/firestore', () => ({
 
 // ─── Mock RecipeCard to simplify testing ─────────────────────────────────────
 vi.mock('../../components/RecipeCard/RecipeCard', () => ({
-    default: ({ recipe }) => <div data-testid="recipe-card">{recipe.title}</div>
+    default: ({ recipe, rating }) => (
+        <div data-testid="recipe-card" data-rating={rating ? `${rating.average}/${rating.count}` : 'none'}>
+            {recipe.title}
+        </div>
+    )
+}));
+
+vi.mock('../../services/reviewService', () => ({
+    getAllReviewSummaries: vi.fn().mockResolvedValue({})
 }));
 
 // Mock the recipeService so tests never touch Firestore
@@ -66,6 +74,7 @@ vi.mock('../../services/recipeService', () => {
 
 // ─── Import modules AFTER mocks are declared ─────────────────────────────────
 import Home from './Home';
+import { getAllReviewSummaries } from '../../services/reviewService';
 
 describe('Home Page', () => {
     beforeEach(() => {
@@ -87,6 +96,29 @@ describe('Home Page', () => {
         await screen.findAllByTestId('recipe-card').catch(() => {});
         return result;
     };
+
+    describe('ratings on the grid', () => {
+        it('hands each card its own rating, from one query for the whole page', async () => {
+            getAllReviewSummaries.mockResolvedValue({ '1': { count: 3, average: 4.7 } });
+
+            await renderHome();
+
+            expect(getAllReviewSummaries).toHaveBeenCalledTimes(1);
+            const cards = screen.getAllByTestId('recipe-card');
+            expect(cards.find(c => c.textContent === 'Pasta')).toHaveAttribute('data-rating', '4.7/3');
+            expect(cards.find(c => c.textContent === 'Burger')).toHaveAttribute('data-rating', 'none');
+        });
+
+        it('still renders the grid when the ratings query fails', async () => {
+            // getAllReviewSummaries swallows its own failures; this proves the
+            // grid does not wait on it either.
+            getAllReviewSummaries.mockResolvedValue({});
+
+            await renderHome();
+
+            expect(screen.getAllByTestId('recipe-card')).toHaveLength(2);
+        });
+    });
 
     it('renders the hero section', async () => {
         await renderHome();

@@ -14,7 +14,7 @@ import './Reviews.css';
  * it — so a sockpuppet account buys nothing and reviews can ship before a
  * moderation system does. See ROADMAP.md Phase 4a before adding ranking.
  */
-function Reviews({ slug }) {
+function Reviews({ slug, onSummaryChange }) {
   const { currentUser, isEmailVerified } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,12 @@ function Reviews({ slug }) {
   useEffect(() => { load(); }, [load]);
 
   const { count, average } = summarizeReviews(reviews);
+
+  // The recipe header shows the same number. Reporting it up rather than
+  // letting the header fetch the reviews a second time.
+  useEffect(() => {
+    if (onSummaryChange) onSummaryChange({ count, average });
+  }, [count, average, onSummaryChange]);
   const mine = currentUser ? reviews.find(r => r.uid === currentUser.uid) : null;
   const others = currentUser ? reviews.filter(r => r.uid !== currentUser.uid) : reviews;
 

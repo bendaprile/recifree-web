@@ -175,6 +175,18 @@
 /* =================================
    Footer meta rail
    ================================= */
+.recipe-card-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.card-rating-count {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+}
+
 .recipe-card-footer {
     display: flex;
     justify-content: space-between;

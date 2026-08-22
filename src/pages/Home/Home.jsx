@@ -2,11 +2,13 @@ import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
 import { getAllRecipes } from '../../services/recipeService';
+import { getAllReviewSummaries } from '../../services/reviewService';
 import { PlateIcon } from '../../components/Icons/Icons';
 import './Home.css';
 
 function Home() {
     const [recipes, setRecipes] = useState([]);
+    const [ratings, setRatings] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
@@ -38,6 +40,13 @@ function Home() {
             .then(setRecipes)
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
+    }, []);
+
+    // One query for every rating on the page. Separate from the recipes fetch
+    // so a slow or failed read of the ratings never holds up the grid; the
+    // cards simply render without them.
+    useEffect(() => {
+        getAllReviewSummaries().then(setRatings);
     }, []);
 
     // Get all unique tags
@@ -191,7 +200,7 @@ function Home() {
                     ) : filteredRecipes.length > 0 ? (
                         <div className={`recipe-grid columns-${gridColumns}`}>
                             {filteredRecipes.map(recipe => (
-                                <RecipeCard key={recipe.id} recipe={recipe} />
+                                <RecipeCard key={recipe.id} recipe={recipe} rating={ratings[recipe.slug || recipe.id]} />
                             ))}
                         </div>
                     ) : (

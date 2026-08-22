@@ -120,11 +120,22 @@ vi.mock('../../services/recipeService', () => ({
     getRecipeBySlug: vi.fn(),
 }));
 
+// The reviews read is mocked; summarizeReviews stays real, because the header
+// rating is exactly that calculation.
+vi.mock('../../services/reviewService', async (importOriginal) => ({
+    ...(await importOriginal()),
+    getReviews: vi.fn(async () => []),
+    saveReview: vi.fn(),
+    deleteReview: vi.fn(),
+}));
+
 import { getRecipeBySlug } from '../../services/recipeService';
+import { getReviews } from '../../services/reviewService';
 
 describe('Recipe Page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        getReviews.mockResolvedValue([]);
         getRecipeBySlug.mockImplementation(async (slug) => {
             if (slug === 'test-recipe') return mockTestRecipe;
             if (slug === 'sectioned-recipe') return mockSectionedRecipe;
@@ -157,6 +168,42 @@ describe('Recipe Page', () => {
         });
         return result;
     };
+
+    describe('the header rating', () => {
+        it('shows the average and count beside the other recipe facts', async () => {
+            getReviews.mockResolvedValue([{ uid: 'a', rating: 5 }, { uid: 'b', rating: 4 }]);
+
+            await renderRecipe();
+
+            const rating = document.querySelector('.hero-rating');
+            expect(rating).toBeInTheDocument();
+            expect(rating.textContent).toContain('4.5');
+            expect(rating.textContent).toContain('(2)');
+        });
+
+        it('reads the same number the reviews section shows, from one fetch', async () => {
+            getReviews.mockResolvedValue([{ uid: 'a', rating: 3 }]);
+
+            await renderRecipe();
+
+            // One read serves both the header and the list below it.
+            expect(getReviews).toHaveBeenCalledTimes(1);
+            expect(document.querySelector('.hero-rating').textContent).toContain('3');
+        });
+
+        it('shows no rating for a recipe nobody has reviewed', async () => {
+            await renderRecipe();
+
+            expect(document.querySelector('.hero-rating')).toBeNull();
+        });
+
+        it('no longer shows a Tried & True badge, which every published recipe has by definition', async () => {
+            getRecipeBySlug.mockResolvedValue({ ...mockTestRecipe, triedAndTrue: true });
+            await renderRecipe();
+
+            expect(screen.queryByText(/Tried & True/)).not.toBeInTheDocument();
+        });
+    });
 
     describe('reviews', () => {
         it('shows the reviews section on a catalog recipe', async () => {
