@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { publishRecipe } from '../../services/publishService';
 import './PublishPanel.css';
 
@@ -16,6 +17,7 @@ import './PublishPanel.css';
  */
 function PublishPanel({ recipe, onPublished, onPreviewChange }) {
   const [file, setFile] = useState(null);
+  const [cooked, setCooked] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,7 +40,9 @@ function PublishPanel({ recipe, onPublished, onPreviewChange }) {
     setError('');
     setPublishing(true);
     try {
-      const result = await publishRecipe(recipe, file);
+      // The sign-off is made here, not when the draft was saved. Saving to the
+      // shelf is collecting; publishing is vouching.
+      const result = await publishRecipe({ ...recipe, triedAndTrue: true }, file);
       onPublished(result.slug);
     } catch (err) {
       setError(err.message || 'Publishing failed. Your shelf copy is untouched.');
@@ -66,6 +70,10 @@ function PublishPanel({ recipe, onPublished, onPreviewChange }) {
             onChange={handleFileChange}
             className="publish-file-input"
           />
+          <Link to={`/shelf/${recipe.id}/edit`} className="publish-choose-btn">
+            Edit
+          </Link>
+
           <label htmlFor="publish-photo" className="publish-choose-btn">
             {file ? 'Change photo' : 'Add your photo'}
           </label>
@@ -74,19 +82,25 @@ function PublishPanel({ recipe, onPublished, onPreviewChange }) {
             type="button"
             className="publish-submit-btn"
             onClick={handlePublish}
-            disabled={!file || publishing}
+            disabled={!file || !cooked || publishing}
           >
             {publishing ? 'Publishing…' : 'Publish to Recifree'}
           </button>
         </div>
       </div>
 
-      {(file || error) && (
-        <div className="publish-bar-status">
-          {file && !error && <span className="publish-filename">{file.name}</span>}
-          {error && <span className="publish-error" role="alert">{error}</span>}
-        </div>
-      )}
+      <div className="publish-bar-status">
+        <label className="publish-signoff">
+          <input
+            type="checkbox"
+            checked={cooked}
+            onChange={(e) => { setError(''); setCooked(e.target.checked); }}
+          />
+          <span>I have actually cooked this, and it is delicious.</span>
+        </label>
+        {file && !error && <span className="publish-filename">{file.name}</span>}
+        {error && <span className="publish-error" role="alert">{error}</span>}
+      </div>
     </section>
   );
 }

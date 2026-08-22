@@ -10,6 +10,7 @@ import Settings from './pages/Settings/Settings';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import AddRecipe from './pages/AddRecipe/AddRecipe';
 import Shelf from './pages/Shelf/Shelf';
+import ShelfEdit from './pages/ShelfEdit/ShelfEdit';
 import VerificationBanner from './components/VerificationBanner/VerificationBanner';
 import OnboardingModal from './components/OnboardingModal/OnboardingModal';
 import { ShoppingListProvider } from './context/ShoppingListContext';
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
       // keeps their shelf in localStorage and must be able to reach it.
       { path: '/shelf', element: <Shelf /> },
       { path: '/shelf/:id', element: <Recipe fromShelf /> },
+      { path: '/shelf/:id/edit', element: <ShelfEdit /> },
       { path: '/saved', element: <ProtectedRoute><SavedRecipes /></ProtectedRoute> },
       { path: '/shopping-list', element: <ProtectedRoute><ShoppingList /></ProtectedRoute> },
       { path: '/settings', element: <ProtectedRoute><Settings /></ProtectedRoute> },

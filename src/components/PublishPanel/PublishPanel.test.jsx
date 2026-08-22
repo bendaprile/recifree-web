@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, cleanup, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import PublishPanel from './PublishPanel';
 import * as publishService from '../../services/publishService';
 
@@ -13,7 +14,7 @@ vi.mock('../../config/firebase', () => ({ auth: {}, db: {} }));
 global.URL.createObjectURL = vi.fn(() => 'blob:preview');
 global.URL.revokeObjectURL = vi.fn();
 
-const recipe = { id: 'kale-salad', title: 'Kale Salad', triedAndTrue: true };
+const recipe = { id: 'kale-salad', title: 'Kale Salad' };
 let onPreviewChange;
 const photo = () => new File(['bytes'], 'dinner.jpg', { type: 'image/jpeg' });
 
@@ -22,6 +23,18 @@ const choosePhoto = async (file = photo()) => {
     await act(async () => {
         fireEvent.change(input, { target: { files: [file] } });
     });
+};
+
+const signOff = async () => {
+    await act(async () => {
+        fireEvent.click(screen.getByRole('checkbox'));
+    });
+};
+
+// Most tests care about the publishable state, which needs both.
+const readyToPublish = async () => {
+    await choosePhoto();
+    await signOff();
 };
 
 describe('PublishPanel', () => {
@@ -36,30 +49,56 @@ describe('PublishPanel', () => {
     afterEach(cleanup);
 
     it('will not publish until a photo is chosen', () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
 
         const button = screen.getByRole('button', { name: /publish to recifree/i });
         expect(button.disabled).toBe(true);
         expect(screen.getByText(/add a photo of the one you cooked/i)).toBeTruthy();
     });
 
-    it('enables publishing once a photo is chosen', async () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
-        await choosePhoto();
+    it('needs both a photo and the sign-off before publishing is possible', async () => {
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+        const button = () => screen.getByRole('button', { name: /publish to recifree/i });
 
-        expect(screen.getByRole('button', { name: /publish to recifree/i }).disabled).toBe(false);
+        await choosePhoto();
+        expect(button().disabled).toBe(true);
         expect(screen.getByText('dinner.jpg')).toBeTruthy();
+
+        await signOff();
+        expect(button().disabled).toBe(false);
+    });
+
+    it('will not publish on the sign-off alone, with no photo', async () => {
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+        await signOff();
+
+        expect(screen.getByRole('button', { name: /publish to recifree/i }).disabled).toBe(true);
+    });
+
+    it('sends the sign-off with the recipe, since the draft no longer carries it', async () => {
+        publishService.publishRecipe.mockResolvedValue({ slug: 'kale-salad' });
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+        await readyToPublish();
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', { name: /publish to recifree/i }));
+        });
+
+        expect(publishService.publishRecipe).toHaveBeenCalledWith(
+            expect.objectContaining({ id: 'kale-salad', triedAndTrue: true }),
+            expect.any(File)
+        );
     });
 
     it('reports the chosen photo upward, so the page can show it as the hero', async () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
         await choosePhoto();
 
         expect(onPreviewChange).toHaveBeenCalledWith('blob:preview');
     });
 
     it('clears the hero preview when the photo is removed', async () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
         await choosePhoto();
         onPreviewChange.mockClear();
 
@@ -73,7 +112,9 @@ describe('PublishPanel', () => {
 
     it('revokes the object URL it created, so previews do not leak', async () => {
         const { unmount } = render(
-            <PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />
+            <MemoryRouter>
+                <PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />
+            </MemoryRouter>
         );
         await choosePhoto();
         unmount();
@@ -83,21 +124,23 @@ describe('PublishPanel', () => {
 
     it('publishes the recipe with the photo and reports the new slug', async () => {
         publishService.publishRecipe.mockResolvedValue({ slug: 'kale-salad', image: 'https://example/img.jpg' });
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
-        await choosePhoto();
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+        await readyToPublish();
 
         await act(async () => {
             fireEvent.click(screen.getByRole('button', { name: /publish to recifree/i }));
         });
 
-        expect(publishService.publishRecipe).toHaveBeenCalledWith(recipe, expect.any(File));
+        // The exact payload is asserted separately; here we only care that the
+        // new slug is reported back to the page.
+        expect(publishService.publishRecipe).toHaveBeenCalledTimes(1);
         await waitFor(() => expect(onPublished).toHaveBeenCalledWith('kale-salad'));
     });
 
     it('surfaces a failure and leaves the user able to retry', async () => {
         publishService.publishRecipe.mockRejectedValue(new Error('We could not store your photo.'));
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
-        await choosePhoto();
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+        await readyToPublish();
 
         await act(async () => {
             fireEvent.click(screen.getByRole('button', { name: /publish to recifree/i }));
@@ -112,8 +155,8 @@ describe('PublishPanel', () => {
     it('does not fire onPublished twice when the button is clicked repeatedly', async () => {
         let resolvePublish;
         publishService.publishRecipe.mockReturnValue(new Promise(r => { resolvePublish = r; }));
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
-        await choosePhoto();
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+        await readyToPublish();
 
         const button = screen.getByRole('button', { name: /publish to recifree/i });
         await act(async () => { fireEvent.click(button); });
@@ -124,5 +167,11 @@ describe('PublishPanel', () => {
         expect(publishService.publishRecipe).toHaveBeenCalledTimes(1);
 
         await act(async () => { resolvePublish({ slug: 'kale-salad' }); });
+    });
+
+    it('offers a route to edit the draft before it is published', async () => {
+        render(<MemoryRouter><PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} /></MemoryRouter>);
+
+        expect(screen.getByRole('link', { name: /edit/i }).getAttribute('href')).toBe('/shelf/kale-salad/edit');
     });
 });

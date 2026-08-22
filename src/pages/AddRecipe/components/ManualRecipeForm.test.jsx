@@ -179,8 +179,6 @@ describe('ManualRecipeForm Component', () => {
     });
 
     // Sign off Tried & True
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
 
     // 2. Submit with empty title
     fireEvent.click(submitBtn);
@@ -217,7 +215,6 @@ describe('ManualRecipeForm Component', () => {
         }
       ],
       instructions: ['Toast the bread'],
-      triedAndTrue: true
     }));
 
     alertSpy.mockRestore();

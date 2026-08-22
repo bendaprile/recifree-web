@@ -188,9 +188,6 @@ describe('AddRecipe Component', () => {
     // Instructions field
     fireEvent.change(screen.getByPlaceholderText('Describe step 1...'), { target: { value: 'Mix in mug' } });
 
-    // Tried & True checkbox
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
 
     addRecipe.mockResolvedValue({ slug: 'easy-mug-cake' });
 
@@ -237,9 +234,6 @@ describe('AddRecipe Component', () => {
 
     await screen.findByText('Review & Save');
 
-    // Check the Tried & True checkbox and submit
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
 
     const submitBtn = screen.getByRole('button', { name: 'Strip the Fluff & Save Recipe' });
     await act(async () => {
@@ -338,7 +332,6 @@ describe('AddRecipe Component', () => {
     fireEvent.change(screen.getByLabelText(/Recipe Title/), { target: { value: 'Bad Recipe' } });
     fireEvent.change(screen.getByPlaceholderText('e.g. fresh mozzarella'), { target: { value: 'sugar' } });
     fireEvent.change(screen.getByPlaceholderText('Describe step 1...'), { target: { value: 'eat it' } });
-    fireEvent.click(screen.getByRole('checkbox'));
 
     addRecipe.mockRejectedValueOnce(new Error('Database Down'));
 

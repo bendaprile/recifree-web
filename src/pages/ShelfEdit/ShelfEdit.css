@@ -1,0 +1,12 @@
+.shelf-edit-header {
+    margin-bottom: var(--space-8);
+}
+
+.shelf-edit-header h1 {
+    margin-bottom: var(--space-2);
+}
+
+.shelf-edit-note {
+    color: var(--color-text-secondary);
+    max-width: 54ch;
+}

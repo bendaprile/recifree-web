@@ -5,7 +5,17 @@ import './ManualRecipeForm.css';
 
 const COMMON_UNITS = ['', 'g', 'kg', 'ml', 'l', 'tbsp', 'tsp', 'cup', 'cups', 'pcs', 'pinch', 'slices', 'can', 'cans', 'pack', 'packs'];
 
-function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
+/**
+ * @param {object} [initialData]  Prefills the form. Used both for a fresh
+ *                                extraction and for editing a shelf draft.
+ * @param {string} [submitLabel]  Overridden when editing, where "Save Recipe"
+ *                                reads as creating a second one.
+ *
+ * The Tried & True sign-off deliberately does not live here. Saving to the
+ * shelf is collecting, not vouching; the claim is made at publish time, in
+ * PublishPanel, alongside the photo of the dish the user actually cooked.
+ */
+function ManualRecipeForm({ initialData = null, onSave, onCancel, submitLabel = 'Strip the Fluff & Save Recipe' }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [prepTime, setPrepTime] = useState('');
@@ -28,8 +38,6 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
   const [initialStepIngredients, setInitialStepIngredients] = useState(null);
 
   // Tried & True Sign-off
-  const [triedAndTrue, setTriedAndTrue] = useState(false);
-  const [showSignoffShake, setShowSignoffShake] = useState(false);
 
   // Load initial data (e.g. from extraction)
   useEffect(() => {
@@ -165,12 +173,6 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!triedAndTrue) {
-      setShowSignoffShake(true);
-      setTimeout(() => setShowSignoffShake(false), 800);
-      return;
-    }
-
     // Basic Validation
     if (!title.trim()) {
       alert("Please provide a recipe title.");
@@ -234,7 +236,6 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
         ? initialStepIngredients
         : formattedInstructions.map(() => []),
       image: initialData?.image || '',
-      triedAndTrue: true,
       source: initialData?.source || {
         name: "Recifree Community",
         url: window.location.origin
@@ -479,36 +480,15 @@ function ManualRecipeForm({ initialData = null, onSave, onCancel }) {
 
 
 
-      {/* Tried & True Sign-off & Submit block */}
-      <div className={`form-section-card tried-true-card ${showSignoffShake ? 'card-shake' : ''}`}>
-        <div className="tried-true-checkbox-row">
-          <label className="checkbox-label-container">
-            <input
-              type="checkbox"
-              className="real-checkbox"
-              checked={triedAndTrue}
-              onChange={(e) => setTriedAndTrue(e.target.checked)}
-            />
-            <span className="custom-checkbox"></span>
-            <span className="checkbox-text">
-              <strong>I have actually cooked this, and it is delicious. <span className="text-error">*</span></strong>
-              <p className="checkbox-subtext">
-                Recifree is an ad-free culinary sanctuary. We require every contributor to sign off that they have personally taste-tested and loved this recipe.
-              </p>
-            </span>
-          </label>
-        </div>
-      </div>
-
       <div className="form-action-footer">
         <button type="button" className="btn btn-secondary" onClick={onCancel}>
           Cancel
         </button>
         <button
           type="submit"
-          className={`btn btn-primary submit-recipe-btn ${!triedAndTrue ? 'btn-disabled' : ''}`}
+          className="btn btn-primary submit-recipe-btn"
         >
-          Strip the Fluff & Save Recipe
+          {submitLabel}
         </button>
       </div>
     </form>
