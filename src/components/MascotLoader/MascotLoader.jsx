@@ -91,7 +91,7 @@ function MascotLoader() {
           {/* Motor Base (Safety Orange or Charcoal) */}
           <path
             d="M 45 160 L 35 200 H 115 L 105 160 Z"
-            fill="var(--color-primary, #ff7a00)"
+            fill="var(--color-primary)"
             stroke="var(--charcoal-deep, #1e293b)"
             strokeWidth="3.5"
             className="blender-base"
@@ -102,7 +102,7 @@ function MascotLoader() {
             cx="75"
             cy="180"
             r="10"
-            fill="var(--color-bg, #fffdfa)"
+            fill="var(--color-background)"
             stroke="var(--charcoal-deep, #1e293b)"
             strokeWidth="2.5"
           />
@@ -128,9 +128,9 @@ function MascotLoader() {
             <line x1="55" y1="95" x2="70" y2="95" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" className="fluff-block-2" />
             <line x1="50" y1="110" x2="62" y2="110" stroke="#cbd5e1" strokeWidth="2.5" strokeLinecap="round" className="fluff-block-3" />
             {/* Tiny stars or sparklers */}
-            <path d="M 85 70 L 87 74 L 91 75 L 87 76 L 85 80 L 83 76 L 79 75 L 83 74 Z" fill="var(--color-primary, #ff7a00)" className="star-particle" />
-            <circle cx="65" cy="55" r="2.5" fill="var(--color-primary, #ff7a00)" className="bubble-particle-1" />
-            <circle cx="80" cy="100" r="1.5" fill="var(--color-primary, #ff7a00)" className="bubble-particle-2" />
+            <path d="M 85 70 L 87 74 L 91 75 L 87 76 L 85 80 L 83 76 L 79 75 L 83 74 Z" fill="var(--color-primary)" className="star-particle" />
+            <circle cx="65" cy="55" r="2.5" fill="var(--color-primary)" className="bubble-particle-1" />
+            <circle cx="80" cy="100" r="1.5" fill="var(--color-primary)" className="bubble-particle-2" />
           </g>
         </svg>
 
