@@ -1,6 +1,7 @@
 const admin = require('firebase-admin');
 const { identifyCaller, TIER_ADMIN } = require('./security/callerTier');
 const { uploadImageToStorage } = require('./imageGen/imagenService');
+const { normalizeUrl, hashUrl } = require('./cache/extractionCache');
 
 /**
  * publishRecipe
@@ -20,6 +21,78 @@ const { uploadImageToStorage } = require('./imageGen/imagenService');
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+/**
+ * A display name is user-controlled text that ends up in a world-readable
+ * document, so it gets a length cap.
+ */
+const PUBLISHER_NAME_MAX = 60;
+
+/**
+ * Picks the name to credit the publisher under, from candidates in preference
+ * order. Returns null when none of them is usable.
+ *
+ * Nothing containing '@' is ever returned. `recipes` is world-readable and
+ * ssrRecipe serialises the whole document into public page source, so an email
+ * that reached this field would be published. Firebase fills displayName from
+ * whichever provider the user signed in with, and the profile copy is free
+ * text they typed themselves, so neither candidate can be trusted to be a name.
+ */
+function publisherNameFrom(candidates = []) {
+  for (const candidate of candidates) {
+    const name = String(candidate == null ? '' : candidate).trim();
+    if (!name) continue;
+    if (name.includes('@')) continue;
+    return name.slice(0, PUBLISHER_NAME_MAX);
+  }
+  return null;
+}
+
+/**
+ * Resolves the publisher's display name at publish time rather than at read
+ * time. `firestore.rules` lets a user read only their own `users/{uid}`
+ * document, so a reader cannot turn a uid into a name; denormalising here is
+ * what makes the credit visible to everyone.
+ *
+ * Returns null on any failure, deliberately. A missing byline is cosmetic. A
+ * publish that fails over one would cost the user their photo upload and their
+ * Tried & True sign-off, which is a far worse trade.
+ */
+async function lookupPublisherName(db, authClient, uid) {
+  if (!uid) return null;
+
+  try {
+    const [profileSnap, authUser] = await Promise.all([
+      db.collection('users').doc(uid).get(),
+      authClient.getUser(uid).catch(() => null)
+    ]);
+
+    const profile = profileSnap && profileSnap.exists ? profileSnap.data() : null;
+    return publisherNameFrom([profile?.displayName, authUser?.displayName]);
+  } catch (error) {
+    console.warn('Could not resolve a publisher name:', error.message);
+    return null;
+  }
+}
+
+/**
+ * The key paste deduplication matches on: the SHA-256 of the normalized source
+ * URL, the same key the extraction cache uses. Stored on the recipe so a later
+ * paste of that URL can find it with one indexed query.
+ *
+ * Returns null for a recipe with no usable source, which is what a manual entry
+ * looks like. Those cannot be deduplicated and do not need to be.
+ */
+function sourceUrlHashFor(recipe) {
+  const url = recipe && recipe.source && recipe.source.url;
+  if (!url) return null;
+
+  try {
+    return hashUrl(normalizeUrl(url));
+  } catch {
+    return null;
+  }
+}
 
 function slugify(text) {
   return String(text || '')
@@ -67,6 +140,41 @@ function validate(payload) {
   if (approximateBytes > MAX_IMAGE_BYTES) return 'That photo is too large. Please use one under 5MB.';
 
   return null;
+}
+
+/**
+ * Builds the document written to the public catalog.
+ *
+ * Separate from the request handler so the shape of a published recipe can be
+ * tested without faking Storage, Auth, and Firestore. Every field the server
+ * owns is applied after the submitted recipe is spread, so a crafted payload
+ * cannot set its own byline, slug, image, or deduplication key.
+ */
+function buildPublishedDoc({ recipe, slug, imageUrl, publishedByName, uid, timestamp }) {
+  const payload = { ...recipe };
+  delete payload._extractionMeta;
+  if (Array.isArray(payload.stepIngredients)) {
+    // Firestore cannot store an array of arrays.
+    payload.stepIngredients = JSON.stringify(payload.stepIngredients);
+  }
+
+  return {
+    ...payload,
+    id: slug,
+    slug,
+    image: imageUrl,
+    // The `recipes` collection is world-readable and ssrRecipe serialises the
+    // whole document into the page. Store the uid, never the email.
+    publishedByUid: uid || null,
+    // Half of the dual attribution a published recipe carries: the Recifree
+    // user who cooked it. The other half is `source`, which credits whoever
+    // wrote the original. Both are meant to be read by everyone.
+    publishedByName,
+    // What paste deduplication matches a later paste of the same URL against.
+    sourceUrlHash: sourceUrlHashFor(recipe),
+    createdAt: timestamp,
+    updatedAt: timestamp
+  };
 }
 
 async function publishRecipe(req, res) {
@@ -119,23 +227,16 @@ async function publishRecipe(req, res) {
       return;
     }
 
-    const payload = { ...recipe };
-    delete payload._extractionMeta;
-    if (Array.isArray(payload.stepIngredients)) {
-      payload.stepIngredients = JSON.stringify(payload.stepIngredients);
-    }
+    const publishedByName = await lookupPublisherName(db, admin.auth(), caller.uid);
 
-    await db.collection('recipes').add({
-      ...payload,
-      id: slug,
+    await db.collection('recipes').add(buildPublishedDoc({
+      recipe,
       slug,
-      image: imageUrl,
-      // The `recipes` collection is world-readable and ssrRecipe serialises the
-      // whole document into the page. Store the uid, never the email.
-      publishedByUid: caller.uid || null,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
+      imageUrl,
+      publishedByName,
+      uid: caller.uid,
+      timestamp: admin.firestore.FieldValue.serverTimestamp()
+    }));
 
     res.status(200).json({ slug, image: imageUrl });
   } catch (error) {
@@ -144,4 +245,4 @@ async function publishRecipe(req, res) {
   }
 }
 
-module.exports = { publishRecipe, slugify, validate };
+module.exports = { publishRecipe, slugify, validate, publisherNameFrom, lookupPublisherName, sourceUrlHashFor, buildPublishedDoc };

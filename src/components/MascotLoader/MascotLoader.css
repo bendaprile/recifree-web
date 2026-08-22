@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
+  padding: var(--space-8);
   text-align: center;
   width: 100%;
   max-width: 450px;
@@ -16,7 +16,7 @@
   position: relative;
   width: 150px;
   height: 200px;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--space-6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -241,24 +241,24 @@
 .mascot-text-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--space-1);
   min-height: 80px;
   justify-content: center;
 }
 
 .mascot-loading-title {
   font-family: var(--font-mono, monospace);
-  font-size: var(--font-size-md, 14px);
+  font-size: var(--text-sm);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-primary, #ff7a00);
+  color: var(--color-primary);
   font-weight: 700;
   margin: 0;
 }
 
 .mascot-loading-phrase {
-  font-size: var(--font-size-lg, 18px);
-  color: var(--color-text, #334155);
+  font-size: var(--text-lg);
+  color: var(--color-text);
   font-weight: 500;
   margin: 0;
   animation: fade-in-phrase 0.3s ease-out;

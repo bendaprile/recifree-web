@@ -64,6 +64,85 @@ describe('extractionCache', () => {
       expect(normalizeUrl(url)).toBe('https://example.com/search?a=first&m=second&z=third');
     });
 
+    // Everything below is one question asked repeatedly: would a reader call
+    // these the same recipe page? If yes, they have to hash the same, or the
+    // catalog grows a duplicate.
+    describe('addresses that are the same page', () => {
+      const key = 'https://gimmesomeoven.com/cajun-seasoning';
+
+      it('collapses www. and the bare domain', () => {
+        expect(normalizeUrl('https://www.gimmesomeoven.com/cajun-seasoning')).toBe(key);
+        expect(normalizeUrl('https://gimmesomeoven.com/cajun-seasoning')).toBe(key);
+      });
+
+      it('collapses http and https, for a link pasted from an old bookmark', () => {
+        expect(normalizeUrl('http://www.gimmesomeoven.com/cajun-seasoning/')).toBe(key);
+      });
+
+      it('collapses a trailing slash, host casing, and a fragment', () => {
+        expect(normalizeUrl('HTTPS://WWW.GimmeSomeOven.com/cajun-seasoning/#recipe')).toBe(key);
+      });
+
+      it('collapses the AMP copy a mobile share hands out', () => {
+        expect(normalizeUrl('https://www.gimmesomeoven.com/cajun-seasoning/amp/')).toBe(key);
+        expect(normalizeUrl('https://www.gimmesomeoven.com/cajun-seasoning/amp')).toBe(key);
+        expect(normalizeUrl('https://www.gimmesomeoven.com/cajun-seasoning?amp=1')).toBe(key);
+      });
+
+      it('drops the default port', () => {
+        expect(normalizeUrl('https://www.gimmesomeoven.com:443/cajun-seasoning')).toBe(key);
+      });
+
+      it('drops click ids from every network that hands them out', () => {
+        const tracked = [
+          'srsltid=abc', 'gclid=abc', 'gbraid=abc', 'wbraid=abc', 'dclid=abc', '_gl=abc',
+          'fbclid=abc', 'igshid=abc', 'msclkid=abc', 'twclid=abc', 'ttclid=abc',
+          'li_fat_id=abc', 'epik=abc', 'yclid=abc', 'mc_cid=abc', '_hsenc=abc'
+        ];
+        tracked.forEach(param => {
+          expect(normalizeUrl(`https://www.gimmesomeoven.com/cajun-seasoning?${param}`)).toBe(key);
+        });
+      });
+
+      it('drops whole tracking families, not just the members named today', () => {
+        // utm_id and utm_source_platform arrived after utm_source did.
+        expect(normalizeUrl('https://gimmesomeoven.com/cajun-seasoning?utm_id=9&utm_source_platform=x')).toBe(key);
+        expect(normalizeUrl('https://gimmesomeoven.com/cajun-seasoning?mtm_campaign=x&pk_kwd=y&hsa_acc=z')).toBe(key);
+      });
+
+      it('ignores tracking parameter casing', () => {
+        expect(normalizeUrl('https://gimmesomeoven.com/cajun-seasoning?UTM_Source=Pinterest&FBCLID=x')).toBe(key);
+      });
+    });
+
+    describe('addresses that are not the same page', () => {
+      it('keeps a parameter that selects content', () => {
+        expect(normalizeUrl('https://sundaybaker.co/cookies?recipe_id=987'))
+          .toBe('https://sundaybaker.co/cookies?recipe_id=987');
+      });
+
+      it('keeps two different recipes on one site apart', () => {
+        expect(normalizeUrl('https://gimmesomeoven.com/cajun-seasoning'))
+          .not.toBe(normalizeUrl('https://gimmesomeoven.com/taco-seasoning'));
+      });
+
+      it('keeps a subdomain that is not www, which is usually a different site', () => {
+        expect(normalizeUrl('https://blog.example.com/x')).not.toBe(normalizeUrl('https://example.com/x'));
+      });
+
+      it('leaves path casing alone, because a case-sensitive server serves two pages', () => {
+        expect(normalizeUrl('https://example.com/Cookies')).not.toBe(normalizeUrl('https://example.com/cookies'));
+      });
+
+      it('keeps a non-default port', () => {
+        expect(normalizeUrl('https://example.com:8443/x')).toBe('https://example.com:8443/x');
+      });
+
+      it('does not mistake a path for the www prefix', () => {
+        expect(normalizeUrl('https://example.com/www.other.com/x')).toBe('https://example.com/www.other.com/x');
+      });
+    });
+
     it('throws error for invalid or empty URL', () => {
       expect(() => normalizeUrl('')).toThrow('URL must be a non-empty string');
       expect(() => normalizeUrl(123)).toThrow('URL must be a non-empty string');

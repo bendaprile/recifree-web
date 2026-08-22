@@ -9,6 +9,7 @@ const { mapToRecifreeSchema } = require('./parsers/schemaMapper');
 const { buildImagenPrompt, generateAiFoodPhoto, uploadImageToStorage } = require('./imageGen/imagenService');
 const { normalizeUrl, hashUrl, checkCache, saveToCache } = require('./cache/extractionCache');
 const { checkRateLimit } = require('./security/rateLimiter');
+const { findPublishedByUrlHash, alternateUrlsFor } = require('./publishedLookup');
 
 /**
  * Validates the URL string.
@@ -37,6 +38,29 @@ function validateUrl(url) {
     }
   } catch (e) {
     throw new Error(`BAD_REQUEST: Invalid URL structure: ${e.message}`);
+  }
+}
+
+/**
+ * The site's hostname, for error copy. A user who pastes a URL knows the site
+ * by its domain, and naming it is the difference between "something broke" and
+ * "this publisher will not let us in, so type it in yourself".
+ */
+function siteName(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return 'That site';
+  }
+}
+
+/** The deduplication key for a URL, or null when there is nothing to key on. */
+function safeHash(url) {
+  if (!url) return null;
+  try {
+    return hashUrl(normalizeUrl(url));
+  } catch {
+    return null;
   }
 }
 
@@ -101,12 +125,37 @@ async function extractRecipeOrchestrator(req, res) {
       return;
     }
 
+    // Already in the public catalog? Route the user there instead of parsing a
+    // second copy of the same recipe. This runs before the page is fetched, so
+    // a duplicate paste costs one indexed query and nothing else.
+    const publishedSlug = await findPublishedByUrlHash(admin.firestore(), urlHash);
+    if (publishedSlug) {
+      console.log(`Duplicate paste for ${url} — already published as ${publishedSlug}`);
+      res.status(200).json({ duplicate: true, slug: publishedSlug });
+      return;
+    }
+
     // Check extraction cache
     try {
       const cachedRecipe = await checkCache(urlHash);
       if (cachedRecipe) {
         console.log(`Cache HIT for ${url} (hash: ${urlHash})`);
-        res.status(200).json(cachedRecipe);
+
+        // A cache hit returns before the page is fetched, so the redirect and
+        // canonical checks below never run. The cached recipe already records
+        // the address the page answers to; if that differs from the paste, it
+        // is the one to match against the catalog.
+        const cachedSourceHash = safeHash(cachedRecipe.source && cachedRecipe.source.url);
+        if (cachedSourceHash && cachedSourceHash !== urlHash) {
+          const publishedFromCache = await findPublishedByUrlHash(admin.firestore(), cachedSourceHash);
+          if (publishedFromCache) {
+            console.log(`Duplicate paste for ${url} via the cached source URL — already published as ${publishedFromCache}`);
+            res.status(200).json({ duplicate: true, slug: publishedFromCache });
+            return;
+          }
+        }
+
+        res.status(200).json({ ...cachedRecipe, sourceUrlHash: urlHash });
         return;
       }
       console.log(`Cache MISS for ${url} (hash: ${urlHash})`);
@@ -125,17 +174,36 @@ async function extractRecipeOrchestrator(req, res) {
     });
 
     if (!response.ok) {
-      // Some publishers block server-side fetches outright. Nothing to parse
-      // means nothing we can do here, so hand the user to the manual form
-      // rather than leaving them on a dead end.
+      // Some publishers block server-side fetches outright. Cloudflare bot
+      // management on the Dotdash Meredith sites (eatingwell, allrecipes,
+      // seriouseats, simplyrecipes, foodandwine) answers with a challenge page
+      // and no recipe in it. Nothing to parse means nothing we can do here, so
+      // hand the user to the manual form rather than leaving them on a dead end.
+      console.log(`Fetch blocked for ${url}: HTTP ${response.status}`);
       res.status(422).json({
-        error: `We could not load that page (the site returned ${response.status}). It is blocking automated requests. You can enter the recipe by hand instead.`,
+        error: `${siteName(url)} does not allow automated imports, so we could not read this one. You can enter it by hand instead — it takes a minute.`,
         canRetryManually: true
       });
       return;
     }
 
     const htmlText = await response.text();
+
+    // The pasted address is not always the page's own. A Pinterest link or a
+    // shortener redirects, and a permalink often 301s to a slug. Check the
+    // addresses the page answers to before parsing a second copy of a recipe
+    // that is already in the catalog.
+    for (const alternate of alternateUrlsFor(url, response.url, htmlText)) {
+      const alternateHash = safeHash(alternate);
+      if (!alternateHash || alternateHash === urlHash) continue;
+
+      const publishedAlternate = await findPublishedByUrlHash(admin.firestore(), alternateHash);
+      if (publishedAlternate) {
+        console.log(`Duplicate paste for ${url} via ${alternate} — already published as ${publishedAlternate}`);
+        res.status(200).json({ duplicate: true, slug: publishedAlternate });
+        return;
+      }
+    }
 
     let rawRecipeData = null;
     let methodUsed = '';
@@ -176,7 +244,7 @@ async function extractRecipeOrchestrator(req, res) {
     if (!rawRecipeData && !canUsePaidLayers) {
       console.log('Layer 3 skipped: caller is not entitled to paid layers.');
       res.status(422).json({
-        error: 'This site does not publish standard recipe data, so we could not read it automatically. You can enter the recipe by hand instead.',
+        error: `${siteName(url)} does not publish standard recipe data, so we could not read this one automatically. You can enter it by hand instead — it takes a minute.`,
         canRetryManually: true
       });
       return;
@@ -200,7 +268,7 @@ async function extractRecipeOrchestrator(req, res) {
       } catch (llmError) {
         console.error('Layer 3 LLM execution failed:', llmError.message);
         res.status(422).json({
-          error: 'Failed to extract recipe. The website does not contain standard recipe metadata, and the AI fallback failed.',
+          error: `${siteName(url)} does not publish standard recipe data, and the AI fallback failed on it too. You can enter it by hand instead — it takes a minute.`,
           canRetryManually: true
         });
         return;
@@ -210,15 +278,17 @@ async function extractRecipeOrchestrator(req, res) {
     // 5. Schema Normalization
     if (!rawRecipeData) {
       res.status(422).json({
-        error: 'Failed to extract recipe. No structured recipe data or recipe lists could be found on the page.',
+        error: `We could not find a recipe on that ${siteName(url)} page. You can enter it by hand instead — it takes a minute.`,
         canRetryManually: true
       });
       return;
     }
 
-    // Ensure the source URL is attached to the raw data for mapping
+    // Attribute to the address the page answers to, not to the shortener or
+    // tracking wrapper the reader happened to paste. It is the link the
+    // original creator gets credited with, and the key a later paste matches.
     rawRecipeData.source = rawRecipeData.source || {};
-    rawRecipeData.source.url = url;
+    rawRecipeData.source.url = response.url || url;
 
     const normalizedRecipe = mapToRecifreeSchema(rawRecipeData);
 
@@ -267,7 +337,11 @@ async function extractRecipeOrchestrator(req, res) {
     }
 
     console.log(`Successfully completed extraction via method: ${methodUsed}`);
-    res.status(200).json(normalizedRecipe);
+    // The deduplication key travels with the recipe so the shelf can recognise
+    // a URL the user already holds, without the frontend having to reimplement
+    // normalizeUrl and drift from it. Attached after saveToCache, so the key is
+    // never stored inside the document it keys.
+    res.status(200).json({ ...normalizedRecipe, sourceUrlHash: urlHash });
 
   } catch (globalError) {
     console.error('Global extraction endpoint error:', globalError);
@@ -277,5 +351,6 @@ async function extractRecipeOrchestrator(req, res) {
 
 module.exports = {
   extractRecipeOrchestrator,
-  validateUrl
+  validateUrl,
+  siteName
 };

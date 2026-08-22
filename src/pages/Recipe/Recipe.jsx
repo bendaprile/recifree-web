@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import { useShelf } from '../../context/ShelfContext';
 import { useAuth } from '../../context/AuthContext';
@@ -9,9 +9,36 @@ import AddToShoppingListButton from '../../components/AddToShoppingListButton/Ad
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
 import { PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
 import SourceAttribution from '../../components/SourceAttribution/SourceAttribution';
+import Reviews from '../../components/Reviews/Reviews';
 import IngredientList from '../../components/IngredientList/IngredientList';
 import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
+
+/**
+ * The explanation for a paste that landed the reader somewhere they did not
+ * name: the recipe was already published, or already on their own shelf.
+ *
+ * Returns null for an ordinary visit.
+ */
+function pasteNoticeFor(state) {
+    if (state?.alreadyShelved) {
+        return {
+            lead: 'You already had this one.',
+            detail: 'It was on your shelf, so we opened your draft instead of extracting a second copy over it.'
+        };
+    }
+
+    if (state?.alreadyPublished) {
+        return {
+            lead: 'Recifree already had this one.',
+            detail: state.alreadyPublished.saved
+                ? 'We added it to your saved recipes instead of making a second copy.'
+                : 'It is already in your saved recipes, so nothing was copied.'
+        };
+    }
+
+    return null;
+}
 
 /**
  * The SSR hydration payload comes from the raw Firestore document and does not
@@ -37,6 +64,8 @@ function normalizeHydratedRecipe(data) {
 function Recipe({ fromShelf = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const pasteNotice = pasteNoticeFor(location.state);
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
@@ -183,6 +212,17 @@ function Recipe({ fromShelf = false }) {
         <div className="recipe-page-container">
             <article className="swiss-wrapper">
 
+                {/* Paste deduplication landed the user here rather than on
+                    the editor they asked for. Without a word of explanation
+                    that reads as a bug. */}
+                {pasteNotice && (
+                    <div className="duplicate-paste-notice">
+                        <p>
+                            <strong>{pasteNotice.lead}</strong>{' '}{pasteNotice.detail}
+                        </p>
+                    </div>
+                )}
+
                 {fromShelf && (
                     <PublishPanel
                         recipe={recipe}
@@ -217,6 +257,15 @@ function Recipe({ fromShelf = false }) {
                         </div>
 
                         <h1 className="hero-title">{recipe.title}</h1>
+
+                        {/* Half of the dual attribution. The other half, the
+                            site this came from, is credited by SourceAttribution
+                            at the foot of the page. */}
+                        {recipe.publishedByName && (
+                            <p className="hero-byline">
+                                Cooked and published by <strong>{recipe.publishedByName}</strong>
+                            </p>
+                        )}
 
                         {recipe.description && (
                             <p className="hero-description">{recipe.description}</p>
@@ -370,6 +419,12 @@ function Recipe({ fromShelf = false }) {
                             </div>
                         </section>
                     )}
+
+                    {/* Reviews are keyed on the slug and read from the public
+                        catalog, so a shelf draft has nothing to show and nobody
+                        to show it to. Suppressed there for the same reason Save
+                        is. */}
+                    {!fromShelf && <Reviews slug={recipe.slug} />}
 
                     {/* Source Attribution */}
                     <SourceAttribution source={recipe.source} />

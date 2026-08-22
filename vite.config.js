@@ -48,6 +48,14 @@ export default defineConfig({
     maxWorkers: 1,
     fileParallelism: false,
     testTimeout: 30000,
+    server: {
+      deps: {
+        // functions/node_modules holds firebase-functions and the Google AI
+        // SDKs. Letting Vitest transform them costs ~40s on every run; Node
+        // can require them directly.
+        external: [/functions[\\/]node_modules/]
+      }
+    },
     coverage: {
       exclude: ['**/*.css', '**/*.json', 'src/setupTests.js']
     }

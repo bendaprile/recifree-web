@@ -1,0 +1,48 @@
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    line-height: 1;
+}
+
+.star {
+    color: var(--color-border);
+    font-size: 1.125rem;
+}
+
+.star--filled {
+    color: var(--color-primary);
+}
+
+/* Input mode: a fieldset, reset so it reads as a row of stars. */
+.star-rating--input {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+}
+
+.star-rating--input .star {
+    cursor: pointer;
+    font-size: 1.75rem;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.star-rating--input .star:hover {
+    transform: scale(1.1);
+}
+
+/* The radio itself is hidden, but it still takes focus, so the focus ring has
+   to move to the star or keyboard users cannot see where they are. */
+.star-rating--input input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.star-rating--input input:focus-visible + span {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}

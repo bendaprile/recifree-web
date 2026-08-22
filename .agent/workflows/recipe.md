@@ -1,33 +1,37 @@
 ---
-description: Add a new recipe from a URL
+description: Add a recipe by hand when a site blocks automated extraction. Use for "/recipe <url>", "add this recipe manually", or after /add returns "does not allow automated imports".
 ---
 
-# Recipe Generation Process & Prompt
+# Adding a recipe by hand
 
-This document outlines the workflow for adding new recipes to Recifree using an LLM, along with the strict prompt to ensure consistent data formatting.
+Use this when extraction cannot work. `extractRecipe` returns a 422 with `canRetryManually` because the publisher refuses server-side fetches. Cloudflare bot management on the Dotdash Meredith sites — eatingwell.com, allrecipes.com, seriouseats.com, simplyrecipes.com, foodandwine.com — is the common case, and it answers with a challenge page holding no recipe.
+
+There are two ways in. Pick by who does the typing.
+
+**The user types it.** `/add` → "Write Recipe Manually" saves to their shelf, and they publish it with their own photo. Nothing below applies, and this is the right answer whenever the user wants to add it themselves.
+
+**You type it, below.** Writes a JSON file, upserts it into Firestore, and bypasses the publish gate. Admin-only. This is the path when the user asks *you* to add the recipe.
 
 ---
 
 ## 🔄 The Process
 
-1.  **Select a Source**: Find a high-quality recipe from a blog or website.
-2.  **Copy Content**: Copy the entire text of the recipe, but **specifically highlight the formal "Recipe Card" section** (ingredients, instructions, nutrition facts).
-3.  **Feed the LLM**: Paste the "Recipe Generation Prompt" (below) followed by the copied recipe text into an LLM.
-4.  **Review Output**: The LLM will generate a JSON block. Review it briefly for accuracy.
-5.  **Create File**:
-    *   Create a new file in `src/data/recipes/` named `[id].json` (the LLM will generate the ID).
-    *   Paste the JSON content.
-6.  **Generate Image**:
-    *   Use the `generate_image` tool to create a high-quality, 4k food photography shot of the dish.
-    *   Prompt Guidelines: "A delicious, high-quality food photography shot of [Recipe Title]. [Visual Description of Ingredients/Colors]. Professional food styling, 4k resolution."
-    *   Save the image to `public/images/recipes/` ensuring the filename matches the JSON ID with the correct file extension matching the generated image's format (e.g., `[id].jpg` if the generated file is JPEG/JFIF, or `[id].png` if it is a PNG).
-    *   Update the `image` field in the JSON to point to `/images/recipes/[id].[extension]`.
+1.  **Get the recipe text.** The user pastes it, or you read the page with the browser tools — a real browser gets pages a server-side fetch cannot. Never take the page's photo; see step 5.
+2.  **Write the JSON.** Follow the prompt and schema below. Save it to `src/data/recipes/[id].json`, where `[id]` is the kebab-case slug from the schema.
+3.  **Load it into Firestore.** Run `npm run migrate -- --id=[id]`. The catalog reads Firestore; `src/data/recipes/` is only the offline fallback. Skip this and the recipe renders nowhere, which is the most common way this workflow silently does nothing. Note that it writes to **production**.
+4.  **Confirm it has a deduplication key.** `npm run migrate` computes `sourceUrlHash` from the recipe's source URL, so this is usually already done. Run `npm run backfill:source-hash` to check; without a key, pasting the source URL later extracts a duplicate instead of routing to this recipe.
+5.  **Add an image.** Two legal sources only, per `AGENTS.md` rule 6: a photo the user took, or an AI-generated one. Never the source site's photo, and never a hotlink.
+    *   Prompt guidelines: "A delicious, high-quality food photography shot of [Recipe Title]. [Visual description of ingredients and colors]. Professional food styling, 4k resolution."
+    *   Save to `public/images/recipes/[id].[ext]`, matching the generated file's real format (`.jpg` for JPEG/JFIF, `.png` for PNG).
+    *   Point the JSON `image` field at `/images/recipes/[id].[ext]`.
+6.  **Verify against the source.** Check every measurement, quantity, and metadata field against the original text. Confirm the instructions are reworded rather than copied — rule 2 of the spec below is a copyright requirement, not a style preference.
+7.  **Check it renders.** Open `/recipe/[id]` and confirm the ingredients, the steps, and the hover mapping are right.
 
 ---
 
-## 🤖 Recipe Generation Prompt
+## 🤖 The Formatting Spec
 
-**Copy everything below this line and paste it into the LLM:**
+The rules and schema the JSON has to satisfy. Follow them directly when you are the one writing the file. Everything below the line is also a self-contained prompt, so a human driving this by hand can paste it into a separate chat along with the recipe text.
 
 ***
 
@@ -153,7 +157,7 @@ The `stepIngredients` would be:
 
 ### Advanced: Partial Amounts & Overrides
 
-Sometimes a step uses only part of an ingredient (e.g., "Add half the cheese"). currently, you can use an object instead of a number:
+Sometimes a step uses only part of an ingredient (e.g., "Add half the cheese"). Use an object instead of a number:
 
 ```json
 {
@@ -173,4 +177,4 @@ Example usage in `stepIngredients`:
 ```
 
 ### 📝 INPUT DATA
-(Paste the recipe URL, title, and full text here)
+(The recipe URL, title, and full text go here.)

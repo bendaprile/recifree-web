@@ -33,8 +33,18 @@ vi.mock('../../services/recipeService', () => ({
 // Swapped per-test to move between an admin (publishes) and everyone else
 // (saves to the private shelf).
 const mockShelveRecipe = vi.fn();
+let mockShelf = [];
 vi.mock('../../context/ShelfContext', () => ({
-  useShelf: () => ({ shelveRecipe: mockShelveRecipe }),
+  useShelf: () => ({ shelveRecipe: mockShelveRecipe, shelf: mockShelf }),
+}));
+
+const mockToggleSaved = vi.fn();
+let mockSavedIds = [];
+vi.mock('../../context/SavedRecipesContext', () => ({
+  useSavedRecipes: () => ({
+    isRecipeSaved: (id) => mockSavedIds.includes(id),
+    toggleSaved: mockToggleSaved,
+  }),
 }));
 
 let mockUserProfile = { role: 'admin' };
@@ -58,6 +68,8 @@ import { addRecipe } from '../../services/recipeService';
 describe('AddRecipe Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSavedIds = [];
+    mockShelf = [];
   });
 
   const renderAddRecipe = () => {
@@ -408,5 +420,94 @@ describe('AddRecipe Component', () => {
     });
     expect(screen.queryByText('Unsaved Recipe')).not.toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/other');
+  });
+
+  describe('paste deduplication against the user\'s own shelf', () => {
+    const pasteUrl = async (url = 'https://example.com/kale-salad') => {
+      renderAddRecipe();
+      const input = screen.getByPlaceholderText(/e.g. https:\/\/www.bonappetit.com/);
+      await act(async () => {
+        fireEvent.change(input, { target: { value: url } });
+        fireEvent.click(screen.getByRole('button', { name: 'Strip the Fluff' }));
+      });
+    };
+
+    it('opens the draft the user already has instead of the editor', async () => {
+      // Re-extracting would open the editor, and saving from there overwrites
+      // the draft by id — taking any edits the user had made with it.
+      mockShelf = [{ id: 'kale-salad', sourceUrlHash: 'hash-1', title: 'My edited draft' }];
+      extractRecipeFromUrl.mockResolvedValue({ title: 'Kale Salad', sourceUrlHash: 'hash-1' });
+
+      await pasteUrl();
+
+      expect(mockNavigate).toHaveBeenCalledWith('/shelf/kale-salad', { state: { alreadyShelved: true } });
+      expect(screen.queryByText('Review & Save')).not.toBeInTheDocument();
+    });
+
+    it('still opens the editor for a URL the shelf does not have', async () => {
+      mockShelf = [{ id: 'other', sourceUrlHash: 'hash-other' }];
+      extractRecipeFromUrl.mockResolvedValue({ title: 'Kale Salad', sourceUrlHash: 'hash-1', ingredients: [], instructions: [] });
+
+      await pasteUrl();
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('ignores a published reference, which is in the catalog and not a draft', async () => {
+      // A published entry holds only a pointer. Sending the user there instead
+      // of extracting would strand them on a reference with no recipe in it.
+      mockShelf = [{ id: 'kale-salad', sourceUrlHash: 'hash-1', status: 'published' }];
+      extractRecipeFromUrl.mockResolvedValue({ title: 'Kale Salad', sourceUrlHash: 'hash-1', ingredients: [], instructions: [] });
+
+      await pasteUrl();
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('paste deduplication', () => {
+    const pasteUrl = async (url = 'https://example.com/kale-salad') => {
+      renderAddRecipe();
+      const input = screen.getByPlaceholderText(/e.g. https:\/\/www.bonappetit.com/);
+      const submitBtn = screen.getByRole('button', { name: 'Strip the Fluff' });
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: url } });
+        fireEvent.click(submitBtn);
+      });
+    };
+
+    it('routes to the published recipe instead of opening the editor', async () => {
+      extractRecipeFromUrl.mockResolvedValue({ duplicate: true, slug: 'kale-salad' });
+
+      await pasteUrl();
+
+      expect(mockNavigate).toHaveBeenCalledWith('/recipe/kale-salad', {
+        state: { alreadyPublished: { saved: true } },
+      });
+      expect(screen.queryByText('Review & Save')).not.toBeInTheDocument();
+    });
+
+    it('saves the existing recipe, so the paste still leaves the user with something', async () => {
+      extractRecipeFromUrl.mockResolvedValue({ duplicate: true, slug: 'kale-salad' });
+
+      await pasteUrl();
+
+      expect(mockToggleSaved).toHaveBeenCalledWith('kale-salad');
+    });
+
+    it('does not unsave a recipe the user had already saved', async () => {
+      // toggleSaved is a toggle. Calling it on an already-saved recipe would
+      // remove it, which is the opposite of what the paste asked for.
+      mockSavedIds = ['kale-salad'];
+      extractRecipeFromUrl.mockResolvedValue({ duplicate: true, slug: 'kale-salad' });
+
+      await pasteUrl();
+
+      expect(mockToggleSaved).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith('/recipe/kale-salad', {
+        state: { alreadyPublished: { saved: false } },
+      });
+    });
   });
 });

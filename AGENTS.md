@@ -20,7 +20,7 @@ recifree/
 │   │   └── security.md  # Workflow: scheduled security audit agent
 │   └── skills/          # Techniques an agent reaches for on its own
 │       └── README.md    # Index of all skills and when to use them
-├── .claude/             # Claude Code config: skill symlinks + git guardrail hooks
+├── .claude/             # Claude Code config: skill + command symlinks, git guardrail hooks
 ├── .github/             # GitHub configuration & workflows
 ├── docs/                # Planning and branding documentation
 │   ├── BRANDING.md      # Brand identity & UI/UX philosophy
@@ -77,6 +77,8 @@ When editing code in this repository, you **MUST** follow these rules:
 ## 🧰 Agent Skills
 Recifree keeps a shared skill library at `.agent/skills/`. Each skill is a plain markdown file with no tool-specific syntax, so any agent can read it. Claude Code discovers them automatically through symlinks in `.claude/skills/`. Antigravity and any other agent should read them from `.agent/skills/` directly.
 
+Workflows in `.agent/workflows/` are invoked rather than recognized, so they are exposed as Claude Code slash commands through symlinks in `.claude/commands/`. `.agent/workflows/recipe.md` is `/recipe`. Add a workflow to that menu with `ln -s ../../.agent/workflows/<name>.md .claude/commands/<name>.md`; edit the workflow itself in `.agent/workflows/` only.
+
 Read `.agent/skills/README.md` for the full index. Reach for these without being asked:
 
 | Skill | Use it when |
@@ -103,7 +105,9 @@ Claude Code sessions run a `PreToolUse` hook (`.claude/hooks/git-guardrails.py`,
 The hook is Claude Code specific. Other agents do not get this protection, so apply the same restraint by hand: never rewrite history, never discard uncommitted work, never bypass the Husky pre-commit gate.
 
 ## 🧑‍🍳 Adding a New Recipe
-If a user asks you to add a new recipe, you should utilize the recipe generation workflow located at `.agent/workflows/recipe.md` (which users may refer to conversationally as `recipes.md`). Also reference `RECIPE_GENERATION.md` for specific formatting instructions and expectations.
+Follow `.agent/workflows/recipe.md` when a user asks you to add a recipe. Users may refer to it conversationally as `recipes.md`, or invoke it in Claude Code as `/recipe`. It is the only description of that process; `RECIPE_GENERATION.md` is a pointer to it and holds no instructions of its own.
+
+Reach for it when extraction cannot: `extractRecipe` returns a 422 with `canRetryManually` for publishers that block server-side fetches.
 
 ## 🔐 Security Audit Agent
 Recifree uses a scheduled security audit agent to continuously find and fix vulnerabilities.

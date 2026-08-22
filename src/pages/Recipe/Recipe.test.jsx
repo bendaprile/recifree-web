@@ -133,7 +133,7 @@ describe('Recipe Page', () => {
     });
 
     // Helper to render component with router and theme context
-    const renderRecipe = async (id = 'test-recipe') => {
+    const renderRecipe = async (id = 'test-recipe', state = null) => {
         window.scrollTo = vi.fn();
         let result;
         await act(async () => {
@@ -143,7 +143,7 @@ describe('Recipe Page', () => {
                         <SavedRecipesProvider>
                             <ShelfProvider>
                                 <ShoppingListProvider>
-                                    <MemoryRouter initialEntries={[`/recipe/${id}`]}>
+                                    <MemoryRouter initialEntries={[{ pathname: `/recipe/${id}`, state }]}>
                                         <Routes>
                                             <Route path="/recipe/:id" element={<Recipe />} />
                                         </Routes>
@@ -157,6 +157,71 @@ describe('Recipe Page', () => {
         });
         return result;
     };
+
+    describe('reviews', () => {
+        it('shows the reviews section on a catalog recipe', async () => {
+            await renderRecipe();
+
+            expect(screen.getByRole('heading', { name: 'Reviews' })).toBeInTheDocument();
+        });
+
+        it('invites a signed-out reader to create an account rather than hiding the section', async () => {
+            await renderRecipe();
+
+            expect(screen.getByRole('link', { name: /Create an account/ })).toBeInTheDocument();
+        });
+    });
+
+    describe('duplicate paste notice', () => {
+        it('explains why a paste landed on an existing recipe, and that it was saved', async () => {
+            await renderRecipe('test-recipe', { alreadyPublished: { saved: true } });
+
+            expect(screen.getByText(/Recifree already had this one/)).toBeInTheDocument();
+            expect(screen.getByText(/added it to your saved recipes/)).toBeInTheDocument();
+        });
+
+        it('says nothing was copied when the recipe was already in the saved list', async () => {
+            await renderRecipe('test-recipe', { alreadyPublished: { saved: false } });
+
+            expect(screen.getByText(/already in your saved recipes/)).toBeInTheDocument();
+        });
+
+        it('explains a paste that reopened the user\'s own draft', async () => {
+            await renderRecipe('test-recipe', { alreadyShelved: true });
+
+            expect(screen.getByText(/You already had this one/)).toBeInTheDocument();
+            expect(screen.getByText(/opened your draft/)).toBeInTheDocument();
+        });
+
+        it('shows no notice on an ordinary visit', async () => {
+            await renderRecipe();
+
+            expect(screen.queryByText(/Recifree already had this one/)).not.toBeInTheDocument();
+        });
+    });
+
+    describe('dual attribution', () => {
+        it('credits both the publisher and the original source', async () => {
+            getRecipeBySlug.mockResolvedValue({
+                ...mockTestRecipe,
+                publishedByName: 'Ben D',
+                source: { name: 'Original Cook', url: 'https://example.com/kale' }
+            });
+            await renderRecipe();
+
+            expect(screen.getByText(/Cooked and published by/)).toBeInTheDocument();
+            expect(screen.getByText('Ben D')).toBeInTheDocument();
+
+            const sourceLink = screen.getByRole('link', { name: /Original Cook/ });
+            expect(sourceLink).toHaveAttribute('href', 'https://example.com/kale');
+        });
+
+        it('shows no byline for a recipe published before bylines existed', async () => {
+            await renderRecipe();
+
+            expect(screen.queryByText(/Cooked and published by/)).not.toBeInTheDocument();
+        });
+    });
 
     it('renders recipe details and metadata successfully', async () => {
         await renderRecipe();
@@ -272,6 +337,13 @@ describe('Recipe Page from the shelf', () => {
 
     beforeEach(() => {
         window.localStorage.clear();
+    });
+
+    it('shows no reviews on a draft, which is not in the catalog for anyone to review', async () => {
+        window.localStorage.setItem('recifree_shelf', JSON.stringify([shelfRecipe]));
+        await renderFromShelf();
+
+        expect(screen.queryByRole('heading', { name: 'Reviews' })).not.toBeInTheDocument();
     });
 
     it('renders a recipe that exists only on the shelf', async () => {
