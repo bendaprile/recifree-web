@@ -169,6 +169,47 @@ describe('Recipe Page', () => {
         return result;
     };
 
+    describe('the time chip', () => {
+        it('leads with the total and keeps prep and cook readable without a hover', async () => {
+            // A phone has no hover, and this is a kitchen tool.
+            await renderRecipe();
+
+            const chip = document.querySelector('.hero-time');
+            expect(chip).toHaveTextContent('Total: 30 min');
+            expect(chip).toHaveTextContent('10 min prep · 20 min cook');
+        });
+
+        it('falls back to prep when a recipe has no total', async () => {
+            const { totalTime, cookTime, ...noTotal } = mockTestRecipe;
+            getRecipeBySlug.mockResolvedValue(noTotal);
+
+            await renderRecipe();
+
+            const chip = document.querySelector('.hero-time');
+            expect(chip).toHaveTextContent('Prep: 10 min');
+            expect(chip.querySelector('.hero-time-breakdown')).toBeNull();
+        });
+
+        it('shows no breakdown line for a recipe with only a total', async () => {
+            const { prepTime, cookTime, ...totalOnly } = mockTestRecipe;
+            getRecipeBySlug.mockResolvedValue(totalOnly);
+
+            await renderRecipe();
+
+            expect(document.querySelector('.hero-time')).toHaveTextContent('Total: 30 min');
+            expect(document.querySelector('.hero-time-breakdown')).toBeNull();
+        });
+
+        it('renders no time chip at all when a recipe has no times', async () => {
+            const { prepTime, cookTime, totalTime, ...noTimes } = mockTestRecipe;
+            getRecipeBySlug.mockResolvedValue(noTimes);
+
+            await renderRecipe();
+
+            expect(document.querySelector('.hero-time')).toBeNull();
+        });
+    });
+
     describe('the header rating', () => {
         it('shows the average and count beside the other recipe facts', async () => {
             getReviews.mockResolvedValue([{ uid: 'a', rating: 5 }, { uid: 'b', rating: 4 }]);
@@ -288,8 +329,10 @@ describe('Recipe Page', () => {
         await renderRecipe();
         expect(screen.getByText('Test Recipe')).toBeInTheDocument();
         expect(screen.getByText('Test Description')).toBeInTheDocument();
-        expect(screen.getByText('Prep:')).toBeInTheDocument();
-        expect(screen.getByText('10 min')).toBeInTheDocument();
+        // Total leads the time chip; prep and cook sit under it as one line.
+        expect(screen.getByText('Total:')).toBeInTheDocument();
+        expect(screen.getByText('30 min')).toBeInTheDocument();
+        expect(screen.getByText('10 min prep · 20 min cook')).toBeInTheDocument();
     });
 
     it('activates step and highlights step ingredients on click and hover', async () => {
@@ -331,14 +374,15 @@ describe('Recipe Page', () => {
 
         // Scaled to 4 cups Flour & 8 Servings
         expect(screen.getByText('4 cups')).toBeInTheDocument();
-        expect(screen.getByText('8 Servings')).toBeInTheDocument();
+        // The count and the word are separate elements now.
+        expect(screen.getByText('8').closest('div')).toHaveTextContent('8 servings');
 
         // Click 3x button
         const btn3x = screen.getByRole('button', { name: '3x' });
         fireEvent.click(btn3x);
 
         expect(screen.getByText('6 cups')).toBeInTheDocument();
-        expect(screen.getByText('12 Servings')).toBeInTheDocument();
+        expect(screen.getByText('12').closest('div')).toHaveTextContent('12 servings');
     });
 
     it('toggles ingredient checkboxes', async () => {

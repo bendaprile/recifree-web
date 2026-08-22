@@ -207,6 +207,23 @@ function Recipe({ fromShelf = false }) {
         }
     };
 
+    // Total leads; prep and cook sit under it. A recipe with no total falls
+    // back to whichever of the two it has, so the chip is never empty.
+    const timeHeadline = recipe.totalTime
+        ? { label: 'Total', value: recipe.totalTime }
+        : recipe.prepTime
+            ? { label: 'Prep', value: recipe.prepTime }
+            : recipe.cookTime
+                ? { label: 'Cook', value: recipe.cookTime }
+                : null;
+
+    const timeBreakdown = recipe.totalTime
+        ? [
+            recipe.prepTime && `${recipe.prepTime} prep`,
+            recipe.cookTime && `${recipe.cookTime} cook`
+        ].filter(Boolean).join(' · ') || null
+        : null;
+
     const heroImage = recipe.image || publishPreview;
     const hasHeroImage = Boolean(heroImage);
 
@@ -269,24 +286,23 @@ function Recipe({ fromShelf = false }) {
 
                         <div className="hero-meta-row">
                             <div className="hero-badges">
-                                {recipe.prepTime && (
-                                    <div>
-                                        Prep: <strong>{recipe.prepTime}</strong>
-                                    </div>
-                                )}
-                                {recipe.cookTime && (
-                                    <div>
-                                        Cook: <strong>{recipe.cookTime}</strong>
-                                    </div>
-                                )}
-                                {recipe.totalTime && (
-                                    <div>
-                                        Total: <strong>{recipe.totalTime}</strong>
+                                {/* Total is the number a reader decides on; prep and cook
+                                    are the detail behind it. Stacked rather than spread
+                                    across three labelled chips, which pushed this bar
+                                    wider than the title. Kept visible rather than put
+                                    behind a hover, because a phone has no hover and this
+                                    is a kitchen tool. */}
+                                {timeHeadline && (
+                                    <div className="hero-time">
+                                        <span>{timeHeadline.label}: <strong>{timeHeadline.value}</strong></span>
+                                        {timeBreakdown && (
+                                            <span className="hero-time-breakdown">{timeBreakdown}</span>
+                                        )}
                                     </div>
                                 )}
                                 {recipe.servings && (
                                     <div>
-                                        Yield: <strong>{typeof recipe.servings === 'number' ? recipe.servings * currentScale : recipe.servings} Servings</strong>
+                                        <strong>{typeof recipe.servings === 'number' ? recipe.servings * currentScale : recipe.servings}</strong> servings
                                     </div>
                                 )}
                                 {ratingSummary.count > 0 && (

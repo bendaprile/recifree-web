@@ -217,6 +217,8 @@
 .hero-badges {
     display: flex;
     flex-wrap: wrap;
+    /* The time chip is two lines; everything beside it centres against it. */
+    align-items: center;
     gap: 1.25rem;
     font-family: var(--font-primary, 'Inter', sans-serif);
     font-size: 0.825rem;
@@ -229,6 +231,18 @@
     padding: 0.55rem 1.1rem;
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-time {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.hero-time-breakdown {
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    opacity: 0.7;
 }
 
 .hero-badges strong {
