@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import { useShelf } from '../../context/ShelfContext';
 import { useAuth } from '../../context/AuthContext';
@@ -37,6 +37,7 @@ function normalizeHydratedRecipe(data) {
 function Recipe({ fromShelf = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
@@ -183,6 +184,21 @@ function Recipe({ fromShelf = false }) {
         <div className="recipe-page-container">
             <article className="swiss-wrapper">
 
+                {/* Paste deduplication landed the user here: they pasted a
+                    URL someone had already published. Without a word of
+                    explanation, a paste that silently becomes a different
+                    page reads as a bug. */}
+                {location.state?.alreadyPublished && (
+                    <div className="duplicate-paste-notice">
+                        <p>
+                            <strong>Recifree already had this one.</strong>{' '}
+                            {location.state.alreadyPublished.saved
+                                ? 'We added it to your saved recipes instead of making a second copy.'
+                                : 'It is already in your saved recipes, so nothing was copied.'}
+                        </p>
+                    </div>
+                )}
+
                 {fromShelf && (
                     <PublishPanel
                         recipe={recipe}
@@ -217,6 +233,15 @@ function Recipe({ fromShelf = false }) {
                         </div>
 
                         <h1 className="hero-title">{recipe.title}</h1>
+
+                        {/* Half of the dual attribution. The other half, the
+                            site this came from, is credited by SourceAttribution
+                            at the foot of the page. */}
+                        {recipe.publishedByName && (
+                            <p className="hero-byline">
+                                Cooked and published by <strong>{recipe.publishedByName}</strong>
+                            </p>
+                        )}
 
                         {recipe.description && (
                             <p className="hero-description">{recipe.description}</p>

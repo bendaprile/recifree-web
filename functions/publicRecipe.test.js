@@ -38,6 +38,16 @@ describe('ssrRecipe public serialisation', () => {
     expect(publish).toMatch(/publishedByUid/);
   });
 
+  it('resolves the byline server-side rather than trusting the client payload', () => {
+    const publish = readFileSync(
+      resolve(dirname(fileURLToPath(import.meta.url)), 'publishRecipe.js'),
+      'utf8'
+    );
+    // buildPublishedDoc's own tests cover what the document ends up containing.
+    // This one covers the wiring: the name comes from the server-side lookup.
+    expect(publish).toMatch(/lookupPublisherName\(db, admin\.auth\(\), caller\.uid\)/);
+  });
+
   it('parses stepIngredients before hydrating, so the client never maps a string', () => {
     // Firestore stores it as a JSON string. The hydration payload bypasses
     // recipeService's mapping, so the parse has to happen here.

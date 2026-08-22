@@ -53,6 +53,24 @@ npm run stats:extraction
 
 Reports which parse layer handled each cached extraction (`ld+json`, `microdata`, `heuristic`, or the paid Gemini fallback) and how many cached recipes have no image. Read-only. Add `FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"` to read the local emulator instead of production.
 
+### Backfilling the Deduplication Key
+
+```bash
+npm run backfill:source-hash
+```
+
+Adds `sourceUrlHash` to catalog recipes that predate paste deduplication, so pasting their source URL routes to the existing recipe instead of extracting a copy. Reports what it would change and writes nothing; run `npm run backfill:source-hash -- --apply` to write. Add `FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"` to run against the local emulator.
+
+### Proof Scripts
+
+Some guarantees cannot be checked by Vitest because they depend on Firestore rules. These run against the local emulator (`npm run dev` in another terminal) and exit non-zero on failure.
+
+```bash
+npm run prove:rules
+```
+
+Checks that `firestore.rules` keeps one user's shelf out of another user's hands.
+
 ## 🌐 Deployment
 
 This project is configured for Firebase Hosting with GitHub Actions for CI/CD.

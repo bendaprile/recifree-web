@@ -37,6 +37,15 @@ vi.mock('../../context/ShelfContext', () => ({
   useShelf: () => ({ shelveRecipe: mockShelveRecipe }),
 }));
 
+const mockToggleSaved = vi.fn();
+let mockSavedIds = [];
+vi.mock('../../context/SavedRecipesContext', () => ({
+  useSavedRecipes: () => ({
+    isRecipeSaved: (id) => mockSavedIds.includes(id),
+    toggleSaved: mockToggleSaved,
+  }),
+}));
+
 let mockUserProfile = { role: 'admin' };
 vi.mock('../../context/AuthContext', () => ({
   useAuth: () => ({ userProfile: mockUserProfile }),
@@ -58,6 +67,7 @@ import { addRecipe } from '../../services/recipeService';
 describe('AddRecipe Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSavedIds = [];
   });
 
   const renderAddRecipe = () => {
@@ -408,5 +418,51 @@ describe('AddRecipe Component', () => {
     });
     expect(screen.queryByText('Unsaved Recipe')).not.toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/other');
+  });
+
+  describe('paste deduplication', () => {
+    const pasteUrl = async (url = 'https://example.com/kale-salad') => {
+      renderAddRecipe();
+      const input = screen.getByPlaceholderText(/e.g. https:\/\/www.bonappetit.com/);
+      const submitBtn = screen.getByRole('button', { name: 'Strip the Fluff' });
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: url } });
+        fireEvent.click(submitBtn);
+      });
+    };
+
+    it('routes to the published recipe instead of opening the editor', async () => {
+      extractRecipeFromUrl.mockResolvedValue({ duplicate: true, slug: 'kale-salad' });
+
+      await pasteUrl();
+
+      expect(mockNavigate).toHaveBeenCalledWith('/recipe/kale-salad', {
+        state: { alreadyPublished: { saved: true } },
+      });
+      expect(screen.queryByText('Review & Save')).not.toBeInTheDocument();
+    });
+
+    it('saves the existing recipe, so the paste still leaves the user with something', async () => {
+      extractRecipeFromUrl.mockResolvedValue({ duplicate: true, slug: 'kale-salad' });
+
+      await pasteUrl();
+
+      expect(mockToggleSaved).toHaveBeenCalledWith('kale-salad');
+    });
+
+    it('does not unsave a recipe the user had already saved', async () => {
+      // toggleSaved is a toggle. Calling it on an already-saved recipe would
+      // remove it, which is the opposite of what the paste asked for.
+      mockSavedIds = ['kale-salad'];
+      extractRecipeFromUrl.mockResolvedValue({ duplicate: true, slug: 'kale-salad' });
+
+      await pasteUrl();
+
+      expect(mockToggleSaved).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith('/recipe/kale-salad', {
+        state: { alreadyPublished: { saved: false } },
+      });
+    });
   });
 });

@@ -6,12 +6,14 @@ import MascotLoader from '../../components/MascotLoader/MascotLoader';
 import { extractRecipeFromUrl } from '../../services/extractionService';
 import { addRecipe } from '../../services/recipeService';
 import { useShelf } from '../../context/ShelfContext';
+import { useSavedRecipes } from '../../context/SavedRecipesContext';
 import { useAuth } from '../../context/AuthContext';
 import './AddRecipe.css';
 
 function AddRecipe() {
   const navigate = useNavigate();
   const { shelveRecipe } = useShelf();
+  const { isRecipeSaved, toggleSaved } = useSavedRecipes();
   const { userProfile } = useAuth();
   const [viewState, setViewState] = useState('INPUT'); // 'INPUT' | 'LOADING' | 'EDIT'
   const [error, setError] = useState('');
@@ -60,6 +62,17 @@ function AddRecipe() {
     setError('');
     try {
       const data = await extractRecipeFromUrl(url);
+
+      // Someone has already published this URL. Send the user to that recipe
+      // rather than making a second copy of it, and put it in their saved list
+      // so the paste still leaves them with something.
+      if (data.duplicate) {
+        const alreadySaved = isRecipeSaved(data.slug);
+        if (!alreadySaved) await toggleSaved(data.slug);
+        navigate(`/recipe/${data.slug}`, { state: { alreadyPublished: { saved: !alreadySaved } } });
+        return;
+      }
+
       setExtractedData(data);
       setViewState('EDIT');
     } catch (err) {

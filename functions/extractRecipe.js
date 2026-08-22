@@ -9,6 +9,7 @@ const { mapToRecifreeSchema } = require('./parsers/schemaMapper');
 const { buildImagenPrompt, generateAiFoodPhoto, uploadImageToStorage } = require('./imageGen/imagenService');
 const { normalizeUrl, hashUrl, checkCache, saveToCache } = require('./cache/extractionCache');
 const { checkRateLimit } = require('./security/rateLimiter');
+const { findPublishedByUrlHash } = require('./publishedLookup');
 
 /**
  * Validates the URL string.
@@ -37,6 +38,19 @@ function validateUrl(url) {
     }
   } catch (e) {
     throw new Error(`BAD_REQUEST: Invalid URL structure: ${e.message}`);
+  }
+}
+
+/**
+ * The site's hostname, for error copy. A user who pastes a URL knows the site
+ * by its domain, and naming it is the difference between "something broke" and
+ * "this publisher will not let us in, so type it in yourself".
+ */
+function siteName(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return 'That site';
   }
 }
 
@@ -101,6 +115,16 @@ async function extractRecipeOrchestrator(req, res) {
       return;
     }
 
+    // Already in the public catalog? Route the user there instead of parsing a
+    // second copy of the same recipe. This runs before the page is fetched, so
+    // a duplicate paste costs one indexed query and nothing else.
+    const publishedSlug = await findPublishedByUrlHash(admin.firestore(), urlHash);
+    if (publishedSlug) {
+      console.log(`Duplicate paste for ${url} — already published as ${publishedSlug}`);
+      res.status(200).json({ duplicate: true, slug: publishedSlug });
+      return;
+    }
+
     // Check extraction cache
     try {
       const cachedRecipe = await checkCache(urlHash);
@@ -125,11 +149,14 @@ async function extractRecipeOrchestrator(req, res) {
     });
 
     if (!response.ok) {
-      // Some publishers block server-side fetches outright. Nothing to parse
-      // means nothing we can do here, so hand the user to the manual form
-      // rather than leaving them on a dead end.
+      // Some publishers block server-side fetches outright. Cloudflare bot
+      // management on the Dotdash Meredith sites (eatingwell, allrecipes,
+      // seriouseats, simplyrecipes, foodandwine) answers with a challenge page
+      // and no recipe in it. Nothing to parse means nothing we can do here, so
+      // hand the user to the manual form rather than leaving them on a dead end.
+      console.log(`Fetch blocked for ${url}: HTTP ${response.status}`);
       res.status(422).json({
-        error: `We could not load that page (the site returned ${response.status}). It is blocking automated requests. You can enter the recipe by hand instead.`,
+        error: `${siteName(url)} does not allow automated imports, so we could not read this one. You can enter it by hand instead — it takes a minute.`,
         canRetryManually: true
       });
       return;
@@ -176,7 +203,7 @@ async function extractRecipeOrchestrator(req, res) {
     if (!rawRecipeData && !canUsePaidLayers) {
       console.log('Layer 3 skipped: caller is not entitled to paid layers.');
       res.status(422).json({
-        error: 'This site does not publish standard recipe data, so we could not read it automatically. You can enter the recipe by hand instead.',
+        error: `${siteName(url)} does not publish standard recipe data, so we could not read this one automatically. You can enter it by hand instead — it takes a minute.`,
         canRetryManually: true
       });
       return;
@@ -200,7 +227,7 @@ async function extractRecipeOrchestrator(req, res) {
       } catch (llmError) {
         console.error('Layer 3 LLM execution failed:', llmError.message);
         res.status(422).json({
-          error: 'Failed to extract recipe. The website does not contain standard recipe metadata, and the AI fallback failed.',
+          error: `${siteName(url)} does not publish standard recipe data, and the AI fallback failed on it too. You can enter it by hand instead — it takes a minute.`,
           canRetryManually: true
         });
         return;
@@ -210,7 +237,7 @@ async function extractRecipeOrchestrator(req, res) {
     // 5. Schema Normalization
     if (!rawRecipeData) {
       res.status(422).json({
-        error: 'Failed to extract recipe. No structured recipe data or recipe lists could be found on the page.',
+        error: `We could not find a recipe on that ${siteName(url)} page. You can enter it by hand instead — it takes a minute.`,
         canRetryManually: true
       });
       return;
@@ -277,5 +304,6 @@ async function extractRecipeOrchestrator(req, res) {
 
 module.exports = {
   extractRecipeOrchestrator,
-  validateUrl
+  validateUrl,
+  siteName
 };

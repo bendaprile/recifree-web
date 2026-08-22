@@ -110,19 +110,29 @@ app.get('/recipe/:slug', async (req, res) => {
         const defaultImage = 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=1200&auto=format&fit=crop&q=80';
         const imageUrl = recipe.image || defaultImage;
 
+        // Dual attribution, in the machine-readable half of the page. The
+        // publisher is the author of this version; `isBasedOn` points at the
+        // page it was adapted from, which is how schema.org credits the
+        // original. Recipes published before the byline existed have no name
+        // and keep the Organization author.
+        const author = recipe.publishedByName
+            ? { "@type": "Person", "name": recipe.publishedByName }
+            : { "@type": "Organization", "name": "Recifree" };
+
         const jsonLd = {
             "@context": "https://schema.org",
             "@type": "Recipe",
             "name": recipe.title || 'Recipe',
             "image": imageUrl,
             "description": recipe.description || '',
-            "author": {
-                "@type": "Organization",
-                "name": "Recifree"
-            },
+            "author": author,
             "recipeIngredient": ingredientStrings,
             "recipeInstructions": instructionStrings,
         };
+
+        if (recipe.source && recipe.source.url) {
+            jsonLd.isBasedOn = recipe.source.url;
+        }
 
         // Prepare Meta Tags & Hydration Script
         // We inject the recipe data into window..__INITIAL_RECIPE__ so the client
@@ -134,7 +144,7 @@ app.get('/recipe/:slug', async (req, res) => {
             <meta property="og:type" content="article" />
             <meta name="twitter:card" content="summary_large_image" />
             <script type="application/ld+json">
-                ${JSON.stringify(jsonLd)}
+                ${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
             </script>
             <script id="hydration-data">
                 window.__INITIAL_RECIPE__ = ${JSON.stringify(recipe).replace(/</g, '\\u003c')};
