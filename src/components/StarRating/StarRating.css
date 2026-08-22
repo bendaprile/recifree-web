@@ -5,13 +5,20 @@
     line-height: 1;
 }
 
+/* An empty star is the same green, dimmed — so a filled one reads as filled.
+   --color-primary-dark is the green that flips for contrast rather than for
+   lightness (#3A4A3E on light, #7FA87F on dark), which is what keeps a filled
+   star legible in both themes. */
 .star {
-    color: var(--color-border);
     font-size: 1.125rem;
 }
 
+.star:not(.star--filled) {
+    color: rgba(var(--color-primary-rgb), 0.3);
+}
+
 .star--filled {
-    color: var(--color-primary);
+    color: var(--color-primary-dark);
 }
 
 /* Input mode: a fieldset, reset so it reads as a row of stars. */

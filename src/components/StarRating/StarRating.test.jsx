@@ -23,6 +23,17 @@ describe('StarRating', () => {
       expect(container.querySelectorAll('.star--filled')).toHaveLength(5);
     });
 
+    it('distinguishes filled from empty, which is the whole point of stars', () => {
+      // Both selectors are one class deep, so whichever rule lands last wins
+      // unless the empty one excludes filled stars. When it did not, every
+      // star rendered dim and a five-star recipe looked like a zero.
+      const { container } = render(<StarRating value={3} />);
+      const stars = [...container.querySelectorAll('.star')];
+
+      expect(stars.filter(s => s.matches('.star:not(.star--filled)'))).toHaveLength(2);
+      expect(stars.filter(s => s.matches('.star--filled'))).toHaveLength(3);
+    });
+
     it('shows nothing filled for an unrated recipe', () => {
       const { container } = render(<StarRating value={0} />);
 

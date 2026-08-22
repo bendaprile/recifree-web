@@ -206,6 +206,20 @@
     opacity: 0.75;
 }
 
+/* Over a photo the themed star colours lose their contrast, so they follow the
+   bar's accent instead. Empty stars stay the same hue, dimmed.
+
+   The :not() matters. Without it the empty rule ties with the filled rule on
+   specificity, and every star renders dim — which is exactly the "looks like
+   zero stars" bug this is fixing. */
+.hero-rating .star:not(.star--filled) {
+    color: rgba(143, 191, 143, 0.3);
+}
+
+.hero-rating .star--filled {
+    color: var(--hero-accent);
+}
+
 .hero-meta-row {
     display: flex;
     flex-wrap: wrap;
@@ -215,9 +229,11 @@
 }
 
 .hero-badges {
+    /* The photo hero is dark in both themes, so its accent is fixed rather
+       than themed. The flat variant below hands it back to the palette. */
+    --hero-accent: #8FBF8F;
     display: flex;
     flex-wrap: wrap;
-    /* The time chip is two lines; everything beside it centres against it. */
     align-items: center;
     gap: 1.25rem;
     font-family: var(--font-primary, 'Inter', sans-serif);
@@ -235,7 +251,7 @@
 
 .hero-badges strong {
     font-family: 'JetBrains Mono', monospace;
-    color: #8FBF8F;
+    color: var(--hero-accent);
     font-weight: 600;
     margin-left: 0.25rem;
 }
@@ -674,9 +690,12 @@
    than for lightness: #3A4A3E on the light background, #7FA87F on the dark one.
    --color-primary-light resolves to #4A5D4E in dark mode, which is a dark green
    on a near-black chip. */
-.hero-overlay-header--flat .hero-badges strong,
-.hero-overlay-header--flat .hero-rating strong {
-    color: var(--color-primary-dark);
+.hero-overlay-header--flat .hero-badges {
+    --hero-accent: var(--color-primary-dark);
+}
+
+.hero-overlay-header--flat .hero-rating .star:not(.star--filled) {
+    color: rgba(var(--color-primary-rgb), 0.3);
 }
 
 @media (max-width: 768px) {
