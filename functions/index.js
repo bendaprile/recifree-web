@@ -124,3 +124,11 @@ exports.extractRecipe = functions
     .runWith({ maxInstances: 3, secrets: ['GEMINI_API_KEY'] })
     .https.onRequest(extractRecipeOrchestrator);
 
+const { publishRecipe } = require('./publishRecipe');
+
+// Photos arrive base64-encoded in the request body, so this needs a larger
+// payload ceiling than the default 256MB memory tier comfortably handles.
+exports.publishRecipe = functions
+    .runWith({ maxInstances: 3, memory: '512MB' })
+    .https.onRequest(publishRecipe);
+

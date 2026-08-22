@@ -88,23 +88,65 @@ async function generateAiFoodPhoto(prompt) {
  * @param {string} recipeId
  * @returns {Promise<string|null>} Direct public URL or null if failed
  */
-async function uploadImageToStorage(base64Image, recipeId) {
+const EXTENSION_BY_TYPE = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp'
+};
+
+/**
+ * Resolves the project's Storage bucket, once, and caches it.
+ *
+ * Projects created before the bucket rename report `<project>.appspot.com` as
+ * the default in FIREBASE_CONFIG, while Storage provisioned today lives at
+ * `<project>.firebasestorage.app`. Trusting the default silently uploads into
+ * a bucket that does not exist, which is how every generated image on this
+ * project was lost: the save threw, the caller caught it, and the recipe was
+ * written with no photo.
+ *
+ * Deliberately not cached. Resolution is one metadata call, uploads are rare,
+ * and no cache means a bucket provisioned after deploy is picked up without
+ * waiting for a cold start.
+ */
+async function getStorageBucket() {
+  const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT;
+  const candidates = [admin.storage().bucket()];
+  if (projectId) {
+    candidates.push(admin.storage().bucket(`${projectId}.firebasestorage.app`));
+  }
+
+  for (const candidate of candidates) {
+    try {
+      const [exists] = await candidate.exists();
+      if (exists) {
+        console.log(`Using Storage bucket: ${candidate.name}`);
+        return candidate;
+      }
+      console.warn(`Storage bucket does not exist: ${candidate.name}`);
+    } catch (error) {
+      console.warn(`Could not reach bucket ${candidate.name}: ${error.message}`);
+    }
+  }
+
+  throw new Error('No Firebase Storage bucket is available for this project.');
+}
+
+async function uploadImageToStorage(base64Image, recipeId, contentType = 'image/png') {
   if (!base64Image || !recipeId) {
     console.warn('Skipping upload: missing base64Image or recipeId');
     return null;
   }
 
   try {
-    const bucket = admin.storage().bucket();
+    const bucket = await getStorageBucket();
     const bucketName = bucket.name;
-    const filePath = `recipes/${recipeId}/image.png`;
+    const extension = EXTENSION_BY_TYPE[contentType] || 'png';
+    const filePath = `recipes/${recipeId}/image.${extension}`;
     const file = bucket.file(filePath);
 
     const buffer = Buffer.from(base64Image, 'base64');
     await file.save(buffer, {
-      metadata: {
-        contentType: 'image/png',
-      },
+      metadata: { contentType },
     });
 
     try {
@@ -123,6 +165,7 @@ async function uploadImageToStorage(base64Image, recipeId) {
 
 module.exports = {
   buildImagenPrompt,
+  getStorageBucket,
   generateAiFoodPhoto,
   uploadImageToStorage
 };

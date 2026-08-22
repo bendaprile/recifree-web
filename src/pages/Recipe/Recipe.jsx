@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
 import { useShelf } from '../../context/ShelfContext';
+import PublishPanel from '../../components/PublishPanel/PublishPanel';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
 import { PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
@@ -21,7 +22,7 @@ function Recipe({ fromShelf = false }) {
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
-    const { shelf, loading: shelfLoading } = useShelf();
+    const { shelf, loading: shelfLoading, unshelveRecipe } = useShelf();
 
     // Initialize state from window.__INITIAL_RECIPE__ if it exists (SSR Hydration)
     const [recipe, setRecipe] = useState(() => {
@@ -206,6 +207,18 @@ function Recipe({ fromShelf = false }) {
                         </div>
                     </div>
                 </header>
+
+                {fromShelf && (
+                    <PublishPanel
+                        recipe={recipe}
+                        onPublished={async (slug) => {
+                            // The public copy is now the canonical one; drop the
+                            // private duplicate so it cannot drift.
+                            await unshelveRecipe(recipe.id);
+                            navigate(`/recipe/${slug}`);
+                        }}
+                    />
+                )}
 
                 {/* SWISS EDITORIAL 2-COLUMN BODY CONTENT */}
                 <div className="swiss-body-content">

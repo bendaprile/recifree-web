@@ -8,9 +8,15 @@ const admin = require('firebase-admin');
 const mockSave = vi.fn().mockResolvedValue(true);
 const mockMakePublic = vi.fn().mockResolvedValue(true);
 
+// uploadImageToStorage resolves the bucket before writing, because this
+// project's default bucket name does not match the provisioned one. The mock
+// has to answer exists() or resolution fails and the upload returns null.
+const mockExists = vi.fn().mockResolvedValue([true]);
+
 const mockStorage = vi.fn(() => ({
   bucket: () => ({
     name: 'recifree-test-bucket',
+    exists: mockExists,
     file: (filePath) => ({
       save: mockSave,
       makePublic: mockMakePublic
@@ -187,6 +193,15 @@ describe('imagenService', () => {
       
       expect(url1).toBeNull();
       expect(url2).toBeNull();
+    });
+
+    it('returns null when no bucket exists, rather than reporting a URL for a file that was never written', async () => {
+      // This is the failure that lost every generated image on this project:
+      // the default bucket name did not exist, the save threw, and the caller
+      // carried on with an empty image.
+      mockExists.mockResolvedValueOnce([false]).mockResolvedValueOnce([false]);
+      const result = await uploadImageToStorage('aGVsbG8=', 'tasty-potato-soup');
+      expect(result).toBeNull();
     });
 
     it('returns null if save to storage fails', async () => {
