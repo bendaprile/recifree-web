@@ -86,19 +86,7 @@ jobs:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           PROJECT_ID: recifree-web-4731f
       
-      # Step 8: Deploy Firestore security rules
-      # Runs after functions so a rules permission failure cannot block the
-      # code deploy. Without this the repo's firestore.rules silently drifts
-      # from what is actually enforced in production.
-      - name: Deploy Firestore rules
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only firestore:rules --force
-        env:
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          PROJECT_ID: recifree-web-4731f
-
-      # Step 9: Deploy to Firebase Hosting
+      # Step 8: Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -108,3 +96,16 @@ jobs:
           projectId: recifree-web-4731f
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+      # Step 9: Deploy Firestore security rules
+      # Deliberately last. This step needs the Firebase Rules Admin role on the
+      # service account; without it the rules API returns 403 and this step
+      # fails. Keeping it after hosting means that failure is loud but never
+      # blocks the site or functions from shipping.
+      - name: Deploy Firestore rules
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only firestore:rules --force
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT_ID: recifree-web-4731f
