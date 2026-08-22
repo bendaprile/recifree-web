@@ -1,0 +1,156 @@
+{
+  "id": "cauliflower-shawarma-bowls",
+  "title": "Cauliflower Shawarma Bowls",
+  "description": "Roasted cauliflower and crispy spiced chickpeas served over basmati rice with a bright Green Tahini Sauce. A vegan, gluten-free bowl ready in under an hour.",
+  "image": "/images/recipes/cauliflower-shawarma-bowls.jpg",
+  "prepTime": "15 mins",
+  "cookTime": "35 mins",
+  "totalTime": "50 mins",
+  "servings": 4,
+  "difficulty": "Easy",
+  "tags": [
+    "Middle Eastern",
+    "Dinner",
+    "Vegan",
+    "Gluten-Free",
+    "Cauliflower"
+  ],
+  "ingredients": [
+    {
+      "title": "For the Bowls",
+      "items": [
+        {
+          "amount": "1",
+          "unit": "tbsp",
+          "item": "Curry powder"
+        },
+        {
+          "amount": "2",
+          "unit": "tsp",
+          "item": "Paprika"
+        },
+        {
+          "amount": "1",
+          "unit": "tsp",
+          "item": "Ground cumin"
+        },
+        {
+          "amount": "1",
+          "unit": "tsp",
+          "item": "Kosher salt"
+        },
+        {
+          "amount": "1/2",
+          "unit": "tsp",
+          "item": "Black pepper"
+        },
+        {
+          "amount": "3",
+          "unit": "tbsp",
+          "item": "Extra-virgin olive oil"
+        },
+        {
+          "amount": "1",
+          "unit": "large head",
+          "item": "Cauliflower, cut into florets"
+        },
+        {
+          "amount": "1",
+          "unit": "(15-oz) can",
+          "item": "Chickpeas, rinsed, drained, and patted dry"
+        },
+        {
+          "amount": "2",
+          "unit": "cups",
+          "item": "Cooked basmati rice"
+        },
+        {
+          "amount": "",
+          "unit": "",
+          "item": "Sliced cucumber, for topping (optional)"
+        },
+        {
+          "amount": "",
+          "unit": "",
+          "item": "Halved cherry tomatoes, for topping (optional)"
+        }
+      ]
+    },
+    {
+      "title": "For the Green Tahini Sauce",
+      "items": [
+        {
+          "amount": "1/2",
+          "unit": "cup",
+          "item": "Fresh cilantro leaves"
+        },
+        {
+          "amount": "1/2",
+          "unit": "cup",
+          "item": "Fresh parsley leaves"
+        },
+        {
+          "amount": "1/4",
+          "unit": "cup",
+          "item": "Tahini"
+        },
+        {
+          "amount": "2",
+          "unit": "tbsp",
+          "item": "Fresh lemon juice"
+        },
+        {
+          "amount": "1/2",
+          "unit": "tsp",
+          "item": "Minced fresh garlic"
+        },
+        {
+          "amount": "1/4",
+          "unit": "tsp",
+          "item": "Ground cumin"
+        },
+        {
+          "amount": "1/4",
+          "unit": "tsp",
+          "item": "Kosher salt"
+        },
+        {
+          "amount": "1/4",
+          "unit": "tsp",
+          "item": "Black pepper"
+        },
+        {
+          "amount": "1/3",
+          "unit": "cup",
+          "item": "Warm water"
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 425°F.",
+    "Stir together the curry powder, paprika, cumin, salt, and pepper in a small bowl.",
+    "Spread the cauliflower and chickpeas on separate baking sheets. Toss the chickpeas with 1 tbsp olive oil and 1 tbsp of the spice mix; toss the cauliflower with the remaining 2 tbsp oil and the rest of the spice mix.",
+    "Roast both sheets for 30 minutes, shaking the chickpeas and tossing the cauliflower halfway through. Pull the chickpeas out at 30 minutes, then let the cauliflower roast 5-10 minutes longer, until lightly charred.",
+    "Blend the cilantro, parsley, tahini, lemon juice, garlic, cumin, salt, and pepper. With the blender running, stream in the warm water and blend until smooth.",
+    "Divide the rice between 4 bowls. Top with the roasted cauliflower and chickpeas, add cucumber and tomatoes if using, and drizzle with the Green Tahini Sauce."
+  ],
+  "stepIngredients": [
+    [],
+    [0, 1, 2, 3, 4],
+    [5, 6, 7],
+    [6, 7],
+    [11, 12, 13, 14, 15, 16, 17, 18, 19],
+    [8, 9, 10]
+  ],
+  "source": {
+    "name": "Dishing Out Health",
+    "url": "https://dishingouthealth.com/cauliflower-shawarma-bowls/"
+  },
+  "nutrition": {
+    "calories": 402,
+    "protein": "11g",
+    "carbs": "46g",
+    "fat": "20g"
+  }
+}
