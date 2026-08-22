@@ -5,10 +5,14 @@ import ManualRecipeForm from './components/ManualRecipeForm';
 import MascotLoader from '../../components/MascotLoader/MascotLoader';
 import { extractRecipeFromUrl } from '../../services/extractionService';
 import { addRecipe } from '../../services/recipeService';
+import { useShelf } from '../../context/ShelfContext';
+import { useAuth } from '../../context/AuthContext';
 import './AddRecipe.css';
 
 function AddRecipe() {
   const navigate = useNavigate();
+  const { shelveRecipe } = useShelf();
+  const { userProfile } = useAuth();
   const [viewState, setViewState] = useState('INPUT'); // 'INPUT' | 'LOADING' | 'EDIT'
   const [error, setError] = useState('');
   const [extractedData, setExtractedData] = useState(null);
@@ -60,11 +64,12 @@ function AddRecipe() {
       setViewState('EDIT');
     } catch (err) {
       console.error('Extraction failed:', err);
+      // A 422 carries the backend's own explanation, including the case where
+      // the free parser layers found nothing and the caller is not entitled to
+      // the AI fallback. Pass it straight through rather than overwriting it.
       let errMsg = err.message || 'An unexpected error occurred during extraction.';
-      if (err.status === 403) {
-        errMsg = "Extraction is currently gated for beta testers, but you can enter your recipe manually below!";
-      } else if (err.status === 401) {
-        errMsg = "Your session has expired. Please log in again.";
+      if (err.status === 401) {
+        errMsg = 'Your session has expired. Please log in again.';
       }
       
       setError(errMsg);
@@ -86,9 +91,21 @@ function AddRecipe() {
     }
   };
 
+  // Only admins can write to the public `recipes` collection; firestore.rules
+  // enforces it. Everyone else saves to their own private shelf, which is the
+  // Phase 4a contribution loop: extract privately, publish deliberately.
+  const canPublish = userProfile?.role === 'admin';
+
   const handleSave = async (recipePayload) => {
     try {
       setIsSaving(true);
+
+      if (!canPublish) {
+        await shelveRecipe({ ...recipePayload, id: recipePayload.slug });
+        navigate('/shelf');
+        return;
+      }
+
       const result = await addRecipe(recipePayload);
       navigate(`/recipe/${result.slug}`);
     } catch (err) {

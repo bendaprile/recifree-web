@@ -54,7 +54,10 @@ const router = createBrowserRouter([
       { path: '/saved', element: <ProtectedRoute><SavedRecipes /></ProtectedRoute> },
       { path: '/shopping-list', element: <ProtectedRoute><ShoppingList /></ProtectedRoute> },
       { path: '/settings', element: <ProtectedRoute><Settings /></ProtectedRoute> },
-      { path: '/add', element: <ProtectedRoute><AddRecipe /></ProtectedRoute> },
+      // Extraction is open to signed-out users. The backend admits them at a
+      // restricted tier that can never reach a paid AI layer, and their recipes
+      // land on the private shelf rather than the public catalog.
+      { path: '/add', element: <AddRecipe /> },
       { path: '/signup', element: <SignupPage /> },
       { path: '/about', element: <AboutPage /> },
       { path: '/privacy', element: <PrivacyPolicyPage /> },

@@ -4,49 +4,11 @@ const { parseLdJson } = require('./parsers/ldJsonParser');
 const { parseMicrodata } = require('./parsers/microdataParser');
 const { parseHeuristics } = require('./parsers/heuristicParser');
 const { sanitizeHtmlForLlm, extractWithLlm } = require('./parsers/llmParser');
+const { identifyCaller, TIER_ADMIN } = require('./security/callerTier');
 const { mapToRecifreeSchema } = require('./parsers/schemaMapper');
 const { buildImagenPrompt, generateAiFoodPhoto, uploadImageToStorage } = require('./imageGen/imagenService');
 const { normalizeUrl, hashUrl, checkCache, saveToCache } = require('./cache/extractionCache');
-const { verifyAdminAllowlist } = require('./security/adminGate');
 const { checkRateLimit } = require('./security/rateLimiter');
-
-/**
- * Verifies if the incoming request is authorized (Admin-Only).
- * Returns the verified user's email if valid.
- */
-async function verifyAdminAuth(req) {
-  // Local emulator bypass for easy CLI/curl testing
-  const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true';
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    if (isEmulator) {
-      console.warn('⚠️ Emulator detected: Proceeding WITHOUT auth token for testing purposes.');
-      return 'admin-emulator-test@recifree.com';
-    }
-    throw new Error('UNAUTHORIZED: Missing Authorization Header');
-  }
-
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0].toLowerCase() !== 'bearer') {
-    throw new Error('UNAUTHORIZED: Invalid Authorization Header format');
-  }
-
-  const token = parts[1];
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const email = decodedToken.email;
-
-    // Use dynamic lookup via adminGate
-    await verifyAdminAllowlist(email);
-
-    return email;
-  } catch (error) {
-    console.error('Auth verification failed:', error.message);
-    // Preserving status code checking: make sure error retains FORBIDDEN if thrown from adminGate
-    throw new Error(error.message.includes('FORBIDDEN') ? error.message : `UNAUTHORIZED: ${error.message}`);
-  }
-}
 
 /**
  * Validates the URL string.
@@ -98,19 +60,20 @@ async function extractRecipeOrchestrator(req, res) {
   }
 
   try {
-    // 2. Gatekeeper Authentication & Authorization
-    let userEmail;
+    // 2. Identify the caller and the spend tier they are entitled to.
+    // Anonymous callers are allowed in; they simply cannot reach a paid layer.
+    let caller;
     try {
-      userEmail = await verifyAdminAuth(req);
+      caller = await identifyCaller(req);
     } catch (authError) {
-      const status = authError.message.includes('FORBIDDEN') ? 403 : 401;
-      res.status(status).json({ error: authError.message });
+      res.status(401).json({ error: authError.message });
       return;
     }
+    const canUsePaidLayers = caller.tier === TIER_ADMIN;
 
-    // 2b. Gatekeeper Rate Limiting (10/hour)
+    // 2b. Rate Limiting (10/hour), keyed by email or by hashed IP.
     try {
-      await checkRateLimit(userEmail);
+      await checkRateLimit(caller.id);
     } catch (rateError) {
       res.status(429).json({ error: rateError.message });
       return;
@@ -125,7 +88,7 @@ async function extractRecipeOrchestrator(req, res) {
       return;
     }
 
-    console.log(`Starting recipe extraction for: ${url} initiated by ${userEmail}`);
+    console.log(`Starting recipe extraction for: ${url} (tier: ${caller.tier})`);
 
     // Normalize URL and hash it
     let normalizedUrl;
@@ -201,6 +164,18 @@ async function extractRecipeOrchestrator(req, res) {
     }
 
     // --- LAYER 3: LLM Fallback (Gemini API) ---
+    // Paid. Restricted callers stop at the free parser layers and are routed to
+    // the manual entry form instead. This is the only thing standing between an
+    // anonymous visitor and the Gemini bill.
+    if (!rawRecipeData && !canUsePaidLayers) {
+      console.log('Layer 3 skipped: caller is not entitled to paid layers.');
+      res.status(422).json({
+        error: 'This site does not publish standard recipe data, so we could not read it automatically. You can enter the recipe by hand instead.',
+        canRetryManually: true
+      });
+      return;
+    }
+
     if (!rawRecipeData) {
       console.log('Layer 3: Attempting Gemini LLM fallback...');
       const sanitizedText = sanitizeHtmlForLlm(htmlText);
@@ -243,7 +218,9 @@ async function extractRecipeOrchestrator(req, res) {
     }
 
     try {
-      if (!normalizedRecipe.image) {
+      // Imagen is paid, so restricted callers get no generated photo. They are
+      // expected to supply their own image at publish time anyway.
+      if (!normalizedRecipe.image && canUsePaidLayers) {
         console.log(`Generating unique AI food photo for "${normalizedRecipe.title}" to avoid copyright scraping...`);
         const prompt = buildImagenPrompt(normalizedRecipe.title, normalizedRecipe.tags);
         const base64Image = await generateAiFoodPhoto(prompt);
@@ -288,6 +265,5 @@ async function extractRecipeOrchestrator(req, res) {
 
 module.exports = {
   extractRecipeOrchestrator,
-  verifyAdminAuth,
   validateUrl
 };

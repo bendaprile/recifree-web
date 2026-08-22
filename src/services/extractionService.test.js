@@ -20,10 +20,36 @@ describe('extractionService', () => {
     vi.stubEnv('VITE_USE_FIREBASE_EMULATOR', 'true');
   });
 
-  it('throws an error if the user is not authenticated', async () => {
-    await expect(extractRecipeFromUrl('https://example.com/recipe')).rejects.toThrow(
-      'Authentication required to extract recipes.'
-    );
+  it('extracts for a signed-out user, with no Authorization header', async () => {
+    // Anonymous extraction is supported. The backend admits these callers at a
+    // restricted tier and never reaches a paid layer for them. A Bearer header
+    // with a null token would be rejected as a malformed 401, so it must be
+    // absent entirely rather than empty.
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ title: 'Extracted Recipe' })
+    });
+
+    const result = await extractRecipeFromUrl('https://example.com/recipe');
+
+    expect(result).toEqual({ title: 'Extracted Recipe' });
+    const headers = global.fetch.mock.calls[0][1].headers;
+    expect(headers.Authorization).toBeUndefined();
+    expect('Authorization' in headers).toBe(false);
+  });
+
+  it('surfaces canRetryManually so the UI can offer the manual form', async () => {
+    global.fetch.mockResolvedValue({
+      ok: false,
+      status: 422,
+      json: vi.fn().mockResolvedValue({
+        error: 'We could not read it automatically.',
+        canRetryManually: true
+      })
+    });
+
+    await expect(extractRecipeFromUrl('https://example.com/recipe'))
+      .rejects.toMatchObject({ status: 422, canRetryManually: true });
   });
 
   it('makes a POST request to emulator endpoint when emulator flag is active', async () => {

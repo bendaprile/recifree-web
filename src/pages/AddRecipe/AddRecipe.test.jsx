@@ -29,6 +29,19 @@ vi.mock('../../services/recipeService', () => ({
   addRecipe: vi.fn(),
 }));
 
+// ─── Context Mocks ───────────────────────────────────────────────────────────
+// Swapped per-test to move between an admin (publishes) and everyone else
+// (saves to the private shelf).
+const mockShelveRecipe = vi.fn();
+vi.mock('../../context/ShelfContext', () => ({
+  useShelf: () => ({ shelveRecipe: mockShelveRecipe }),
+}));
+
+let mockUserProfile = { role: 'admin' };
+vi.mock('../../context/AuthContext', () => ({
+  useAuth: () => ({ userProfile: mockUserProfile }),
+}));
+
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -121,11 +134,15 @@ describe('AddRecipe Component', () => {
     expect(screen.getByLabelText(/Recipe Title/)).toHaveValue('');
   });
 
-  it('displays a friendly beta gate message on 403 Forbidden and offers manual fallback', async () => {
-    const error403 = new Error('Forbidden');
-    error403.status = 403;
+  it('passes a 422 parser-only failure straight through and offers manual fallback', async () => {
+    // Restricted callers never reach the Gemini layer, so a site with no
+    // structured data comes back as a 422 carrying the backend's own wording.
+    // The UI must not overwrite it with a stale gate message.
+    const error422 = new Error('This site does not publish standard recipe data, so we could not read it automatically. You can enter the recipe by hand instead.');
+    error422.status = 422;
+    error422.canRetryManually = true;
 
-    extractRecipeFromUrl.mockRejectedValue(error403);
+    extractRecipeFromUrl.mockRejectedValue(error422);
 
     renderAddRecipe();
 
@@ -138,7 +155,7 @@ describe('AddRecipe Component', () => {
     });
 
     // Verify error message is rendered
-    expect(screen.getByText(/Extraction is currently gated for beta testers/)).toBeInTheDocument();
+    expect(screen.getByText(/could not read it automatically/)).toBeInTheDocument();
 
     // Verify the prefill/write manually action button is available
     const fallbackBtn = screen.getByRole('button', { name: 'Pre-fill & Write Manually' });
