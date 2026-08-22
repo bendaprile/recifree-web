@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const admin = require('firebase-admin');
 
 /**
@@ -144,19 +145,24 @@ async function uploadImageToStorage(base64Image, recipeId, contentType = 'image/
     const filePath = `recipes/${recipeId}/image.${extension}`;
     const file = bucket.file(filePath);
 
+    // The firebasestorage.googleapis.com download endpoint authorizes against
+    // Firebase Storage Security Rules, not the object's GCS ACL. This project
+    // has no Storage rules, so a public ACL still yields 403 there — which is
+    // exactly how the first published recipe shipped with a broken image.
+    // A download token is the supported way to serve that endpoint publicly,
+    // and unlike makePublic() it keeps working if uniform bucket-level access
+    // is ever switched on.
+    const downloadToken = crypto.randomUUID();
+
     const buffer = Buffer.from(base64Image, 'base64');
     await file.save(buffer, {
-      metadata: { contentType },
+      metadata: {
+        contentType,
+        metadata: { firebaseStorageDownloadTokens: downloadToken }
+      },
     });
 
-    try {
-      await file.makePublic();
-    } catch (e) {
-      console.warn(`Could not make file public: ${e.message}`);
-    }
-
-    const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(filePath)}?alt=media`;
-    return publicUrl;
+    return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(filePath)}?alt=media&token=${downloadToken}`;
   } catch (error) {
     console.error('Firebase Storage upload failed:', error.message);
     return null;

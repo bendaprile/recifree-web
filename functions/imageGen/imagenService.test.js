@@ -170,21 +170,34 @@ describe('imagenService', () => {
   });
 
   describe('uploadImageToStorage', () => {
+    beforeEach(() => {
+      // mockResolvedValueOnce queues values; an unconsumed [false] from the
+      // no-bucket case would otherwise make the next test fail mysteriously.
+      mockExists.mockReset().mockResolvedValue([true]);
+    });
+
     it('uploads base64 image as binary buffer and returns public direct URL', async () => {
       const publicUrl = await uploadImageToStorage('iVBORw0KGgoAAAANS...', 'tasty-potato-soup');
       
-      expect(publicUrl).toBe(
-        'https://firebasestorage.googleapis.com/v0/b/recifree-test-bucket/o/recipes%2Ftasty-potato-soup%2Fimage.png?alt=media'
+      expect(publicUrl).toMatch(
+        /^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/recifree-test-bucket\/o\/recipes%2Ftasty-potato-soup%2Fimage\.png\?alt=media&token=[0-9a-f-]{36}$/
       );
       expect(mockSave).toHaveBeenCalledWith(
         expect.any(Buffer),
         expect.objectContaining({
-          metadata: {
-            contentType: 'image/png'
-          }
+          metadata: expect.objectContaining({
+            contentType: 'image/png',
+            metadata: expect.objectContaining({
+              firebaseStorageDownloadTokens: expect.any(String)
+            })
+          })
         })
       );
-      expect(mockMakePublic).toHaveBeenCalled();
+      // makePublic is deliberately no longer called. A public GCS ACL does not
+      // authorize the firebasestorage.googleapis.com download endpoint, and
+      // avoiding object ACLs keeps this working under uniform bucket-level
+      // access.
+      expect(mockMakePublic).not.toHaveBeenCalled();
     });
 
     it('returns null if input arguments are missing', async () => {
@@ -199,9 +212,24 @@ describe('imagenService', () => {
       // This is the failure that lost every generated image on this project:
       // the default bucket name did not exist, the save threw, and the caller
       // carried on with an empty image.
-      mockExists.mockResolvedValueOnce([false]).mockResolvedValueOnce([false]);
+      mockExists.mockReset().mockResolvedValue([false]);
       const result = await uploadImageToStorage('aGVsbG8=', 'tasty-potato-soup');
       expect(result).toBeNull();
+    });
+
+    it('attaches a download token, without which the Firebase URL returns 403', async () => {
+      // The download endpoint authorizes against Storage rules, not the GCS
+      // ACL. The first published recipe shipped with a public object and a
+      // broken image for exactly this reason.
+      await uploadImageToStorage('aGVsbG8=', 'tasty-potato-soup');
+      const saveOptions = mockSave.mock.calls[0][1];
+      expect(saveOptions.metadata.metadata.firebaseStorageDownloadTokens).toMatch(/^[0-9a-f-]{36}$/);
+    });
+
+    it('gives each upload a distinct token', async () => {
+      const first = await uploadImageToStorage('aGVsbG8=', 'soup-one');
+      const second = await uploadImageToStorage('aGVsbG8=', 'soup-two');
+      expect(first).not.toBe(second);
     });
 
     it('returns null if save to storage fails', async () => {
