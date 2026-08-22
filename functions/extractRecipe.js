@@ -125,7 +125,13 @@ async function extractRecipeOrchestrator(req, res) {
     });
 
     if (!response.ok) {
-      res.status(422).json({ error: `Failed to retrieve the web page (Status: ${response.status}). The website might be blocking requests or temporarily down.` });
+      // Some publishers block server-side fetches outright. Nothing to parse
+      // means nothing we can do here, so hand the user to the manual form
+      // rather than leaving them on a dead end.
+      res.status(422).json({
+        error: `We could not load that page (the site returned ${response.status}). It is blocking automated requests. You can enter the recipe by hand instead.`,
+        canRetryManually: true
+      });
       return;
     }
 
@@ -193,14 +199,20 @@ async function extractRecipeOrchestrator(req, res) {
         console.log('Layer 3 Success: Gemini LLM extracted recipe.');
       } catch (llmError) {
         console.error('Layer 3 LLM execution failed:', llmError.message);
-        res.status(422).json({ error: 'Failed to extract recipe. The website does not contain standard recipe metadata, and the AI fallback failed.' });
+        res.status(422).json({
+          error: 'Failed to extract recipe. The website does not contain standard recipe metadata, and the AI fallback failed.',
+          canRetryManually: true
+        });
         return;
       }
     }
 
     // 5. Schema Normalization
     if (!rawRecipeData) {
-      res.status(422).json({ error: 'Failed to extract recipe. No structured recipe data or recipe lists could be found on the page.' });
+      res.status(422).json({
+        error: 'Failed to extract recipe. No structured recipe data or recipe lists could be found on the page.',
+        canRetryManually: true
+      });
       return;
     }
 

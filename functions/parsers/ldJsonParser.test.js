@@ -152,3 +152,63 @@ describe('ldJsonParser', () => {
     });
   });
 });
+
+describe('parseLdJson against real-world malformed JSON-LD', () => {
+  // Both shapes below were taken from live recipe pages that returned 422 in
+  // production while plainly containing a schema.org Recipe.
+
+  const wrap = (payload) => `<html><head><script type="application/ld+json">${payload}</script></head><body></body></html>`;
+
+  it('reads a payload wrapped in CDATA and JavaScript comment markers', () => {
+    // eatwell101.com, and the WordPress plugins behind a large slice of the
+    // recipe web, emit exactly this.
+    const payload = `// <![CDATA[
+      {"@context":"https://schema.org/","@type":"Recipe","name":"Super Fudgy Brownies",
+       "recipeIngredient":["1 cup almond flour","2 eggs"],
+       "recipeInstructions":[{"@type":"HowToStep","text":"Mix and bake."}]}
+    // ]]>`;
+
+    const result = parseLdJson(wrap(payload));
+    expect(result).not.toBeNull();
+    expect(result.title).toBe('Super Fudgy Brownies');
+    expect(result.ingredients).toHaveLength(2);
+  });
+
+  it('reads a payload containing raw newlines inside string values', () => {
+    // inspiredtaste.net puts an author bio with literal CRLFs into the schema.
+    // JSON forbids raw control characters in strings; browsers tolerate them.
+    const payload = '{"@context":"https://schema.org/","@type":"Recipe",'
+      + '"name":"Failproof Homemade Mayonnaise",'
+      + '"description":"Co-founder of Inspired Taste\r\nExpertise: sauces",'
+      + '"recipeIngredient":["1 egg","1 cup oil"],'
+      + '"recipeInstructions":[{"@type":"HowToStep","text":"Blend."}]}';
+
+    const result = parseLdJson(wrap(payload));
+    expect(result).not.toBeNull();
+    expect(result.title).toBe('Failproof Homemade Mayonnaise');
+    expect(result.description).toContain('Co-founder of Inspired Taste');
+  });
+
+  it('reads a payload wrapped in HTML comments', () => {
+    const payload = `<!-- {"@context":"https://schema.org/","@type":"Recipe","name":"Commented Cake",
+      "recipeIngredient":["flour"],"recipeInstructions":["Bake."]} -->`;
+
+    const result = parseLdJson(wrap(payload));
+    expect(result?.title).toBe('Commented Cake');
+  });
+
+  it('still returns null for a block that is genuinely not JSON', () => {
+    // The repair must not turn junk into a false positive.
+    expect(parseLdJson(wrap('this is not data at all'))).toBeNull();
+  });
+
+  it('keeps scanning later blocks when an earlier one is unreadable', () => {
+    const html = '<html><head>'
+      + '<script type="application/ld+json">{ broken</script>'
+      + '<script type="application/ld+json">{"@type":"Recipe","name":"Second Block",'
+      + '"recipeIngredient":["salt"],"recipeInstructions":["Season."]}</script>'
+      + '</head><body></body></html>';
+
+    expect(parseLdJson(html)?.title).toBe('Second Block');
+  });
+});

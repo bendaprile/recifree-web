@@ -103,6 +103,93 @@ function parseServings(yieldField) {
 /**
  * Traverses a JSON object/array to find any object with @type = "Recipe"
  */
+/**
+ * Real-world JSON-LD is frequently not valid JSON. Two encodings account for
+ * most of it, and both appear on pages that plainly contain a schema.org
+ * Recipe:
+ *
+ *   1. WordPress recipe plugins wrap the payload in CDATA and JavaScript
+ *      comment markers: `// <![CDATA[ {...} // ]]>`.
+ *   2. Publishers paste author bios and descriptions containing literal
+ *      newlines or tabs into string values. JSON forbids raw control
+ *      characters inside strings; browsers and Google's crawler tolerate them.
+ *
+ * Rejecting these means rejecting a large share of the recipe web and falling
+ * through to the paid AI layer for pages whose data was sitting right there.
+ * So repair the two known shapes, then parse. Anything still unparseable is
+ * genuinely unparseable and returns null.
+ */
+function stripCommentWrappers(text) {
+  let out = text.trim();
+  // Order matters: the JavaScript comment form wraps the CDATA form.
+  out = out.replace(/^<!--/, '').replace(/-->$/, '').trim();
+  out = out.replace(/^\/\/\s*<!\[CDATA\[/, '').replace(/^<!\[CDATA\[/, '').trim();
+  out = out.replace(/\/\/\s*\]\]>$/, '').replace(/\]\]>$/, '').trim();
+  return out;
+}
+
+/**
+ * Escapes raw control characters that appear inside string literals, leaving
+ * the JSON structure itself untouched. Tracks string boundaries so a newline
+ * between fields is left alone.
+ */
+function escapeControlCharsInStrings(text) {
+  let out = '';
+  let inString = false;
+  let escaped = false;
+
+  for (const char of text) {
+    if (escaped) {
+      out += char;
+      escaped = false;
+      continue;
+    }
+    if (char === '\\') {
+      out += char;
+      escaped = true;
+      continue;
+    }
+    if (char === '"') {
+      inString = !inString;
+      out += char;
+      continue;
+    }
+
+    const code = char.charCodeAt(0);
+    if (inString && code < 0x20) {
+      if (char === '\n') out += '\\n';
+      else if (char === '\r') out += '\\r';
+      else if (char === '\t') out += '\\t';
+      else out += '\\u' + code.toString(16).padStart(4, '0');
+      continue;
+    }
+
+    out += char;
+  }
+
+  return out;
+}
+
+/**
+ * Parses one ld+json script block, repairing the two known malformed shapes.
+ * Returns null rather than throwing so a bad block never stops the scan.
+ */
+function parseJsonLdBlock(rawText) {
+  const text = stripCommentWrappers(rawText);
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    try {
+      return JSON.parse(escapeControlCharsInStrings(text));
+    } catch (error) {
+      console.warn('Unparseable ld+json block:', error.message);
+      return null;
+    }
+  }
+}
+
 function findRecipeInJson(obj) {
   if (!obj || typeof obj !== 'object') return null;
 
@@ -149,10 +236,12 @@ function parseLdJson(htmlText) {
   const scriptTags = root.querySelectorAll('script[type="application/ld+json"]');
 
   for (const tag of scriptTags) {
-    try {
-      const json = JSON.parse(tag.innerHTML.trim());
+    const json = parseJsonLdBlock(tag.innerHTML);
+    if (!json) continue;
+
+    {
       const recipeSchema = findRecipeInJson(json);
-      
+
       if (recipeSchema) {
         // Map the fields from schema.org Recipe format to an intermediate format
         return {
@@ -172,9 +261,6 @@ function parseLdJson(htmlText) {
           }
         };
       }
-    } catch (e) {
-      // Ignore parsing errors on individual script tags and continue
-      console.warn('Error parsing single ld+json script block:', e.message);
     }
   }
 
@@ -183,6 +269,7 @@ function parseLdJson(htmlText) {
 
 module.exports = {
   parseLdJson,
+  parseJsonLdBlock,
   parseDuration,
   extractInstructions,
   extractImage,
