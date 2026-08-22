@@ -578,3 +578,88 @@
         margin-bottom: 1rem;
     }
 }
+/* ── Flat header: no photo ────────────────────────────────────────────────
+   The photo hero puts white text and glass chips over a dark image. With no
+   image that is white on black with nothing behind it, and a 420px void above
+   the title. This variant re-grounds the same markup in theme colours so an
+   unpublished recipe reads as a clean editorial header rather than a broken
+   photo. It inherits the page background, so it works in light and dark. */
+
+.hero-overlay-header--flat {
+    min-height: 0;
+    background: none;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.hero-overlay-header--flat .hero-overlay-content {
+    padding: var(--space-8) var(--space-8) var(--space-6);
+}
+
+.hero-overlay-header--flat .hero-title,
+.hero-overlay-header--flat .hero-description {
+    text-shadow: none;
+}
+
+.hero-overlay-header--flat .hero-title {
+    color: var(--color-text);
+}
+
+.hero-overlay-header--flat .hero-description {
+    color: var(--color-text-secondary);
+}
+
+/* The chips are glassmorphic to sit on a photo. Without one they need a real
+   surface and border, not a translucent black panel on the page background. */
+.hero-overlay-header--flat .hero-back-link,
+.hero-overlay-header--flat .hero-tried-true-badge,
+.hero-overlay-header--flat .hero-badges {
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+.hero-overlay-header--flat .hero-back-link:hover {
+    background: var(--color-background-hover);
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+/* --color-primary-dark is the only green token that flips for contrast rather
+   than for lightness: #3A4A3E on the light background, #7FA87F on the dark one.
+   --color-primary-light resolves to #4A5D4E in dark mode, which is a dark green
+   on a near-black chip. */
+.hero-overlay-header--flat .hero-tried-true-badge,
+.hero-overlay-header--flat .hero-badges strong {
+    color: var(--color-primary-dark);
+}
+
+@media (max-width: 768px) {
+    .hero-overlay-header--flat .hero-overlay-content {
+        padding: var(--space-6) var(--space-4) var(--space-5);
+    }
+}
+
+/* The hero buttons are translucent white for a photo backdrop, which is
+   invisible against the flat header's page background. Ground them the same
+   way as the chips. */
+.hero-overlay-header--flat .hero-btn,
+.hero-overlay-header--flat .hero-actions .save-btn,
+.hero-overlay-header--flat .hero-actions .add-to-list-btn {
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.hero-overlay-header--flat .hero-btn:hover,
+.hero-overlay-header--flat .hero-actions .save-btn:hover,
+.hero-overlay-header--flat .hero-actions .add-to-list-btn:hover {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #FFFFFF !important;
+}

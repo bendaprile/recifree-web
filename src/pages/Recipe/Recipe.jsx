@@ -130,7 +130,11 @@ function Recipe({ fromShelf = false }) {
         );
     }
 
-    const defaultImage = 'https://images.unsplash.com/photo-1621996346565-e3d5d6288339?auto=format&fit=crop&w=1400&q=80';
+    // Recipes carry a photo only once someone has cooked and published them, so
+    // an unpublished one legitimately has none. Falling back to a stock photo of
+    // a different dish would undercut the Tried & True promise, so the header
+    // drops to a flat editorial treatment instead.
+    const hasHeroImage = Boolean(recipe.image);
 
     return (
         <div className="recipe-page-container">
@@ -138,10 +142,10 @@ function Recipe({ fromShelf = false }) {
 
                 {/* HYBRID HERO OVERLAY HEADER */}
                 <header
-                    className="hero-overlay-header"
-                    style={{ backgroundImage: `url('${recipe.image || defaultImage}')` }}
+                    className={`hero-overlay-header${hasHeroImage ? '' : ' hero-overlay-header--flat'}`}
+                    style={hasHeroImage ? { backgroundImage: `url('${recipe.image}')` } : undefined}
                 >
-                    <div className="hero-overlay-backdrop"></div>
+                    {hasHeroImage && <div className="hero-overlay-backdrop"></div>}
 
                     <div className="hero-overlay-content">
                         <div className="hero-top-nav">
