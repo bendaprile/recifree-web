@@ -54,6 +54,11 @@ The protection is conditional and ongoing, not a one-time filing. All of it is t
 3. **Adopt and enforce a repeat-infringer termination policy.** This is §512(i), a threshold condition. Failing it voids all four safe harbors regardless of everything else, and courts have voided the defense over non-enforcement rather than non-adoption.
 4. **Remove content expeditiously** on a valid notice, and avoid actual or "red flag" knowledge of specific infringement.
 
+### Copyright is not the only gate
+Accepting photos from strangers also creates a content-moderation duty that has nothing to do with copyright. Cloud Vision SafeSearch screening is cheap and largely mechanical; the CSAM reporting obligation under 18 U.S.C. §2258A is neither, and has no small-platform exemption. Both sit alongside the safe harbor items in the **Opening the doors** checklist in `ROADMAP.md` Phase 4a, because all of them become load-bearing at the same moment.
+
+Note the direction of the trade: switching to AI-generated images would not avoid this. Users still publish titles, descriptions, and instructions, so the text moderation surface remains, and the platform loses the Tried & True promise in exchange. The real alternative to open moderation is a smaller set of approved contributors, not synthetic photography.
+
 ### Where this constrains monetization
 Safe harbor also fails where the provider takes a direct financial benefit from infringing activity it has the ability to control. Case law sets that bar at infringement being *a draw* for users, not merely something the provider profits alongside. Site-wide affiliate commission from Phase 5 is unlikely to meet it. **Native AI Image Sponsorships in Phase 5 are a much closer call once the images are user-uploaded**, because the revenue would attach directly to the user-supplied visual. Revisit before building that feature.
 

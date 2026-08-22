@@ -56,7 +56,7 @@ Everything in this list ships before anything in Phase 4b.
   - ⚠️ *Only admins can publish.* `firestore.rules` restricts writes to the public `recipes` collection to `request.auth.token.admin == true`, and `AddRecipe` routes everyone else to their shelf. This is the Publish Gate's placeholder, not the Publish Gate.
 - ✅ **Publish Gate:** `src/components/PublishPanel/` on `/shelf/:id` promotes a shelf recipe to the public catalog. A photo of the finished dish is mandatory and the "Tried & True" sign-off from Phase 2 must be set; the server rejects the publish otherwise. On success the shelf copy is removed so the public one cannot drift.
   - Publishing runs server-side in `functions/publishRecipe.js`. The client never writes to `recipes`, and the photo is uploaded with the Admin SDK, so no client needs Storage write access and no `storage.rules` file is required.
-  - ⛔ **Still admin-only, held by the DMCA gate below.** `identifyCaller` must return the admin tier or the function returns 403 and the recipe stays on the shelf. When the safe harbor items are done, that single tier check is what changes.
+  - ⛔ **Still admin-only, held by the Opening the doors checklist below.** `identifyCaller` must return the admin tier or the function returns 403 and the recipe stays on the shelf. When the safe harbor items are done, that single tier check is what changes.
   - ⚠️ **Three disagreeing definitions of "admin" existed.** `app_config/admin_users` (Cloud Functions), `request.auth.token.admin` (`firestore.rules`), and `userProfile.role` (frontend). No account has ever carried the custom claim, so `firestore.rules` denied every write to `recipes` regardless of the other two. Publishing now uses the allowlist alone. `firestore.rules` stays locked as defence in depth; do not loosen it to "fix" publishing.
 - ✅ **User Image Upload:** `src/services/publishService.js` downscales to 1600px and re-encodes as JPEG before upload, keeping phone photos inside the request limit and off the critical rendering path. Never fetch, hotlink, or persist an image from the source URL; `functions/extractRecipe.js` blanks any non-Firebase-Storage image URL before saving, and that must stay.
   - ⚠️ **Firebase Storage did not exist on this project until August 2026.** `admin.storage().bucket()` resolved to `<project>.appspot.com`, which was never provisioned, so every AI-generated image was produced and then lost on upload — all 38 pre-existing recipes reference hand-committed local paths instead. The real bucket is `recifree-web-4731f.firebasestorage.app`. `getStorageBucket()` in `functions/imageGen/imagenService.js` now resolves it explicitly and returns null rather than silently discarding an image.
@@ -68,11 +68,6 @@ Everything in this list ships before anything in Phase 4b.
   - ⚠️ **Constraint for the shelf work:** `extraction_cache` is written only by the Cloud Function, before any user edits. When the shelf lets a user edit a recipe, those edits go to that user's own storage. Never write user-edited content back into `extraction_cache`, or one user's changes will surface in another user's extraction.
   - ⏳ One production document written before the fix still stores an email at rest. It is no longer served, but it should be scrubbed.
 - **Anonymous Rate Limiting:** `functions/security/rateLimiter.js` keys its 10-per-hour limit on user email or UID. Signed-out extraction needs a limiter that does not depend on an account.
-- **DMCA Safe Harbor Compliance ⛔ BLOCKING:** All four items must be live **before** the Publish Gate ships to any user other than the repository owner. Partial completion provides no protection.
-  - Register a designated agent with the U.S. Copyright Office ($6, expires after three years).
-  - Publish the agent's name, physical address, phone, and email on a public page of the site.
-  - Write and enforce a repeat-infringer termination policy (17 U.S.C. §512(i) — a threshold condition; failing it voids all safe harbors).
-  - Set a calendar reminder for the three-year re-designation. A lapsed registration voids protection retroactively.
 - **Extraction Reliability Fixes**
   - ✅ **Malformed JSON-LD was the main cause of failed parses.** `parseLdJson` called `JSON.parse` directly on each block, and much of the recipe web does not emit strictly valid JSON. Two shapes accounted for the failures: CDATA and JavaScript comment wrappers from the WordPress recipe plugins, and raw control characters inside string values. `parseJsonLdBlock` now repairs both before parsing. Verified live and anonymously against inspiredtaste.net and eatwell101.com, both of which had returned 422 while containing a complete schema.org Recipe. This is the likely source of the assumed ~50% failure rate, and of the Gemini fallback firing more than it should have.
   - ✅ **Every extraction failure now returns `canRetryManually`**, so the frontend routes to the Phase 2 Manual Entry Fallback Form instead of dead-ending.
@@ -81,6 +76,24 @@ Everything in this list ships before anything in Phase 4b.
 - ✅ **Extraction Method Instrumentation:** `scripts/extraction-stats.js` (`npm run stats:extraction`) reports the parse-layer distribution and the missing-image rate from the `extraction_cache` collection. Read-only; runs against production or, with `FIRESTORE_EMULATOR_HOST` set, the emulator.
   - ⚠️ **First run, August 2026: production `extraction_cache` held exactly 1 document.** It parsed at Layer 1 (`ld+json`, free) and has no image. The emulator exports in `firebase-export-*/` are empty. There is no historical extraction corpus anywhere, so the previously assumed ~50% failure rate is recollection, not data.
   - ⏳ *Blocked on data:* run a representative batch of real recipe URLs through the deployed pipeline, then re-run the report. Until then, treat every Gemini cost and failure-rate figure as unmeasured.
+
+### Opening the doors ⛔ BLOCKING
+*One checklist, not two. Every item here becomes load-bearing at the same instant: the first time someone who is not the repository owner can publish. Until then the Publish Gate returns 403 and the exposure is zero. Do not open publishing partially — a half-finished checklist provides no protection at all.*
+
+**Copyright: DMCA safe harbor.** Rationale in `docs/market_research_verdict.md` §4.
+- Register a designated agent with the U.S. Copyright Office ($6, expires after three years).
+- Publish the agent's name, physical address, phone, and email on a public page of the site. Use a business address; the directory is public.
+- Write and enforce a repeat-infringer termination policy (17 U.S.C. §512(i) — a threshold condition; failing it voids all four safe harbors).
+- Set a calendar reminder for the three-year re-designation. A lapsed registration voids protection retroactively.
+
+**Image moderation.** Accepting photos from strangers is what creates this; it does not apply while publishing is admin-only.
+- Screen every upload with Cloud Vision SafeSearch **before** the bytes reach Storage, and reject on high-confidence adult, violence, or racy results. $1.50 per 1,000 images, first 1,000 each month free.
+- Tune the thresholds against real food photography before launch. A rare steak, a butchery shot, or a dark red sauce trips violence and gore detectors. Rejecting someone's genuine dinner photo with no recourse is a worse first experience than a slow review.
+- Give a rejected upload a way back: a human-reviewable appeal, not a dead end.
+- **Decide the CSAM position explicitly, in writing, before opening uploads.** Under 18 U.S.C. §2258A a provider with actual knowledge of apparent CSAM must report it to NCMEC. There is no small-platform exemption, and a knowing failure to report carries fines up to $150,000 for a first offence. A classifier reduces how often you encounter it; it does not discharge the duty. Consider a hash-matching service (PhotoDNA, Cloudflare's CSAM Scanning Tool) rather than relying on SafeSearch alone.
+- If that obligation is not one a solo operator wants, the honest alternative is **not** switching to AI-generated images — those leave the text moderation surface untouched and cost the Tried & True promise its meaning. The alternative is keeping contributions to people who have been approved.
+
+**Text moderation.** Titles, descriptions, and instruction steps are user-generated too, and remain a moderation surface whatever happens with images.
 
 ### Fast-follows, after MVP ships
 Each of these adds a visibility payoff or a moderation surface. None is required for the loop to work.
