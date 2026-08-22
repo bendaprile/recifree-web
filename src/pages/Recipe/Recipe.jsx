@@ -427,7 +427,7 @@ function Recipe({ fromShelf = false }) {
                         catalog, so a shelf draft has nothing to show and nobody
                         to show it to. Suppressed there for the same reason Save
                         is. */}
-                    {!fromShelf && <Reviews slug={recipe.slug} onSummaryChange={setRatingSummary} />}
+                    {!fromShelf && <Reviews slug={recipe.slug || recipe.id} onSummaryChange={setRatingSummary} />}
 
                     {/* Source Attribution */}
                     <SourceAttribution source={recipe.source} />

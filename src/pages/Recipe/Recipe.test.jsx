@@ -191,6 +191,20 @@ describe('Recipe Page', () => {
             expect(document.querySelector('.hero-rating').textContent).toContain('3');
         });
 
+        it('keys reviews on the id when a recipe carries no slug', async () => {
+            // Recipes served from the static JSON fallback have an id and no
+            // slug. Keying on slug alone asked for reviews of undefined, and
+            // the header silently showed nothing.
+            const { slug, ...noSlug } = mockTestRecipe;
+            getRecipeBySlug.mockResolvedValue(noSlug);
+            getReviews.mockResolvedValue([{ uid: 'a', rating: 4 }]);
+
+            await renderRecipe();
+
+            expect(getReviews).toHaveBeenCalledWith('test-recipe');
+            expect(document.querySelector('.hero-rating').textContent).toContain('4');
+        });
+
         it('shows no rating for a recipe nobody has reviewed', async () => {
             await renderRecipe();
 
