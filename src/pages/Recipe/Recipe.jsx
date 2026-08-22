@@ -217,12 +217,10 @@ function Recipe({ fromShelf = false }) {
                 ? { label: 'Cook', value: recipe.cookTime }
                 : null;
 
-    const timeBreakdown = recipe.totalTime
-        ? [
-            recipe.prepTime && `${recipe.prepTime} prep`,
-            recipe.cookTime && `${recipe.cookTime} cook`
-        ].filter(Boolean).join(' · ') || null
-        : null;
+    const timeBreakdown = [
+        recipe.prepTime && `${recipe.prepTime} prep`,
+        recipe.cookTime && `${recipe.cookTime} cook`
+    ].filter(Boolean).join(' · ') || null;
 
     const heroImage = recipe.image || publishPreview;
     const hasHeroImage = Boolean(heroImage);
@@ -286,23 +284,17 @@ function Recipe({ fromShelf = false }) {
 
                         <div className="hero-meta-row">
                             <div className="hero-badges">
-                                {/* Total is the number a reader decides on; prep and cook
-                                    are the detail behind it. Stacked rather than spread
-                                    across three labelled chips, which pushed this bar
-                                    wider than the title. Kept visible rather than put
-                                    behind a hover, because a phone has no hover and this
-                                    is a kitchen tool. */}
+                                {/* One line of Label: value pairs. Prep and cook are not
+                                    here: five pairs pushed this wider than the title, and
+                                    they read better next to the steps they describe. */}
                                 {timeHeadline && (
-                                    <div className="hero-time">
-                                        <span>{timeHeadline.label}: <strong>{timeHeadline.value}</strong></span>
-                                        {timeBreakdown && (
-                                            <span className="hero-time-breakdown">{timeBreakdown}</span>
-                                        )}
+                                    <div>
+                                        {timeHeadline.label}: <strong>{timeHeadline.value}</strong>
                                     </div>
                                 )}
                                 {recipe.servings && (
                                     <div>
-                                        <strong>{typeof recipe.servings === 'number' ? recipe.servings * currentScale : recipe.servings}</strong> servings
+                                        Yield: <strong>{typeof recipe.servings === 'number' ? recipe.servings * currentScale : recipe.servings} Servings</strong>
                                     </div>
                                 )}
                                 {ratingSummary.count > 0 && (
@@ -384,6 +376,9 @@ function Recipe({ fromShelf = false }) {
                         <div className="swiss-instructions-panel" id="instructions">
                             <div className="swiss-panel-title">
                                 <span>Instructions</span>
+                                {timeBreakdown && (
+                                    <span className="swiss-panel-meta">{timeBreakdown}</span>
+                                )}
                             </div>
 
                             <div className="swiss-step-list">

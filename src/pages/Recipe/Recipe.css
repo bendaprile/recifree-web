@@ -233,18 +233,6 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.hero-time {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-}
-
-.hero-time-breakdown {
-    font-size: 0.75rem;
-    letter-spacing: 0.02em;
-    opacity: 0.7;
-}
-
 .hero-badges strong {
     font-family: 'JetBrains Mono', monospace;
     color: #8FBF8F;
@@ -376,6 +364,13 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+}
+
+.swiss-panel-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--color-text-secondary);
 }
 
 .swiss-scaler {

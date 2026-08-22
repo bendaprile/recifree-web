@@ -169,44 +169,40 @@ describe('Recipe Page', () => {
         return result;
     };
 
-    describe('the time chip', () => {
-        it('leads with the total and keeps prep and cook readable without a hover', async () => {
-            // A phone has no hover, and this is a kitchen tool.
+    describe('the header times', () => {
+        it('keeps the header to one line: total, yield, rating', async () => {
+            // Five labelled pairs pushed this bar wider than the recipe title.
             await renderRecipe();
 
-            const chip = document.querySelector('.hero-time');
-            expect(chip).toHaveTextContent('Total: 30 min');
-            expect(chip).toHaveTextContent('10 min prep · 20 min cook');
+            const badges = document.querySelector('.hero-badges');
+            expect(badges).toHaveTextContent('Total: 30 min');
+            expect(badges).toHaveTextContent('Yield: 4 Servings');
+            expect(badges).not.toHaveTextContent('prep');
+            expect(badges).not.toHaveTextContent('cook');
         });
 
-        it('falls back to prep when a recipe has no total', async () => {
+        it('puts prep and cook beside the steps they describe', async () => {
+            await renderRecipe();
+
+            expect(document.querySelector('.swiss-panel-meta')).toHaveTextContent('10 min prep · 20 min cook');
+        });
+
+        it('falls back to prep in the header when a recipe has no total', async () => {
             const { totalTime, cookTime, ...noTotal } = mockTestRecipe;
             getRecipeBySlug.mockResolvedValue(noTotal);
 
             await renderRecipe();
 
-            const chip = document.querySelector('.hero-time');
-            expect(chip).toHaveTextContent('Prep: 10 min');
-            expect(chip.querySelector('.hero-time-breakdown')).toBeNull();
+            expect(document.querySelector('.hero-badges')).toHaveTextContent('Prep: 10 min');
         });
 
-        it('shows no breakdown line for a recipe with only a total', async () => {
+        it('shows no instructions meta for a recipe with only a total', async () => {
             const { prepTime, cookTime, ...totalOnly } = mockTestRecipe;
             getRecipeBySlug.mockResolvedValue(totalOnly);
 
             await renderRecipe();
 
-            expect(document.querySelector('.hero-time')).toHaveTextContent('Total: 30 min');
-            expect(document.querySelector('.hero-time-breakdown')).toBeNull();
-        });
-
-        it('renders no time chip at all when a recipe has no times', async () => {
-            const { prepTime, cookTime, totalTime, ...noTimes } = mockTestRecipe;
-            getRecipeBySlug.mockResolvedValue(noTimes);
-
-            await renderRecipe();
-
-            expect(document.querySelector('.hero-time')).toBeNull();
+            expect(document.querySelector('.swiss-panel-meta')).toBeNull();
         });
     });
 
@@ -329,10 +325,8 @@ describe('Recipe Page', () => {
         await renderRecipe();
         expect(screen.getByText('Test Recipe')).toBeInTheDocument();
         expect(screen.getByText('Test Description')).toBeInTheDocument();
-        // Total leads the time chip; prep and cook sit under it as one line.
         expect(screen.getByText('Total:')).toBeInTheDocument();
         expect(screen.getByText('30 min')).toBeInTheDocument();
-        expect(screen.getByText('10 min prep · 20 min cook')).toBeInTheDocument();
     });
 
     it('activates step and highlights step ingredients on click and hover', async () => {
@@ -375,14 +369,14 @@ describe('Recipe Page', () => {
         // Scaled to 4 cups Flour & 8 Servings
         expect(screen.getByText('4 cups')).toBeInTheDocument();
         // The count and the word are separate elements now.
-        expect(screen.getByText('8').closest('div')).toHaveTextContent('8 servings');
+        expect(screen.getByText('8 Servings')).toBeInTheDocument();
 
         // Click 3x button
         const btn3x = screen.getByRole('button', { name: '3x' });
         fireEvent.click(btn3x);
 
         expect(screen.getByText('6 cups')).toBeInTheDocument();
-        expect(screen.getByText('12').closest('div')).toHaveTextContent('12 servings');
+        expect(screen.getByText('12 Servings')).toBeInTheDocument();
     });
 
     it('toggles ingredient checkboxes', async () => {
