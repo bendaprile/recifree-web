@@ -261,11 +261,13 @@ async function extractRecipeOrchestrator(req, res) {
       normalizedRecipe.image = '';
     }
 
-    // Attach debugging/monitoring metadata
+    // Attach debugging/monitoring metadata.
+    // Never record the extracting user here. The extraction cache is shared across
+    // all users and its documents are returned verbatim on a cache hit, so anything
+    // stored on this object is visible to every other user who pastes the same URL.
     normalizedRecipe._extractionMeta = {
       method: methodUsed,
-      parsedAt: new Date().toISOString(),
-      extractedBy: userEmail
+      parsedAt: new Date().toISOString()
     };
 
     // Save to extraction cache

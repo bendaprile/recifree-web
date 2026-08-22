@@ -84,6 +84,25 @@ function hashUrl(normalizedUrl) {
 }
 
 /**
+ * Removes fields that identify the user who performed an extraction.
+ *
+ * The extraction_cache is keyed on the URL alone and shared across every user,
+ * so a document written by one user is returned verbatim to the next user who
+ * pastes the same URL. Any identifying field stored here leaks between accounts.
+ * Applied on both read and write so documents written before this guard existed
+ * are also scrubbed.
+ *
+ * @param {object} recipeData
+ * @returns {object} The same object, with identifying metadata removed
+ */
+function stripExtractorIdentity(recipeData) {
+  if (recipeData && recipeData._extractionMeta) {
+    delete recipeData._extractionMeta.extractedBy;
+  }
+  return recipeData;
+}
+
+/**
  * Checks Firestore collection 'extraction_cache' for cached recipe document.
  * If hit, returns data with cacheHit metadata.
  * 
@@ -105,6 +124,7 @@ async function checkCache(urlHash) {
           data._extractionMeta = {};
         }
         data._extractionMeta.cacheHit = true;
+        stripExtractorIdentity(data);
 
         if (data.stepIngredients && typeof data.stepIngredients === 'string') {
           try {
@@ -139,6 +159,11 @@ async function saveToCache(urlHash, recipeData) {
     const docRef = db.collection('extraction_cache').doc(urlHash);
 
     const payload = { ...recipeData };
+    // Deep-copy the metadata before scrubbing so we never mutate the caller's object.
+    if (payload._extractionMeta) {
+      payload._extractionMeta = { ...payload._extractionMeta };
+    }
+    stripExtractorIdentity(payload);
     if (Array.isArray(payload.stepIngredients)) {
       payload.stepIngredients = JSON.stringify(payload.stepIngredients);
     }
@@ -153,5 +178,6 @@ module.exports = {
   normalizeUrl,
   hashUrl,
   checkCache,
-  saveToCache
+  saveToCache,
+  stripExtractorIdentity
 };

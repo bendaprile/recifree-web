@@ -23,7 +23,7 @@ Object.defineProperty(admin, 'firestore', {
   configurable: true
 });
 
-const { normalizeUrl, hashUrl, checkCache, saveToCache } = require('./extractionCache');
+const { normalizeUrl, hashUrl, checkCache, saveToCache, stripExtractorIdentity } = require('./extractionCache');
 
 describe('extractionCache', () => {
   beforeEach(() => {
@@ -153,6 +153,30 @@ describe('extractionCache', () => {
         expect(result._extractionMeta.cacheHit).toBe(true);
       });
 
+      it('does not leak the extracting user to the next caller (legacy documents)', async () => {
+        // A document written before stripExtractorIdentity existed still carries the
+        // email of whoever ran the extraction. The cache is shared across all users,
+        // so returning it hands one user's identity to another.
+        mockDocRef.get.mockResolvedValueOnce({
+          exists: true,
+          data: () => ({
+            ...mockRecipe,
+            _extractionMeta: {
+              method: 'ld+json',
+              parsedAt: '2026-05-19T00:00:00Z',
+              extractedBy: 'first-user@example.com'
+            }
+          })
+        });
+
+        const result = await checkCache('some-hash');
+        expect(result._extractionMeta.extractedBy).toBeUndefined();
+        expect(JSON.stringify(result)).not.toContain('first-user@example.com');
+        // The non-identifying diagnostics survive.
+        expect(result._extractionMeta.method).toBe('ld+json');
+        expect(result._extractionMeta.cacheHit).toBe(true);
+      });
+
       it('handles Firestore error gracefully and returns null', async () => {
         mockDocRef.get.mockRejectedValueOnce(new Error('Firestore unavailable'));
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -195,5 +219,50 @@ describe('extractionCache', () => {
         consoleSpy.mockRestore();
       });
     });
+  });
+});
+
+describe('extractionCache identity scrubbing', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('never writes the extracting user into the shared cache', async () => {
+    mockDocRef.set.mockResolvedValueOnce();
+
+    await saveToCache('some-hash', {
+      id: 'best-cookies',
+      _extractionMeta: {
+        method: 'llm',
+        parsedAt: '2026-05-19T00:00:00Z',
+        extractedBy: 'uploader@example.com'
+      }
+    });
+
+    const written = mockDocRef.set.mock.calls[0][0];
+    expect(written._extractionMeta.extractedBy).toBeUndefined();
+    expect(written._extractionMeta.method).toBe('llm');
+    expect(JSON.stringify(written)).not.toContain('uploader@example.com');
+  });
+
+  it('does not mutate the caller\'s object while scrubbing', async () => {
+    mockDocRef.set.mockResolvedValueOnce();
+
+    const original = {
+      id: 'best-cookies',
+      _extractionMeta: { method: 'llm', extractedBy: 'uploader@example.com' }
+    };
+    await saveToCache('some-hash', original);
+
+    // extractRecipe.js returns this same object to the client after caching it,
+    // so a scrub that mutated in place would be fine here but a shared-reference
+    // bug elsewhere would not be. Pin the copy-on-write behavior.
+    expect(original._extractionMeta.extractedBy).toBe('uploader@example.com');
+  });
+
+  it('tolerates recipes with no extraction metadata at all', () => {
+    expect(() => stripExtractorIdentity({ id: 'x' })).not.toThrow();
+    expect(() => stripExtractorIdentity(null)).not.toThrow();
+    expect(() => stripExtractorIdentity(undefined)).not.toThrow();
   });
 });
