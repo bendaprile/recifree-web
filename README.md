@@ -45,6 +45,14 @@ npm run build
 
 The optimized build will be in the `dist` folder.
 
+### Extraction Diagnostics
+
+```bash
+npm run stats:extraction
+```
+
+Reports which parse layer handled each cached extraction (`ld+json`, `microdata`, `heuristic`, or the paid Gemini fallback) and how many cached recipes have no image. Read-only. Add `FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"` to read the local emulator instead of production.
+
 ## 🌐 Deployment
 
 This project is configured for Firebase Hosting with GitHub Actions for CI/CD.
@@ -76,8 +84,11 @@ recifree/
 │   └── styles/          # Global styles
 ├── functions/           # Cloud Functions (SEO Metadata Injection)
 ├── public/              # Static assets
+├── .agent/              # Agent workflows and the shared skill library
 └── .github/workflows/   # CI/CD configuration
 ```
+
+Working on this with an AI coding agent? Read [AGENTS.md](AGENTS.md) first. It carries the coding rules, and it points at the skill library in `.agent/skills/` that the agent is expected to follow.
 
 ## 🍽️ Adding Recipes
 

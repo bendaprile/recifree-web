@@ -4,7 +4,10 @@
 Recifree is the **"Culinary Ad-Blocker."** It is an open-source, populist rebellion against the bloated, ad-ridden recipe industry.
 - **The Vibe:** It's an incredibly satisfying, frictionless utility.
 - **The "Tried & True" Promise:** Recifree is a compilation of the *very tastiest* recipes, not a data-dump of untested meals. We champion the philosophy that every recipe on the site must be taste-tested and actively loved by the person adding it. 
-- **Accounts for Utility:** We offer accounts solely to help you save and sync your kitchen collection. No newsletters, no cross-site tracking, no selling your data. We maintain a privacy-first ethos where an account is a tool for you, not a product for us.
+- **Accounts for Utility, and now for Credit:** An account saves and syncs your kitchen collection. No newsletters, no cross-site tracking, no selling your data. Still privacy-first: your account is a tool for you, not a product for us.
+  - As of the Phase 4a contribution loop, an account is also a public identity. A user who publishes a recipe is credited by name on it. Extracting and cooking stay entirely private — only publishing is public, and only when the user chooses it.
+- **Two Names on Every Recipe:** A published recipe credits the Recifree user who cooked and posted it, and the original creator who wrote it. The original creator's link is prominent and real, because sending them traffic is the whole basis of our right to be here. Never bury the source link.
+- **Trust Is the Product:** Other recipe sites are drowning in reviews nobody wrote and photos nobody took. Recifree's answer is structural, not editorial: only verified users review, only people who cooked a dish publish it, and only their own photographs appear. We do not promise to catch fakes. We build a system where faking pays nothing.
 - **Voice & Tone:** Witty, highly practical, and deeply respectful of the user's time. The tone should be slightly irreverent toward the "fluff" of traditional food blogs, but always stay appetizing, warm, and helpful when focusing on the actual food.
 
 ## 2. Copywriting & Slogans

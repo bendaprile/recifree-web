@@ -1,6 +1,8 @@
 # Recifree Feature Roadmap
 
-This roadmap outlines planned enhancements to elevate the Recifree user experience, transitioning from a static MVP to a fully viable aggregator equipped with AI-extraction and sustainable monetization.
+This roadmap tracks Recifree's path from a single-author recipe collection to a community-driven, trust-first recipe platform: no ads, no fake reviews, every recipe cooked by the person who published it, and clear credit to the original creator. AI extraction and sustainable monetization serve that goal; they are not the goal.
+
+**Current authorized phase: 4a — The Contribution Loop.** Phases 1 through 3 are complete. Per `AGENTS.md`, do not build a feature from any other phase without explicit permission from the user.
 
 ## Phase 1: Architecture & Data Foundation
 *Setting the necessary technical groundwork before scaling logic and features.*
@@ -35,28 +37,75 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 - ✅ **Dynamic JSON-LD Recipe Schema:** Auto-formatting parsed database data into perfect technical schema for Google Rich Snippets.
 - ✅ **Core Web Vitals Optimization:** Implement aggressive asset caching and edge delivery for instant, sub-second loading speeds.
 
-## Phase 4a: Culinary UX & Functional Polish (Immediate Priorities)
-*Transforming the site from a simple reader into a powerful kitchen utility. These are the highest-impact features that make Recifree genuinely useful in a real kitchen.*
+## Phase 4a: The Contribution Loop ⬅️ **CURRENT PHASE**
+*The loop that turns Recifree from one person's recipe collection into a community catalog. Nothing else in Phase 4 starts until this ships.*
 
-- ✅ **Print-Friendly View:** Dedicated CSS to hide everything except the recipe title, ingredients, and instructions when users print physically. *(Quick win — the print button already exists, just needs proper `@media print` styling.)*
-- ✅ **Shopping List 2.0 (Ingredient Consolidation):** Overhauled the shopping list from per-recipe grouping into a **unified, ingredient-merged view** with unit-aware quantity consolidation (tsp↔tbsp↔cup, oz↔lb, g↔kg, ml↔L), bulk check/uncheck actions, expandable source recipe attribution, checked-items-at-bottom sorting, and a toggle to switch back to per-recipe view. Includes print-optimized styling.
+**Context, not instructions.** A signed-in user extracts recipes into a private shelf only they can see. They cook one. To publish it to the public catalog they upload their own photo of the dish and confirm they cooked it. Private extraction is why a user comes back; the publish gate is both the quality bar and the image source. A consequence worth stating: this removes AI image generation from the critical path, because a published recipe carries a real photo taken by the person who cooked it. See `docs/market_research_verdict.md` §4 for the legal rationale.
+
+### MVP scope
+Everything in this list ships before anything in Phase 4b.
+
+- **Private Extraction Shelf:** A per-user view of recipes the user extracted but has not published. Visible only to that user. Fully usable — readable, printable, addable to the shopping list — without ever being published.
+  - ✅ *Storage and state:* `src/services/shelfService.js` (Firestore at `users/{uid}/shelf`) and `src/context/ShelfContext.jsx` (localStorage when signed out, drains into Firestore on sign-in and clears the local copy). Owner-only access enforced by the `shelf` rule in `firestore.rules`. 26 tests across `shelfService.test.js` and `ShelfContext.test.jsx`.
+  - ✅ *Shelf view:* `src/pages/Shelf/Shelf.jsx` at `/shelf`, plus `/shelf/:id` which renders the existing Recipe page with `fromShelf`. Deliberately not behind `ProtectedRoute` — a signed-out user must be able to reach their own localStorage shelf. A "Shelf" nav link appears once the user is signed in or holds any shelved recipe.
+  - ✅ *The at-risk warning:* a banner on `/shelf` while the shelf is device-only, with a route to sign up. Not a tooltip.
+  - ⚠️ *Save is suppressed on shelf recipes.* `SavedRecipes` stores only a recipe id and resolves it later through `getRecipeBySlug`, which cannot see unpublished recipes — a save would silently vanish from the saved list. Print and Add to Shopping List both work, because they read the recipe inline. Revisit when the Publish Gate exists.
+  - ⚠️ *Unreachable by real users until the extraction gate opens.* `functions/security/adminGate.js` rejects any email absent from `app_config/admin_users`, and `/add` sits behind `ProtectedRoute` in `src/App.jsx`. Opening extraction to ordinary users is a deliberate spend decision, not part of building the shelf.
+- **Publish Gate:** Promotes a shelf recipe to the public catalog. Requires a user-uploaded image and the existing "Tried & True" sign-off from Phase 2. A recipe with no uploaded image cannot be published.
+- **User Image Upload:** Upload to Firebase Storage at publish time. Never fetch, hotlink, or persist an image from the source URL. `functions/extractRecipe.js` already blanks any non-Firebase-Storage image URL before saving; keep that behavior.
+- **Dual Attribution:** Every published recipe credits two parties, both visibly: the Recifree user who published it, and the original recipe creator. The Phase 2 Source Attribution Component already covers the original creator and must keep sending them real referral clicks. Uploader attribution is new.
+- **Ratings & Reviews (display only):** Stars and text on the recipe page, restricted to authenticated, email-verified users. At MVP a review changes **nothing** about visibility — no ranking, no homepage shelf, no trusted-poster badge. This is deliberate: with no visibility payoff, sockpuppet accounts buy nothing and reviews ship without a moderation system. Do not add ranking to this phase.
+- **Paste Deduplication:** When a user pastes a URL that already maps to a **published** recipe, do not create a second recipe. Route the user to the existing one and add it to their saved list. Key on the normalized URL hash from `functions/cache/extractionCache.js`.
+- ✅ **Scope the Extraction Cache to Prevent Leaks:** `functions/cache/extractionCache.js` keys purely on a SHA-256 of the normalized URL with no user scoping, and returns the cached document to any caller. It used to carry `_extractionMeta.extractedBy` — the extracting user's email — which would have been served to the next user pasting the same URL. `extractRecipe.js` no longer records it, and `stripExtractorIdentity()` removes it on both read and write so the documents written before the guard existed are scrubbed too. Covered by four tests in `functions/cache/extractionCache.test.js`, all of which fail if the guard is removed.
+  - The cached parse itself is derived from a public web page and is not private to the extracting user, so sharing it across accounts is the cache working as intended. Identity was the only thing leaking.
+  - ⚠️ **Constraint for the shelf work:** `extraction_cache` is written only by the Cloud Function, before any user edits. When the shelf lets a user edit a recipe, those edits go to that user's own storage. Never write user-edited content back into `extraction_cache`, or one user's changes will surface in another user's extraction.
+  - ⏳ One production document written before the fix still stores an email at rest. It is no longer served, but it should be scrubbed.
+- **Anonymous Rate Limiting:** `functions/security/rateLimiter.js` keys its 10-per-hour limit on user email or UID. Signed-out extraction needs a limiter that does not depend on an account.
+- **DMCA Safe Harbor Compliance ⛔ BLOCKING:** All four items must be live **before** the Publish Gate ships to any user other than the repository owner. Partial completion provides no protection.
+  - Register a designated agent with the U.S. Copyright Office ($6, expires after three years).
+  - Publish the agent's name, physical address, phone, and email on a public page of the site.
+  - Write and enforce a repeat-infringer termination policy (17 U.S.C. §512(i) — a threshold condition; failing it voids all safe harbors).
+  - Set a calendar reminder for the three-year re-designation. A lapsed registration voids protection retroactively.
+- **Extraction Reliability Fixes:** Two failures reported from live use, neither in the parser layers.
+  - Database access errors during extraction.
+  - The bot-protection fallback path does not appear to trigger. The Manual Entry Fallback Form from Phase 2 exists; confirm whether the frontend actually routes to it on a failed fetch.
+- ✅ **Extraction Method Instrumentation:** `scripts/extraction-stats.js` (`npm run stats:extraction`) reports the parse-layer distribution and the missing-image rate from the `extraction_cache` collection. Read-only; runs against production or, with `FIRESTORE_EMULATOR_HOST` set, the emulator.
+  - ⚠️ **First run, August 2026: production `extraction_cache` held exactly 1 document.** It parsed at Layer 1 (`ld+json`, free) and has no image. The emulator exports in `firebase-export-*/` are empty. There is no historical extraction corpus anywhere, so the previously assumed ~50% failure rate is recollection, not data.
+  - ⏳ *Blocked on data:* run a representative batch of real recipe URLs through the deployed pipeline, then re-run the report. Until then, treat every Gemini cost and failure-rate figure as unmeasured.
+
+### Fast-follows, after MVP ships
+Each of these adds a visibility payoff or a moderation surface. None is required for the loop to work.
+
+- **Comments on recipes.**
+- **Trusted Poster Badge and rating-based ranking.** The moment ratings affect what other people see, sockpuppet rings become profitable. Do not ship this without the moderation mechanism below already running.
+- **AI moderation agents** watching for suspicious rating and account patterns. Hiring human moderators is out of budget and is not a fallback. Note that anomaly detection needs a baseline, so this is a scale answer, not a launch answer.
+- **Contribution incentive (karma or points).** Cut from MVP and may never ship. Recifree has no social feed for a score to be visible in, and points are what make gaming pay.
+
+### Open decisions in Phase 4a
+- **First-visit acquisition.** The loop explains why a user returns. Nothing yet explains why anyone arrives. `docs/market_research_verdict.md` names Pinterest and TikTok and warns that Google penalizes minimalist pages as thin content. Unresolved, and acknowledged as the hardest problem on the board.
+
+## Phase 4b: Culinary UX & Functional Polish
+*Deferred behind Phase 4a. These make Recifree a better kitchen tool, but none of them are required for the contribution loop to work.*
+
+- ✅ **Print-Friendly View:** Dedicated CSS to hide everything except the recipe title, ingredients, and instructions when users print physically.
+- ✅ **Shopping List 2.0 (Ingredient Consolidation):** Unified, ingredient-merged view with unit-aware quantity consolidation (tsp↔tbsp↔cup, oz↔lb, g↔kg, ml↔L), bulk check/uncheck actions, expandable source recipe attribution, checked-items-at-bottom sorting, and a toggle back to per-recipe view. Includes print-optimized styling.
   - ⏳ *Fast-follow: Shopping List Cloud Sync* — Persist shopping lists to Firestore so they sync across devices (currently localStorage only).
   - ⏳ *Fast-follow: Grocery Category Grouping* — Group consolidated ingredients by category (Produce, Dairy, Pantry, etc.) for grocery-aisle navigation.
-- **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons. This is the flagship differentiator — turning Recifree from a recipe viewer into a hands-free kitchen tool.
+- **Interactive "Cook Mode":** Full-screen overlay with large text, wake-lock API to prevent screen dimming, and prominent navigation buttons.
 - **Dynamic Portion Scaling & Computation:** AI-powered serving size recalculation and automatic metric/imperial unit conversions.
-- **PWA Support (Offline Mode):** *(Pulled forward from Phase 6.)* Service workers to cache recipes so the app works seamlessly from the user's mobile home screen. Offline support is essential for Cook Mode in kitchens with spotty WiFi, making these two features natural companions.
+- **PWA Support (Offline Mode):** Service workers to cache recipes so the app works from the user's mobile home screen.
 
-## Phase 4b: Scale-Dependent UX Features
-*These features become valuable once the recipe catalog reaches critical mass (~100+ recipes). Building them prematurely would feel empty.*
+## Phase 4c: Scale-Dependent UX Features
+*These become valuable once the recipe catalog reaches critical mass (~100+ recipes). Building them prematurely would feel empty.*
 
 - **Advanced Search & Filtering:** Granular filters for aspects like "Total Time", "Difficulty", and "Main Ingredient" querying the new database.
-- **Infinite Scrolling & Pagination:** Implement asynchronous batch rendering (e.g., loading 15 recipes at a time via `IntersectionObserver`) to ensure ultra-fast front-end performance as the recipe count scales. This will be integrated directly with the overarching search overhaul.
-- **Verified Recipe Ratings & Reviews:** Implement a community-driven rating (1–5 stars) and commenting system. To combat the "fake review" epidemic common on other food blogs, restrict submissions to authenticated, email-verified users, and display aggregate scores and review histories transparently. *(Requires user traction to avoid "0 reviews" on every recipe.)*
+- **Infinite Scrolling & Pagination:** Asynchronous batch rendering (e.g., loading 15 recipes at a time via `IntersectionObserver`) to keep the front end fast as the recipe count scales. Integrated with the search overhaul.
+- ~~**Verified Recipe Ratings & Reviews**~~ — moved to Phase 4a as display-only. Rating-based ranking and the trusted-poster badge are Phase 4a fast-follows. Nothing about reviews remains in this phase.
 
 ## Phase 5: Contextual Commerce (Monetization V1)
 *Non-intrusive revenue generation based on high-intent grocery actions.*
 - **"Send to Grocery Cart" Integration:** Connect to major retail network APIs (e.g., Instacart Connect or Chicory) to fulfill ingredient lists natively for a commission.
-- **Native AI Image Sponsorships:** Dynamically integrate brand sponsors natively into the AI image generation prompt (e.g., generating a KitchenAid mixer in the background with a subtle sponsor watermark) as a premium advertising tier.
+- **Native AI Image Sponsorships:** Dynamically integrate brand sponsors natively into the AI image generation prompt (e.g., generating a KitchenAid mixer in the background with a subtle sponsor watermark) as a premium advertising tier. ⚠️ Once recipe images are user-uploaded, revenue attached directly to a user-supplied image risks the "direct financial benefit" test that voids DMCA safe harbor. Read `docs/market_research_verdict.md` §4 before building this.
 - **Specialized Ingredient Affiliate Links:** Automated hyperlinking of niche or expensive ingredients to specialty vendors or Amazon for affiliate kickbacks.
 - **Affiliate Disclosure & Legal Compliance UI:** Ensure FTC compliance and trust by rendering non-intrusive disclosures whenever commerce links are utilized.
 
@@ -71,6 +120,7 @@ This roadmap outlines planned enhancements to elevate the Recifree user experien
 
 ## Phase 8: Long-Term "Fun" Features
 *Optional enhancements that add novel value but aren't strictly necessary for the core loop.*
+- **Personalized Recipe Algorithm:** Tailor recommendations to each user based on what they save, cook, and rate. Explicitly a distant goal — it needs both a large catalog and real engagement history before it can produce anything but noise.
 - **"Surprise Me" (Randomizer):** A feature to combat decision paralysis with a randomized recipe suggestion.
 - **Recipe Health Score:** Analyze ingredients/nutrition to generate a quick A-F or 1-100 health contextual score.
 - **Fun Recipe Wording:** Settings allowing users to adjust the "personality" of the recipe instructional text (e.g., Sassy, Chaotic) via LLM prompting.
