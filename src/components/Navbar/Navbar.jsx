@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useSavedRecipes } from '../../context/SavedRecipesContext';
+import { useShelf } from '../../context/ShelfContext';
 import LoginModal from '../LoginModal/LoginModal';
 import { PlusIcon } from '../Icons/Icons';
 
@@ -77,6 +78,9 @@ function Navbar() {
   const { currentUser, logout, loadingAuth } = useAuth();
   // Rendered outside SavedRecipesProvider in unit tests, so read defensively.
   const savedCount = useSavedRecipes()?.savedRecipes?.length ?? 0;
+  // The shelf is reachable signed out, so a signed-out user holding recipes
+  // still needs a way back to them.
+  const shelfCount = useShelf()?.shelf?.length ?? 0;
 
   const location = useLocation();
   const dropdownRef = useRef(null);
@@ -270,6 +274,14 @@ function Navbar() {
                     Explore
                   </NavLink>
                 </li>
+                {(currentUser || shelfCount > 0) && (
+                  <li>
+                    <NavLink to="/shelf" className={({ isActive }) => isActive ? 'nav-btn active' : 'nav-btn'} onClick={closeMenu}>
+                      Shelf
+                      {shelfCount > 0 && <span className="nav-count-badge">{shelfCount}</span>}
+                    </NavLink>
+                  </li>
+                )}
                 {currentUser && (
                   <>
                     <li>

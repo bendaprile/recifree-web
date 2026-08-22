@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getRecipeBySlug } from '../../services/recipeService';
+import { useShelf } from '../../context/ShelfContext';
 import AddToShoppingListButton from '../../components/AddToShoppingListButton/AddToShoppingListButton';
 import SaveRecipeButton from '../../components/SaveRecipeButton/SaveRecipeButton';
 import { PrinterIcon, PlateIcon } from '../../components/Icons/Icons';
@@ -9,9 +10,18 @@ import IngredientList from '../../components/IngredientList/IngredientList';
 import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
 
-function Recipe() {
+/**
+ * @param {boolean} [fromShelf]  Read the recipe from the user's private shelf
+ *                               instead of the public catalog. Set by the
+ *                               /shelf/:id route only.
+ */
+function Recipe({ fromShelf = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
+    // Shelf recipes are private and live outside the public `recipes` collection.
+    // The route decides which source to read, so a private recipe can never be
+    // served from the public /recipe/:id URL.
+    const { shelf, loading: shelfLoading } = useShelf();
 
     // Initialize state from window.__INITIAL_RECIPE__ if it exists (SSR Hydration)
     const [recipe, setRecipe] = useState(() => {
@@ -39,13 +49,22 @@ function Recipe() {
             setHoveredStepIndex(null);
             setCurrentScale(1);
 
-            getRecipeBySlug(id)
-                .then(setRecipe)
-                .finally(() => setLoading(false));
+            if (fromShelf) {
+                // Wait for the shelf to load before deciding the recipe is missing.
+                if (!shelfLoading) {
+                    setRecipe(shelf.find(r => r.id === id) || null);
+                    setLoading(false);
+                }
+            } else {
+                getRecipeBySlug(id)
+                    .then(setRecipe)
+                    .finally(() => setLoading(false));
+            }
         }
 
         window.scrollTo(0, 0);
-    }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, fromShelf, shelfLoading]);
 
     const toggleIngredient = (index) => {
         setCheckedIngredients(prev =>
@@ -171,7 +190,13 @@ function Recipe() {
                                 <button className="hero-btn" onClick={() => window.print()}>
                                     <PrinterIcon size={16} /> Print Recipe
                                 </button>
-                                <SaveRecipeButton recipe={recipe} variant="large" className="hero-action-btn" />
+                                {/* Saving stores only a recipe id, which SavedRecipes later
+                                    resolves through getRecipeBySlug. A shelf recipe is not in
+                                    the public catalog, so the save would resolve to nothing and
+                                    silently vanish from the saved list. Publish it first. */}
+                                {!fromShelf && (
+                                    <SaveRecipeButton recipe={recipe} variant="large" className="hero-action-btn" />
+                                )}
                                 <AddToShoppingListButton recipe={recipe} variant="large" className="hero-action-btn" />
                             </div>
                         </div>

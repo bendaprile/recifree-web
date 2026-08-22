@@ -6,6 +6,7 @@ import Recipe from './Recipe';
 import { ShoppingListProvider } from '../../context/ShoppingListContext';
 import { AuthProvider } from '../../context/AuthContext';
 import { SavedRecipesProvider } from '../../context/SavedRecipesContext';
+import { ShelfProvider } from '../../context/ShelfContext';
 import { ThemeProvider } from '../../context/ThemeContext';
 
 // Prevent any real Firebase/Firestore SDK initialization
@@ -24,7 +25,10 @@ vi.mock('firebase/app', () => ({ initializeApp: vi.fn(() => ({})) }));
 vi.mock('firebase/auth', () => ({
     getAuth: vi.fn(() => ({})),
     connectAuthEmulator: vi.fn(),
-    onAuthStateChanged: vi.fn(),
+    // Resolve immediately as signed out. A listener that never fires leaves
+    // AuthContext's loadingAuth stuck true, which stalls every context that
+    // waits on it — ShelfContext included.
+    onAuthStateChanged: vi.fn((auth, cb) => { cb(null); return () => {}; }),
 }));
 
 // Mock localStorage
@@ -137,13 +141,15 @@ describe('Recipe Page', () => {
                 <ThemeProvider>
                     <AuthProvider>
                         <SavedRecipesProvider>
-                            <ShoppingListProvider>
-                                <MemoryRouter initialEntries={[`/recipe/${id}`]}>
-                                    <Routes>
-                                        <Route path="/recipe/:id" element={<Recipe />} />
-                                    </Routes>
-                                </MemoryRouter>
-                            </ShoppingListProvider>
+                            <ShelfProvider>
+                                <ShoppingListProvider>
+                                    <MemoryRouter initialEntries={[`/recipe/${id}`]}>
+                                        <Routes>
+                                            <Route path="/recipe/:id" element={<Recipe />} />
+                                        </Routes>
+                                    </MemoryRouter>
+                                </ShoppingListProvider>
+                            </ShelfProvider>
                         </SavedRecipesProvider>
                     </AuthProvider>
                 </ThemeProvider>
@@ -224,5 +230,65 @@ describe('Recipe Page', () => {
         const backLink = screen.getByText(/Back to recipes/i);
         expect(backLink).toBeInTheDocument();
         expect(backLink.closest('a')).toHaveAttribute('href', '/');
+    });
+});
+
+describe('Recipe Page from the shelf', () => {
+    const shelfRecipe = {
+        id: 'shelf-only',
+        slug: 'shelf-only',
+        title: 'Shelf Only Recipe',
+        description: 'Never published',
+        totalTime: '20 mins',
+        servings: 2,
+        ingredients: ['1 cup flour'],
+        instructions: ['Mix it.']
+    };
+
+    const renderFromShelf = async (shelf = [shelfRecipe]) => {
+        window.scrollTo = vi.fn();
+        let result;
+        await act(async () => {
+            result = render(
+                <ThemeProvider>
+                    <AuthProvider>
+                        <SavedRecipesProvider>
+                            <ShelfProvider>
+                                <ShoppingListProvider>
+                                    <MemoryRouter initialEntries={[`/shelf/${shelfRecipe.id}`]}>
+                                        <Routes>
+                                            <Route path="/shelf/:id" element={<Recipe fromShelf />} />
+                                        </Routes>
+                                    </MemoryRouter>
+                                </ShoppingListProvider>
+                            </ShelfProvider>
+                        </SavedRecipesProvider>
+                    </AuthProvider>
+                </ThemeProvider>
+            );
+        });
+        return result;
+    };
+
+    beforeEach(() => {
+        window.localStorage.clear();
+    });
+
+    it('renders a recipe that exists only on the shelf', async () => {
+        window.localStorage.setItem('recifree_shelf', JSON.stringify([shelfRecipe]));
+        await renderFromShelf();
+        expect(screen.getByText('Shelf Only Recipe')).toBeTruthy();
+    });
+
+    it('hides the save button, which would store an unresolvable recipe id', async () => {
+        window.localStorage.setItem('recifree_shelf', JSON.stringify([shelfRecipe]));
+        await renderFromShelf();
+        expect(screen.queryByRole('button', { name: /save/i })).toBeNull();
+    });
+
+    it('does not fall back to the public catalog for a missing shelf recipe', async () => {
+        window.localStorage.setItem('recifree_shelf', JSON.stringify([]));
+        await renderFromShelf([]);
+        expect(screen.queryByText('Shelf Only Recipe')).toBeNull();
     });
 });

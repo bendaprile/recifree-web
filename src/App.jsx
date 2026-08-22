@@ -9,12 +9,14 @@ import SavedRecipes from './pages/SavedRecipes/SavedRecipes';
 import Settings from './pages/Settings/Settings';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import AddRecipe from './pages/AddRecipe/AddRecipe';
+import Shelf from './pages/Shelf/Shelf';
 import VerificationBanner from './components/VerificationBanner/VerificationBanner';
 import OnboardingModal from './components/OnboardingModal/OnboardingModal';
 import { ShoppingListProvider } from './context/ShoppingListContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { SavedRecipesProvider } from './context/SavedRecipesContext';
+import { ShelfProvider } from './context/ShelfContext';
 import { SkilletIcon } from './components/Icons/Icons';
 import './styles/global.css';
 import './App.css';
@@ -45,6 +47,10 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> },
       { path: '/recipe/:id', element: <Recipe /> },
+      // The shelf is deliberately not behind ProtectedRoute: a signed-out user
+      // keeps their shelf in localStorage and must be able to reach it.
+      { path: '/shelf', element: <Shelf /> },
+      { path: '/shelf/:id', element: <Recipe fromShelf /> },
       { path: '/saved', element: <ProtectedRoute><SavedRecipes /></ProtectedRoute> },
       { path: '/shopping-list', element: <ProtectedRoute><ShoppingList /></ProtectedRoute> },
       { path: '/settings', element: <ProtectedRoute><Settings /></ProtectedRoute> },
@@ -62,11 +68,13 @@ function App() {
   return (
     <AuthProvider>
       <SavedRecipesProvider>
-        <ShoppingListProvider>
-          <ThemeProvider>
-            <RouterProvider router={router} />
-          </ThemeProvider>
-        </ShoppingListProvider>
+        <ShelfProvider>
+          <ShoppingListProvider>
+            <ThemeProvider>
+              <RouterProvider router={router} />
+            </ThemeProvider>
+          </ShoppingListProvider>
+        </ShelfProvider>
       </SavedRecipesProvider>
     </AuthProvider>
   );

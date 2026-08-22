@@ -1,0 +1,102 @@
+/* The private shelf.
+   Reuses .recipe-grid, .recipe-grid-loading, .recipe-card-skeleton, and
+   .skeleton-header, which are defined in Home.css and SavedRecipes.css and
+   bundled globally. Only shelf-specific rules live here. */
+
+.shelf-header {
+    margin-bottom: var(--space-8);
+}
+
+.shelf-subtitle {
+    color: var(--color-text-light);
+    max-width: 52ch;
+    margin-top: var(--space-2);
+}
+
+.shelf-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+    margin-bottom: var(--space-6);
+}
+
+/* Risk banner — shown only while the shelf is localStorage-only.
+   Deliberately prominent: losing extracted recipes is not a tooltip-sized event. */
+.shelf-risk-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    margin-bottom: var(--space-8);
+    background: var(--color-primary-soft);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-warning);
+    border-radius: var(--radius-lg);
+}
+
+.shelf-risk-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+}
+
+.shelf-risk-copy span {
+    color: var(--color-text-secondary);
+}
+
+.shelf-risk-action {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Empty state mirrors .empty-saved-state so the two pages feel like one app. */
+.empty-shelf-state {
+    padding: var(--space-16) var(--space-4);
+    background: var(--color-background-alt);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    margin-top: var(--space-8);
+}
+
+.empty-shelf-state h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-2);
+}
+
+.empty-shelf-state p {
+    color: var(--color-text-light);
+}
+
+.shelf-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: color var(--transition-base), border-color var(--transition-base);
+}
+
+.shelf-remove-btn:hover {
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+@media (max-width: 600px) {
+    .shelf-risk-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .shelf-risk-action {
+        width: 100%;
+        text-align: center;
+    }
+}

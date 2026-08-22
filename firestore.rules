@@ -16,6 +16,12 @@ service cloud.firestore {
       match /savedRecipes/{recipeId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+
+      // The private shelf: recipes a user extracted but has not published.
+      // Owner-only. Nothing here is readable by another account.
+      match /shelf/{recipeId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }

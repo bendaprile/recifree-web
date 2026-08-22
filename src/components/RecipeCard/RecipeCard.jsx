@@ -3,18 +3,27 @@ import SaveRecipeButton from '../SaveRecipeButton/SaveRecipeButton';
 import { ClockIcon, UsersIcon } from '../Icons/Icons';
 import './RecipeCard.css';
 
-function RecipeCard({ recipe }) {
+/**
+ * @param {object} recipe   Standard Recifree recipe schema.
+ * @param {string} [to]     Destination override. Defaults to the public recipe
+ *                          page. Shelf recipes are not in the public `recipes`
+ *                          collection, so they pass their own route here.
+ * @param {React.ReactNode} [actions]  Replaces the save button in the card's
+ *                          action slot. Saving only works for published
+ *                          recipes, so unpublished cards supply their own.
+ */
+function RecipeCard({ recipe, to, actions }) {
     const { id, title, description, image, totalTime, servings, tags, difficulty } = recipe;
 
     // Placeholder image if none provided
     const defaultImage = 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=800&auto=format&fit=crop&q=60';
 
     return (
-        <Link to={`/recipe/${id}`} className="recipe-card">
+        <Link to={to || `/recipe/${id}`} className="recipe-card">
             {/* Outside .recipe-card-image on purpose: that element clips its
                 overflow for the hover zoom, which would trap the list menu. */}
             <div className="card-actions">
-                <SaveRecipeButton recipe={recipe} variant="icon-only" />
+                {actions !== undefined ? actions : <SaveRecipeButton recipe={recipe} variant="icon-only" />}
             </div>
 
             <div className="recipe-card-image">

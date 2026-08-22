@@ -10,6 +10,8 @@
     "emulators": "XDG_CONFIG_HOME=./.fake-config NO_UPDATE_NOTIFIER=1 firebase emulators:start --project demo-recifree-web --import=./emulator-data --export-on-exit",
     "migrate": "node scripts/migrate-to-firestore.js",
     "migrate:local": "FIRESTORE_EMULATOR_HOST=\"127.0.0.1:8080\" node scripts/migrate-to-firestore.js",
+    "stats:extraction": "node scripts/extraction-stats.js",
+    "prove:rules": "node scripts/prove-shelf-rules.mjs",
     "build": "vite build && mkdir -p functions && cp dist/index.html functions/index.html",
     "lint": "eslint .",
     "preview": "vite preview",
