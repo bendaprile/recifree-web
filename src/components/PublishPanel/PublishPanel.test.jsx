@@ -14,6 +14,7 @@ global.URL.createObjectURL = vi.fn(() => 'blob:preview');
 global.URL.revokeObjectURL = vi.fn();
 
 const recipe = { id: 'kale-salad', title: 'Kale Salad', triedAndTrue: true };
+let onPreviewChange;
 const photo = () => new File(['bytes'], 'dinner.jpg', { type: 'image/jpeg' });
 
 const choosePhoto = async (file = photo()) => {
@@ -29,36 +30,60 @@ describe('PublishPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         onPublished = vi.fn();
+        onPreviewChange = vi.fn();
     });
 
     afterEach(cleanup);
 
     it('will not publish until a photo is chosen', () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} />);
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
 
         const button = screen.getByRole('button', { name: /publish to recifree/i });
         expect(button.disabled).toBe(true);
-        expect(screen.getByText(/a photo is required/i)).toBeTruthy();
+        expect(screen.getByText(/add a photo of the one you cooked/i)).toBeTruthy();
     });
 
     it('enables publishing once a photo is chosen', async () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} />);
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
         await choosePhoto();
 
         expect(screen.getByRole('button', { name: /publish to recifree/i }).disabled).toBe(false);
         expect(screen.getByText('dinner.jpg')).toBeTruthy();
     });
 
-    it('shows a preview of the chosen photo', async () => {
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} />);
+    it('reports the chosen photo upward, so the page can show it as the hero', async () => {
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
         await choosePhoto();
 
-        expect(screen.getByAltText(/your photo of the finished dish/i).getAttribute('src')).toBe('blob:preview');
+        expect(onPreviewChange).toHaveBeenCalledWith('blob:preview');
+    });
+
+    it('clears the hero preview when the photo is removed', async () => {
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
+        await choosePhoto();
+        onPreviewChange.mockClear();
+
+        const input = document.getElementById('publish-photo');
+        await act(async () => {
+            fireEvent.change(input, { target: { files: [] } });
+        });
+
+        expect(onPreviewChange).toHaveBeenCalledWith('');
+    });
+
+    it('revokes the object URL it created, so previews do not leak', async () => {
+        const { unmount } = render(
+            <PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />
+        );
+        await choosePhoto();
+        unmount();
+
+        expect(global.URL.revokeObjectURL).toHaveBeenCalledWith('blob:preview');
     });
 
     it('publishes the recipe with the photo and reports the new slug', async () => {
         publishService.publishRecipe.mockResolvedValue({ slug: 'kale-salad', image: 'https://example/img.jpg' });
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} />);
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
         await choosePhoto();
 
         await act(async () => {
@@ -71,7 +96,7 @@ describe('PublishPanel', () => {
 
     it('surfaces a failure and leaves the user able to retry', async () => {
         publishService.publishRecipe.mockRejectedValue(new Error('We could not store your photo.'));
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} />);
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
         await choosePhoto();
 
         await act(async () => {
@@ -87,7 +112,7 @@ describe('PublishPanel', () => {
     it('does not fire onPublished twice when the button is clicked repeatedly', async () => {
         let resolvePublish;
         publishService.publishRecipe.mockReturnValue(new Promise(r => { resolvePublish = r; }));
-        render(<PublishPanel recipe={recipe} onPublished={onPublished} />);
+        render(<PublishPanel recipe={recipe} onPublished={onPublished} onPreviewChange={onPreviewChange} />);
         await choosePhoto();
 
         const button = screen.getByRole('button', { name: /publish to recifree/i });

@@ -38,6 +38,9 @@ function Recipe({ fromShelf = false }) {
     const [activeStepIndex, setActiveStepIndex] = useState(0);
     const [hoveredStepIndex, setHoveredStepIndex] = useState(null);
     const [currentScale, setCurrentScale] = useState(1);
+    // The photo chosen in the publish bar, shown as the hero background so the
+    // user sees the published article before committing to it.
+    const [publishPreview, setPublishPreview] = useState('');
 
     useEffect(() => {
         if (recipe && (recipe.slug === id || recipe.id === id)) {
@@ -135,16 +138,30 @@ function Recipe({ fromShelf = false }) {
     // an unpublished one legitimately has none. Falling back to a stock photo of
     // a different dish would undercut the Tried & True promise, so the header
     // drops to a flat editorial treatment instead.
-    const hasHeroImage = Boolean(recipe.image);
+    const heroImage = recipe.image || publishPreview;
+    const hasHeroImage = Boolean(heroImage);
 
     return (
         <div className="recipe-page-container">
             <article className="swiss-wrapper">
 
+                {fromShelf && (
+                    <PublishPanel
+                        recipe={recipe}
+                        onPreviewChange={setPublishPreview}
+                        onPublished={async (slug) => {
+                            // The public copy is now the canonical one; drop the
+                            // private duplicate so it cannot drift.
+                            await unshelveRecipe(recipe.id);
+                            navigate(`/recipe/${slug}`);
+                        }}
+                    />
+                )}
+
                 {/* HYBRID HERO OVERLAY HEADER */}
                 <header
                     className={`hero-overlay-header${hasHeroImage ? '' : ' hero-overlay-header--flat'}`}
-                    style={hasHeroImage ? { backgroundImage: `url('${recipe.image}')` } : undefined}
+                    style={hasHeroImage ? { backgroundImage: `url('${heroImage}')` } : undefined}
                 >
                     {hasHeroImage && <div className="hero-overlay-backdrop"></div>}
 
@@ -207,18 +224,6 @@ function Recipe({ fromShelf = false }) {
                         </div>
                     </div>
                 </header>
-
-                {fromShelf && (
-                    <PublishPanel
-                        recipe={recipe}
-                        onPublished={async (slug) => {
-                            // The public copy is now the canonical one; drop the
-                            // private duplicate so it cannot drift.
-                            await unshelveRecipe(recipe.id);
-                            navigate(`/recipe/${slug}`);
-                        }}
-                    />
-                )}
 
                 {/* SWISS EDITORIAL 2-COLUMN BODY CONTENT */}
                 <div className="swiss-body-content">

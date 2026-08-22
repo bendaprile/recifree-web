@@ -1,42 +1,45 @@
-.publish-panel {
+/* The publish bar sits between the navbar and the recipe header, so it reads
+   as a control strip for an unpublished draft rather than part of the recipe.
+   The chosen photo is rendered by the page as the hero background, not here. */
+
+.publish-bar {
+    background: var(--color-primary-soft);
     border-bottom: 1px solid var(--color-border);
-    background: var(--color-background-alt);
 }
 
-.publish-panel-inner {
+.publish-bar-inner {
     max-width: 1240px;
     margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-4) var(--space-8);
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: var(--space-6);
+    gap: var(--space-4);
 }
 
-.publish-copy h2 {
+.publish-bar-copy h2 {
     font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    margin-bottom: var(--space-2);
+    font-size: var(--text-lg);
     color: var(--color-text);
+    margin: 0 0 var(--space-1);
 }
 
-.publish-copy p {
-    color: var(--color-text-secondary);
+.publish-bar-copy p {
+    margin: 0;
     font-size: var(--text-sm);
-    max-width: 46ch;
-    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: 54ch;
 }
 
-.publish-controls {
+.publish-bar-actions {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-3);
-    min-width: 260px;
+    flex-shrink: 0;
 }
 
-/* Visually hidden but still reachable by keyboard and by the label. */
+/* Visually hidden but still focusable and reachable by the label. */
 .publish-file-input {
     position: absolute;
     width: 1px;
@@ -49,14 +52,26 @@
     border: 0;
 }
 
-.publish-choose-btn {
+.publish-choose-btn,
+.publish-submit-btn {
+    font-family: var(--font-primary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius-md);
     cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.publish-choose-btn {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-text);
-    padding: 0.55rem 1.1rem;
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
+}
+
+.publish-choose-btn:hover {
+    background: var(--color-background-hover);
 }
 
 .publish-file-input:focus-visible + .publish-choose-btn {
@@ -64,38 +79,26 @@
     outline-offset: 2px;
 }
 
-.publish-preview {
-    width: 100%;
-    max-width: 260px;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
+.publish-submit-btn {
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    color: #FFFFFF;
+}
+
+.publish-submit-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.publish-bar-status {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 var(--space-8) var(--space-3);
+    font-size: var(--text-xs);
 }
 
 .publish-filename {
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-light);
-    max-width: 260px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.publish-submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.publish-hint,
-.publish-error {
-    font-size: var(--text-xs);
-    max-width: 34ch;
-    line-height: 1.5;
-}
-
-.publish-hint {
     color: var(--color-text-light);
 }
 
@@ -104,15 +107,23 @@
 }
 
 @media (max-width: 768px) {
-    .publish-panel-inner {
-        padding: var(--space-5) var(--space-4);
+    .publish-bar-inner {
+        padding: var(--space-4);
+        align-items: stretch;
+        flex-direction: column;
     }
 
-    .publish-controls {
+    .publish-bar-actions {
         width: 100%;
     }
 
+    .publish-choose-btn,
     .publish-submit-btn {
-        width: 100%;
+        flex: 1;
+        text-align: center;
+    }
+
+    .publish-bar-status {
+        padding: 0 var(--space-4) var(--space-3);
     }
 }
