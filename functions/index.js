@@ -40,6 +40,18 @@ function getHtmlTemplate() {
     }
 }
 
+// The `recipes` collection is world-readable and the whole document is
+// serialised into window.__INITIAL_RECIPE__ below, so anything private stored
+// on a recipe ends up in public page source. Nothing private should be written
+// there in the first place; this is the second line of defence.
+const PRIVATE_RECIPE_FIELDS = ['publishedBy', 'extractedBy', '_extractionMeta'];
+
+function toPublicRecipe(recipe) {
+    const safe = { ...recipe };
+    PRIVATE_RECIPE_FIELDS.forEach(field => delete safe[field]);
+    return safe;
+}
+
 app.get('/recipe/:slug', async (req, res) => {
     const slug = req.params.slug;
     console.time(`fetch-recipe-${slug}`);
@@ -52,7 +64,7 @@ app.get('/recipe/:slug', async (req, res) => {
             return res.status(404).send(getHtmlTemplate());
         }
 
-        const recipe = snapshot.docs[0].data();
+        const recipe = toPublicRecipe(snapshot.docs[0].data());
         let html = getHtmlTemplate();
 
         // Prepare JSON-LD Schema

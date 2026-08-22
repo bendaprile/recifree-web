@@ -57,20 +57,24 @@ async function identifyCaller(req) {
   }
 
   let email;
+  let uid;
   try {
     const decodedToken = await admin.auth().verifyIdToken(parts[1]);
     email = decodedToken.email;
+    uid = decodedToken.uid;
   } catch (error) {
     console.error('Auth verification failed:', error.message);
     throw new Error(`UNAUTHORIZED: ${error.message}`);
   }
 
+  // uid is returned separately from id: id is the rate-limit key and may be an
+  // email, which must never be written into a world-readable collection.
   try {
     await verifyAdminAllowlist(email);
-    return { id: email, tier: TIER_ADMIN };
+    return { id: email, uid, tier: TIER_ADMIN };
   } catch {
     // A signed-in non-admin is a legitimate caller, just not a paying one.
-    return { id: email || anonymousId(req), tier: TIER_RESTRICTED };
+    return { id: email || anonymousId(req), uid, tier: TIER_RESTRICTED };
   }
 }
 

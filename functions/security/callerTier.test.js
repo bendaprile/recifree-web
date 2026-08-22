@@ -76,19 +76,19 @@ describe('identifyCaller', () => {
 
     describe('signed-in callers', () => {
         it('grants the admin tier to an allowlisted email', async () => {
-            mockVerifyIdToken.mockResolvedValueOnce({ email: 'owner@recifree.com' });
+            mockVerifyIdToken.mockResolvedValueOnce({ email: 'owner@recifree.com', uid: 'uid-owner' });
             mockAllowlist = ['owner@recifree.com'];
 
             const caller = await identifyCaller(request({ authorization: 'Bearer good-token' }));
-            expect(caller).toEqual({ id: 'owner@recifree.com', tier: TIER_ADMIN });
+            expect(caller).toEqual({ id: 'owner@recifree.com', uid: 'uid-owner', tier: TIER_ADMIN });
         });
 
         it('admits a signed-in non-admin at the restricted tier rather than rejecting them', async () => {
-            mockVerifyIdToken.mockResolvedValueOnce({ email: 'someone@example.com' });
+            mockVerifyIdToken.mockResolvedValueOnce({ email: 'someone@example.com', uid: 'uid-someone' });
             mockAllowlist = ['owner@recifree.com'];
 
             const caller = await identifyCaller(request({ authorization: 'Bearer good-token' }));
-            expect(caller).toEqual({ id: 'someone@example.com', tier: TIER_RESTRICTED });
+            expect(caller).toEqual({ id: 'someone@example.com', uid: 'uid-someone', tier: TIER_RESTRICTED });
         });
 
         it('rejects a malformed Authorization header', async () => {

@@ -130,7 +130,9 @@ async function publishRecipe(req, res) {
       id: slug,
       slug,
       image: imageUrl,
-      publishedBy: caller.id,
+      // The `recipes` collection is world-readable and ssrRecipe serialises the
+      // whole document into the page. Store the uid, never the email.
+      publishedByUid: caller.uid || null,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
