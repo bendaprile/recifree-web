@@ -69,9 +69,11 @@ Everything in this list ships before anything in Phase 4b.
   - Publish the agent's name, physical address, phone, and email on a public page of the site.
   - Write and enforce a repeat-infringer termination policy (17 U.S.C. §512(i) — a threshold condition; failing it voids all safe harbors).
   - Set a calendar reminder for the three-year re-designation. A lapsed registration voids protection retroactively.
-- **Extraction Reliability Fixes:** Two failures reported from live use, neither in the parser layers.
-  - Database access errors during extraction.
-  - The bot-protection fallback path does not appear to trigger. The Manual Entry Fallback Form from Phase 2 exists; confirm whether the frontend actually routes to it on a failed fetch.
+- **Extraction Reliability Fixes**
+  - ✅ **Malformed JSON-LD was the main cause of failed parses.** `parseLdJson` called `JSON.parse` directly on each block, and much of the recipe web does not emit strictly valid JSON. Two shapes accounted for the failures: CDATA and JavaScript comment wrappers from the WordPress recipe plugins, and raw control characters inside string values. `parseJsonLdBlock` now repairs both before parsing. Verified live and anonymously against inspiredtaste.net and eatwell101.com, both of which had returned 422 while containing a complete schema.org Recipe. This is the likely source of the assumed ~50% failure rate, and of the Gemini fallback firing more than it should have.
+  - ✅ **Every extraction failure now returns `canRetryManually`**, so the frontend routes to the Phase 2 Manual Entry Fallback Form instead of dead-ending.
+  - ⚠️ **Some publishers block server-side fetches outright.** eatingwell.com returns HTTP 402 before there is anything to parse. Manual entry is the answer; defeating bot protection is not on the table.
+  - ⏳ Database access errors during extraction, reported earlier, remain undiagnosed and have not recurred.
 - ✅ **Extraction Method Instrumentation:** `scripts/extraction-stats.js` (`npm run stats:extraction`) reports the parse-layer distribution and the missing-image rate from the `extraction_cache` collection. Read-only; runs against production or, with `FIRESTORE_EMULATOR_HOST` set, the emulator.
   - ⚠️ **First run, August 2026: production `extraction_cache` held exactly 1 document.** It parsed at Layer 1 (`ld+json`, free) and has no image. The emulator exports in `firebase-export-*/` are empty. There is no historical extraction corpus anywhere, so the previously assumed ~50% failure rate is recollection, not data.
   - ⏳ *Blocked on data:* run a representative batch of real recipe URLs through the deployed pipeline, then re-run the report. Until then, treat every Gemini cost and failure-rate figure as unmeasured.
