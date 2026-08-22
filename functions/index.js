@@ -46,9 +46,38 @@ function getHtmlTemplate() {
 // there in the first place; this is the second line of defence.
 const PRIVATE_RECIPE_FIELDS = ['publishedBy', 'extractedBy', '_extractionMeta'];
 
+/**
+ * Escapes a value for interpolation into an HTML attribute. Recipe titles and
+ * descriptions come from third-party pages and from users, so a stray quote
+ * would otherwise break out of the attribute it sits in.
+ */
+function escapeAttribute(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 function toPublicRecipe(recipe) {
     const safe = { ...recipe };
     PRIVATE_RECIPE_FIELDS.forEach(field => delete safe[field]);
+
+    // Firestore cannot store arrays of arrays, so stepIngredients is persisted
+    // as a JSON string and parsed back by recipeService on the client's own
+    // fetch path. The hydration payload below bypasses that path entirely, so
+    // parse here too — otherwise the client calls .map on a string and the page
+    // crashes. This shipped broken with SSR and stayed invisible while the
+    // function was returning 403 to everyone.
+    if (typeof safe.stepIngredients === 'string') {
+        try {
+            safe.stepIngredients = JSON.parse(safe.stepIngredients);
+        } catch {
+            safe.stepIngredients = [];
+        }
+    }
+
     return safe;
 }
 
@@ -99,9 +128,9 @@ app.get('/recipe/:slug', async (req, res) => {
         // We inject the recipe data into window..__INITIAL_RECIPE__ so the client
         // can pick it up immediately without a second Firestore fetch.
         const metaTags = `
-            <meta property="og:title" content="${recipe.title} | Recifree" />
-            <meta property="og:description" content="${recipe.description || 'View this recipe on Recifree.'}" />
-            <meta property="og:image" content="${imageUrl}" />
+            <meta property="og:title" content="${escapeAttribute(recipe.title)} | Recifree" />
+            <meta property="og:description" content="${escapeAttribute(recipe.description || 'View this recipe on Recifree.')}" />
+            <meta property="og:image" content="${escapeAttribute(imageUrl)}" />
             <meta property="og:type" content="article" />
             <meta name="twitter:card" content="summary_large_image" />
             <script type="application/ld+json">
@@ -113,7 +142,7 @@ app.get('/recipe/:slug', async (req, res) => {
         `;
 
         // Inject into HTML <head> using regex for robustness
-        html = html.replace(/<title>.*?<\/title>/, `<title>${recipe.title} | Recifree</title>`);
+        html = html.replace(/<title>.*?<\/title>/, `<title>${escapeAttribute(recipe.title)} | Recifree</title>`);
         html = html.replace('</head>', `${metaTags}\n</head>`);
 
         // Send modified HTML (Bots read the tags, React hydrates inside #root as normal)

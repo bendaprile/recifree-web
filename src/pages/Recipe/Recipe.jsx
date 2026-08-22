@@ -14,6 +14,22 @@ import { scaleAmount } from '../../utils/recipeScaler';
 import './Recipe.css';
 
 /**
+ * The SSR hydration payload comes from the raw Firestore document and does not
+ * pass through recipeService's mapping, where stepIngredients is parsed back
+ * from its stored JSON string. Guard here as well as at the producer: a string
+ * reaching the renderer takes the whole page down with a .map error.
+ */
+function normalizeHydratedRecipe(data) {
+    if (typeof data?.stepIngredients !== 'string') return data;
+
+    try {
+        return { ...data, stepIngredients: JSON.parse(data.stepIngredients) };
+    } catch {
+        return { ...data, stepIngredients: [] };
+    }
+}
+
+/**
  * @param {boolean} [fromShelf]  Read the recipe from the user's private shelf
  *                               instead of the public catalog. Set by the
  *                               /shelf/:id route only.
@@ -32,7 +48,7 @@ function Recipe({ fromShelf = false }) {
     const [recipe, setRecipe] = useState(() => {
         if (typeof window !== 'undefined' && window.__INITIAL_RECIPE__) {
             const data = window.__INITIAL_RECIPE__;
-            if (data.slug === id || data.id === id) return data;
+            if (data.slug === id || data.id === id) return normalizeHydratedRecipe(data);
         }
         return null;
     });

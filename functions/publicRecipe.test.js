@@ -37,4 +37,18 @@ describe('ssrRecipe public serialisation', () => {
     expect(publish).not.toMatch(/publishedBy:\s*caller\.id/);
     expect(publish).toMatch(/publishedByUid/);
   });
+
+  it('parses stepIngredients before hydrating, so the client never maps a string', () => {
+    // Firestore stores it as a JSON string. The hydration payload bypasses
+    // recipeService's mapping, so the parse has to happen here.
+    expect(source).toMatch(/typeof safe\.stepIngredients === 'string'/);
+    expect(source).toMatch(/JSON\.parse\(safe\.stepIngredients\)/);
+  });
+
+  it('escapes recipe text before putting it in meta attributes', () => {
+    // Titles and descriptions come from third-party pages and from users.
+    expect(source).toMatch(/og:title" content="\$\{escapeAttribute\(recipe\.title\)\}/);
+    expect(source).toMatch(/og:description" content="\$\{escapeAttribute\(/);
+    expect(source).not.toMatch(/content="\$\{recipe\.title\}/);
+  });
 });

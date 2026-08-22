@@ -292,3 +292,58 @@ describe('Recipe Page from the shelf', () => {
         expect(screen.queryByText('Shelf Only Recipe')).toBeNull();
     });
 });
+
+describe('Recipe Page SSR hydration', () => {
+    afterEach(() => { delete window.__INITIAL_RECIPE__; });
+
+    const hydrated = {
+        id: 'ssr-recipe',
+        slug: 'ssr-recipe',
+        title: 'Server Rendered Recipe',
+        description: 'Came from ssrRecipe',
+        ingredients: ['1 cup flour'],
+        instructions: ['Mix.', 'Bake.'],
+        // Firestore stores this as a JSON string; the hydration payload is the
+        // raw document, so it arrives unparsed.
+        stepIngredients: '[[0],[1]]'
+    };
+
+    const renderHydrated = async () => {
+        window.scrollTo = vi.fn();
+        await act(async () => {
+            render(
+                <ThemeProvider>
+                    <AuthProvider>
+                        <SavedRecipesProvider>
+                            <ShelfProvider>
+                                <ShoppingListProvider>
+                                    <MemoryRouter initialEntries={['/recipe/ssr-recipe']}>
+                                        <Routes>
+                                            <Route path="/recipe/:id" element={<Recipe />} />
+                                        </Routes>
+                                    </MemoryRouter>
+                                </ShoppingListProvider>
+                            </ShelfProvider>
+                        </SavedRecipesProvider>
+                    </AuthProvider>
+                </ThemeProvider>
+            );
+        });
+    };
+
+    it('renders without crashing when stepIngredients arrives as a JSON string', async () => {
+        // Calling .map on a string took down every recipe page the moment
+        // ssrRecipe became publicly reachable.
+        window.__INITIAL_RECIPE__ = { ...hydrated };
+        await renderHydrated();
+
+        expect(screen.getByText('Server Rendered Recipe')).toBeTruthy();
+    });
+
+    it('survives a malformed stepIngredients string rather than throwing', async () => {
+        window.__INITIAL_RECIPE__ = { ...hydrated, stepIngredients: 'not json' };
+        await renderHydrated();
+
+        expect(screen.getByText('Server Rendered Recipe')).toBeTruthy();
+    });
+});
