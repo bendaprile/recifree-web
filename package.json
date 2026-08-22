@@ -12,6 +12,7 @@
     "migrate:local": "FIRESTORE_EMULATOR_HOST=\"127.0.0.1:8080\" node scripts/migrate-to-firestore.js",
     "stats:extraction": "node scripts/extraction-stats.js",
     "backfill:source-hash": "node scripts/backfill-source-hash.js",
+    "scrub:extractor-identity": "node scripts/scrub-extractor-identity.js",
     "prove:rules": "node scripts/prove-shelf-rules.mjs",
     "build": "vite build && mkdir -p functions && cp dist/index.html functions/index.html",
     "lint": "eslint .",
