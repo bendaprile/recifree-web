@@ -97,6 +97,17 @@ describe('Home Page', () => {
         return result;
     };
 
+    it('styles its own heading rather than inheriting the recipe hero', async () => {
+        // Recipe.css also defines .hero-title, white with a drop shadow for
+        // sitting over a photo. Unscoped it leaked here and painted this
+        // heading white on a white background in light mode.
+        await renderHome();
+
+        const heading = document.querySelector('.hero-title');
+        expect(heading).toBeInTheDocument();
+        expect(heading.closest('.hero-overlay-header')).toBeNull();
+    });
+
     describe('ratings on the grid', () => {
         it('hands each card its own rating, from one query for the whole page', async () => {
             getAllReviewSummaries.mockResolvedValue({ '1': { count: 3, average: 4.7 } });
