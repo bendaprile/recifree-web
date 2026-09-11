@@ -308,6 +308,21 @@ export function SavedRecipesProvider({ children }) {
         }
     };
 
+    /**
+     * A saved record just points at a recipeId. If the underlying recipe was
+     * deleted from the catalog (e.g. an admin takedown), the pointer is left
+     * dangling — the Saved page already knows this once it tries to resolve
+     * it for display. This drops those dead pointers from state so the
+     * navbar badge count (which reads savedRecipes.length) stops disagreeing
+     * with what the page shows. Local-state only: it doesn't touch Firestore,
+     * so a transient resolution failure just leaves the count stale until the
+     * next successful resolve, rather than permanently unsaving a valid recipe.
+     */
+    const hideDeadSaves = (deadRecipeIds) => {
+        if (!deadRecipeIds || deadRecipeIds.length === 0) return;
+        setSavedRecipes(prev => prev.filter(r => !deadRecipeIds.includes(r.recipeId)));
+    };
+
     const value = {
         savedRecipes,
         lists,
@@ -317,7 +332,8 @@ export function SavedRecipesProvider({ children }) {
         toggleListForRecipe,
         createCustomList,
         renameCustomList,
-        deleteCustomList
+        deleteCustomList,
+        hideDeadSaves
     };
 
     return (

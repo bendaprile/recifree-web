@@ -139,15 +139,36 @@ export function ShelfProvider({ children }) {
   }, [shelf, currentUser]);
 
   const unshelveRecipe = useCallback(async (recipeId) => {
+    const removed = shelf.find(r => r.id === recipeId);
     const next = shelf.filter(r => r.id !== recipeId);
     setShelf(next);
 
     if (currentUser) {
-      await removeFromShelf(currentUser.uid, recipeId);
+      try {
+        await removeFromShelf(currentUser.uid, recipeId);
+      } catch (error) {
+        console.error('Failed to remove recipe from shelf', error);
+        if (removed) setShelf(prev => [...prev, removed]);
+      }
     } else {
       writeLocalShelf(next);
     }
   }, [shelf, currentUser]);
+
+  /**
+   * A published entry is just a pointer at the catalog. If the catalog recipe
+   * was deleted (e.g. an admin takedown), the pointer is left dangling — the
+   * shelf page already knows this once it tries to resolve it for display.
+   * This drops those dead pointers from shelf state so the navbar badge count
+   * (which reads shelf.length) stops disagreeing with what the page shows.
+   * Local-state only: it doesn't touch Firestore, so a transient resolution
+   * failure just leaves the count stale until the next successful resolve,
+   * rather than permanently deleting a valid reference.
+   */
+  const hideDeadPublishedRefs = useCallback((deadIds) => {
+    if (!deadIds || deadIds.length === 0) return;
+    setShelf(prev => prev.filter(r => !deadIds.includes(r.id)));
+  }, []);
 
   const value = {
     shelf,
@@ -158,6 +179,7 @@ export function ShelfProvider({ children }) {
     shelveRecipe,
     markPublished,
     unshelveRecipe,
+    hideDeadPublishedRefs,
     // True when the shelf is only in localStorage and would be lost.
     // Only drafts are at risk; a published reference can be rebuilt from the catalog.
     isAtRisk: !currentUser && privateRecipes.length > 0

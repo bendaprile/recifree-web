@@ -54,6 +54,7 @@ describe('Shelf page', () => {
             publishedRefs: [],
             loading: false,
             unshelveRecipe: vi.fn(),
+            hideDeadPublishedRefs: vi.fn(),
             isAtRisk: false
         };
     });
@@ -175,6 +176,9 @@ describe('Shelf page', () => {
             await renderShelf();
 
             expect(screen.getByText('Nothing on the shelf yet')).toBeTruthy();
+            // The navbar badge reads shelf.length — without this the badge would
+            // still say "1" while the page shows nothing on the shelf.
+            expect(mockShelfValue.hideDeadPublishedRefs).toHaveBeenCalledWith(['kale-salad']);
         });
 
         it('does not count a published recipe as at risk when signed out', async () => {

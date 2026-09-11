@@ -7,7 +7,7 @@ import { BookmarkIcon, EditIcon, TrashIcon, PlusIcon } from '../../components/Ic
 import './SavedRecipes.css';
 
 function SavedRecipes() {
-    const { savedRecipes, lists, loading: contextLoading, createCustomList, renameCustomList, deleteCustomList } = useSavedRecipes();
+    const { savedRecipes, lists, loading: contextLoading, createCustomList, renameCustomList, deleteCustomList, hideDeadSaves } = useSavedRecipes();
     const [activeList, setActiveList] = useState('all');
     // Keep activeList valid — 'all' is always valid; custom lists check membership
     useEffect(() => {
@@ -81,9 +81,13 @@ function SavedRecipes() {
 
                 const fetches = ids.map(id => getRecipeBySlug(id));
                 const results = await Promise.all(fetches);
-                
+
                 if (isMounted) {
                     setFullRecipes(results.filter(Boolean));
+                    // A recipe an admin removed resolves to nothing. Stop counting
+                    // it in the navbar badge — it's the same set of ids we just resolved.
+                    const deadIds = ids.filter((id, i) => !results[i]);
+                    if (deadIds.length > 0) hideDeadSaves(deadIds);
                 }
             } catch (err) {
                 console.error('Error fetching full recipes', err);

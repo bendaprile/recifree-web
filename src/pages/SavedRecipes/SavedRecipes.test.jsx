@@ -35,7 +35,8 @@ describe('SavedRecipes Component', () => {
     loading: false,
     createCustomList: vi.fn(),
     renameCustomList: vi.fn(),
-    deleteCustomList: vi.fn()
+    deleteCustomList: vi.fn(),
+    hideDeadSaves: vi.fn()
   };
 
   beforeEach(() => {
@@ -85,6 +86,23 @@ describe('SavedRecipes Component', () => {
     
     await waitFor(() => {
       expect(screen.getByText('Chicken Pasta')).toBeInTheDocument();
+    });
+  });
+
+  it('drops a saved recipe the catalog no longer has, and reports it as dead', async () => {
+    // An admin removal leaves the saver holding a dangling recipeId.
+    const mockSaves = [
+      { recipeId: 'chicken-pasta', listNames: [], savedAt: '2024-01-01' }
+    ];
+    useSavedRecipes.mockReturnValue({ ...mockContext, savedRecipes: mockSaves });
+    recipeService.getRecipeBySlug.mockResolvedValue(null);
+
+    renderComponent();
+
+    await waitFor(() => {
+      // The navbar badge reads savedRecipes.length — without this the badge
+      // would still say "1" while the page shows nothing saved.
+      expect(mockContext.hideDeadSaves).toHaveBeenCalledWith(['chicken-pasta']);
     });
   });
 

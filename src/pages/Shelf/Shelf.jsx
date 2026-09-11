@@ -18,7 +18,7 @@ const FILTERS = [
  * Nobody else can see anything on this page.
  */
 function Shelf() {
-    const { privateRecipes, publishedRefs, loading, unshelveRecipe, isAtRisk } = useShelf();
+    const { privateRecipes, publishedRefs, loading, unshelveRecipe, hideDeadPublishedRefs, isAtRisk } = useShelf();
     const { currentUser } = useAuth();
     const [filter, setFilter] = useState('all');
     const [publishedRecipes, setPublishedRecipes] = useState([]);
@@ -48,20 +48,29 @@ function Shelf() {
                 .catch(() => null)
         ))
             .then(results => {
+                if (!active) return;
                 // A recipe an admin removed resolves to nothing. Drop it rather
-                // than rendering a broken card.
-                if (active) setPublishedRecipes(results.filter(Boolean));
+                // than rendering a broken card, and stop counting it in the
+                // navbar badge — it's the same recipe, so match by slug.
+                setPublishedRecipes(results.filter(Boolean));
+                const deadSlugs = new Set(slugs.filter((slug, i) => !results[i]));
+                if (deadSlugs.size > 0) {
+                    const deadIds = publishedRefs
+                        .filter(r => deadSlugs.has(r.slug))
+                        .map(r => r.id);
+                    hideDeadPublishedRefs(deadIds);
+                }
             })
             .finally(() => { if (active) setResolving(false); });
 
         return () => { active = false; };
-    }, [slugKey]);
+    }, [slugKey, publishedRefs, hideDeadPublishedRefs]);
 
-    const handleRemove = (e, recipeId) => {
+    const handleRemove = async (e, recipeId) => {
         // The card is a Link; without this the click navigates instead of deleting.
         e.preventDefault();
         e.stopPropagation();
-        unshelveRecipe(recipeId);
+        await unshelveRecipe(recipeId);
     };
 
     const publishedCards = publishedRecipes.map(r => ({ ...r, isPublished: true }));
