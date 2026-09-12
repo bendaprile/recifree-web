@@ -457,6 +457,17 @@ describe('Recipe Page from the shelf', () => {
         expect(screen.queryByRole('button', { name: /save/i })).toBeNull();
     });
 
+    it('does not render a published reference as if it were a recipe', async () => {
+        // markPublished replaces the draft with a pointer at the catalog copy,
+        // keeping the same id. /shelf/<id> stays in history, so the back button
+        // after publishing lands here.
+        window.localStorage.setItem('recifree_shelf', JSON.stringify([
+            { id: shelfRecipe.id, slug: 'shelf-only', status: 'published', publishedAt: '2026-09-11T00:00:00.000Z' }
+        ]));
+        await renderFromShelf();
+        expect(screen.getByText('Recipe Not Found')).toBeTruthy();
+    });
+
     it('does not fall back to the public catalog for a missing shelf recipe', async () => {
         window.localStorage.setItem('recifree_shelf', JSON.stringify([]));
         await renderFromShelf([]);

@@ -71,7 +71,7 @@ function Recipe({ fromShelf = false }) {
     // Shelf recipes are private and live outside the public `recipes` collection.
     // The route decides which source to read, so a private recipe can never be
     // served from the public /recipe/:id URL.
-    const { shelf, loading: shelfLoading, markPublished } = useShelf();
+    const { privateRecipes, loading: shelfLoading, markPublished } = useShelf();
     const { isAdmin } = useAuth();
     const [deleting, setDeleting] = useState(false);
 
@@ -107,7 +107,10 @@ function Recipe({ fromShelf = false }) {
             if (fromShelf) {
                 // Wait for the shelf to load before deciding the recipe is missing.
                 if (!shelfLoading) {
-                    setRecipe(shelf.find(r => r.id === id) || null);
+                    // Drafts only. Publishing leaves a reference behind under the
+                    // same id, holding a slug and nothing else, so resolving
+                    // against the whole shelf renders a recipe with no fields.
+                    setRecipe(privateRecipes.find(r => r.id === id) || null);
                     setLoading(false);
                 }
             } else {
