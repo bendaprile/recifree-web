@@ -1,0 +1,120 @@
+{
+  "id": "creamy-pumpkin-chicken-chili",
+  "title": "Creamy Pumpkin Chicken Chili",
+  "description": "A cozy, flavorful chili combining tender chicken, diced peppers, and pumpkin purée with warm spices in a rich, velvety broth.",
+  "image": "/images/recipes/creamy-pumpkin-chicken-chili.jpg",
+  "prepTime": "10 mins",
+  "cookTime": "25 mins",
+  "totalTime": "35 mins",
+  "servings": 6,
+  "difficulty": "Easy",
+  "tags": [
+    "American",
+    "Dinner",
+    "Chicken",
+    "Chili",
+    "Fall",
+    "Healthy"
+  ],
+  "ingredients": [
+    {
+      "amount": "2",
+      "unit": "tbsp",
+      "item": "avocado oil or olive oil"
+    },
+    {
+      "amount": "1.5",
+      "unit": "lb",
+      "item": "chicken breasts, cut into bite-sized pieces"
+    },
+    {
+      "amount": "1",
+      "unit": "medium",
+      "item": "yellow onion, chopped"
+    },
+    {
+      "amount": "2",
+      "unit": "",
+      "item": "poblano peppers, chopped"
+    },
+    {
+      "amount": "2",
+      "unit": "",
+      "item": "jalapeño peppers, seeded and chopped"
+    },
+    {
+      "amount": "2",
+      "unit": "tbsp",
+      "item": "chili powder"
+    },
+    {
+      "amount": "2",
+      "unit": "tsp",
+      "item": "ground cumin"
+    },
+    {
+      "amount": "1/2",
+      "unit": "tsp",
+      "item": "cayenne pepper"
+    },
+    {
+      "amount": "1",
+      "unit": "tsp",
+      "item": "sea salt"
+    },
+    {
+      "amount": "1",
+      "unit": "can",
+      "item": "diced tomatoes (15 oz)"
+    },
+    {
+      "amount": "1",
+      "unit": "can",
+      "item": "pumpkin purée (15 oz)"
+    },
+    {
+      "amount": "2",
+      "unit": "cans",
+      "item": "diced green chiles (4 oz each)"
+    },
+    {
+      "amount": "1",
+      "unit": "cup",
+      "item": "chicken broth or vegetable broth"
+    },
+    {
+      "amount": "1",
+      "unit": "cup",
+      "item": "full-fat coconut milk (or 8 oz cream cheese)"
+    },
+    {
+      "amount": "",
+      "unit": "",
+      "item": "fresh cilantro and shredded cheese, for garnish"
+    }
+  ],
+  "instructions": [
+    "Heat the cooking oil in a large pot over medium-high heat. Add the chicken pieces and cook for 3 to 4 minutes per side until no longer pink. Transfer the cooked chicken to a plate and set aside, keeping the remaining oil in the pot.",
+    "Add the chopped onion to the pot and cook for 3 to 4 minutes until fragrant. Add the poblano and jalapeño peppers and cook for another 2 to 3 minutes until softened.",
+    "Return the chicken to the pot. Stir in the chili powder, cumin, cayenne, and salt to evenly coat the chicken and vegetables. Add the diced tomatoes, pumpkin purée, green chiles, and broth. Bring to a simmer over medium-high heat, stirring frequently for several minutes to combine the flavors.",
+    "Reduce the heat to low. Stir in the coconut milk (or cream cheese) until completely melted, smooth, and creamy throughout the chili.",
+    "Ladle into bowls and serve warm, garnished with fresh cilantro and optional shredded cheese."
+  ],
+  "stepIngredients": [
+    [0, 1],
+    [2, 3, 4],
+    [1, 5, 6, 7, 8, 9, 10, 11, 12],
+    [13],
+    [14]
+  ],
+  "source": {
+    "name": "Wholesomelicious",
+    "url": "https://www.wholesomelicious.com/creamy-pumpkin-chicken-chili/?utm_source=Pinterest&utm_medium=organic#wprm-recipe-container-4521"
+  },
+  "nutrition": {
+    "calories": 310,
+    "protein": "28g",
+    "carbs": "16g",
+    "fat": "15g"
+  }
+}
