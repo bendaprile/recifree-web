@@ -1,0 +1,144 @@
+{
+  "id": "lasagna-zucchini-boats",
+  "title": "Lasagna Zucchini Boats",
+  "description": "Tender zucchini halves stuffed with seasoned ground beef and rich marinara, layered with creamy herbed ricotta, and baked under melted mozzarella and parmesan cheese.",
+  "image": "/images/recipes/lasagna-zucchini-boats.jpg",
+  "prepTime": "10 mins",
+  "cookTime": "40 mins",
+  "totalTime": "50 mins",
+  "servings": 8,
+  "difficulty": "Easy",
+  "tags": [
+    "Italian",
+    "Dinner",
+    "Low Carb",
+    "Zucchini",
+    "Beef"
+  ],
+  "ingredients": [
+    {
+      "amount": "4",
+      "unit": "",
+      "item": "medium zucchini, halved lengthwise"
+    },
+    {
+      "amount": "1",
+      "unit": "cup",
+      "item": "part-skim ricotta cheese"
+    },
+    {
+      "amount": "1",
+      "unit": "",
+      "item": "large egg"
+    },
+    {
+      "amount": "1 1/2",
+      "unit": "tbsp",
+      "item": "chopped fresh parsley, plus more for garnish"
+    },
+    {
+      "amount": "1 1/4",
+      "unit": "cup",
+      "item": "shredded mozzarella cheese, divided"
+    },
+    {
+      "amount": "1/2",
+      "unit": "cup",
+      "item": "finely shredded parmesan cheese"
+    },
+    {
+      "amount": "8",
+      "unit": "oz",
+      "item": "lean ground beef or ground turkey"
+    },
+    {
+      "amount": "4",
+      "unit": "tsp",
+      "item": "olive oil, divided"
+    },
+    {
+      "amount": "",
+      "unit": "",
+      "item": "salt and freshly ground black pepper, to taste"
+    },
+    {
+      "amount": "1 3/4",
+      "unit": "cup",
+      "item": "roasted garlic marinara sauce"
+    },
+    {
+      "amount": "1",
+      "unit": "tbsp",
+      "item": "chopped fresh basil, plus more for garnish"
+    }
+  ],
+  "instructions": [
+    "Preheat the oven to 400°F (200°C).",
+    "Scoop out the centers of each halved zucchini with a spoon, leaving a 1/4-inch rim around the edges to form sturdy boats.",
+    "In a mixing bowl, combine the ricotta cheese, egg, chopped parsley, salt, and black pepper. Stir in 1/2 cup of the mozzarella and all of the parmesan cheese until thoroughly blended.",
+    "Heat 2 tsp of olive oil in a large skillet over medium-high heat. Add the ground beef, season with salt and pepper, and cook while crumbling until browned and cooked through, then drain any excess fat.",
+    "Stir the marinara sauce and chopped basil into the skillet with the beef, then remove from heat.",
+    "Lightly brush both sides of the zucchini boats with the remaining 2 tsp of olive oil and place them in baking dishes. Divide the ricotta mixture evenly among the boats, spreading it smooth.",
+    "Spoon the meat and marinara sauce over the ricotta filling in each boat. Cover the baking dishes with foil and bake for 30 minutes.",
+    "Remove foil, sprinkle the remaining 3/4 cup mozzarella over the tops, and bake uncovered for 5 minutes until the cheese is melted and bubbly. Garnish with fresh basil and parsley, and serve warm."
+  ],
+  "stepIngredients": [
+    [],
+    [
+      0
+    ],
+    [
+      1,
+      2,
+      3,
+      {
+        "id": 4,
+        "amount": "1/2",
+        "unit": "cup"
+      },
+      5,
+      8
+    ],
+    [
+      {
+        "id": 7,
+        "amount": "2",
+        "unit": "tsp"
+      },
+      6,
+      8
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      0,
+      {
+        "id": 7,
+        "amount": "2",
+        "unit": "tsp"
+      }
+    ],
+    [],
+    [
+      {
+        "id": 4,
+        "amount": "3/4",
+        "unit": "cup"
+      },
+      3,
+      10
+    ]
+  ],
+  "source": {
+    "name": "Cooking Classy",
+    "url": "https://www.cookingclassy.com/lasagna-zucchini-boats/"
+  },
+  "nutrition": {
+    "calories": 226,
+    "protein": "17g",
+    "carbs": "8g",
+    "fat": "13g"
+  }
+}
